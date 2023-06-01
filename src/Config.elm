@@ -18,7 +18,7 @@ horizontalSpaceBetweenPlatforms =
 
 verticalSpaceBetweenPlatforms : Float
 verticalSpaceBetweenPlatforms =
-    30
+    100
 
 
 screenHeight : Float
@@ -38,4 +38,9 @@ playerSize =
 
 bpm : Float
 bpm =
-    120
+    60
+
+
+jumpTime : Float
+jumpTime =
+    1 / 4

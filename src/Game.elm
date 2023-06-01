@@ -15,9 +15,33 @@ type PlayerPos
 
 type alias Game =
     { track : Track
-    , platforms : Dict PlatformId ( Int, Int )
+    , platforms : Dict PlatformId { position : ( Int, Int ), active : Bool }
     , player : PlayerPos
     }
+
+
+togglePlatform : PlatformId -> Game -> Game
+togglePlatform id game =
+    { game
+        | platforms =
+            game.platforms
+                |> Dict.update id
+                    (Maybe.map (\platform -> { platform | active = not platform.active }))
+    }
+
+
+nextPlayerPos : Game -> Game
+nextPlayerPos game =
+    let
+        player =
+            case game.player of
+                OnPlatform platformId ->
+                    OnPlatform platformId
+
+                Jumping { to } ->
+                    Jumping { from = to, to = to + 3 }
+    in
+    { game | player = player }
 
 
 new : Game
@@ -30,14 +54,14 @@ new =
             track
                 |> List.indexedMap
                     (\j list ->
-                        list |> List.map (\i -> ( i, j ))
+                        list |> List.map (\i -> { position = ( i, j ), active = False })
                     )
                 |> List.concat
                 |> List.indexedMap Tuple.pair
                 |> Dict.fromList
 
         player =
-            OnPlatform 0
+            Jumping { from = 0, to = 5 }
     in
     { track = track
     , platforms = platforms

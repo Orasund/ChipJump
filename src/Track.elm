@@ -7,7 +7,7 @@ type alias Track =
 
 default : Track
 default =
-    [ 0 ] |> List.repeat 8
+    [ 0, 1, -1 ] |> List.repeat 4
 
 
 next : Track -> ( List Int, Track )
