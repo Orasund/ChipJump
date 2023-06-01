@@ -3,7 +3,7 @@ module Config exposing (..)
 
 platformWidth : Float
 platformWidth =
-    100
+    40
 
 
 platformHeight : Float

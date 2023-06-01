@@ -8,7 +8,13 @@ import Html.Attributes
 import Html.Events
 
 
-fromGame : { ratioToNextBeat : Float, onClick : PlatformId -> msg } -> Game -> Html msg
+fromGame :
+    { ratioToNextBeat : Float
+    , onClick : PlatformId -> msg
+    , beatsPlayed : Int
+    }
+    -> Game
+    -> Html msg
 fromGame args game =
     let
         getPlatformPosition id =
@@ -22,13 +28,16 @@ fromGame args game =
                 OnPlatform id ->
                     getPlatformPosition id
                         |> calcPlayerPositionOnPlatform
-                            { ratioToNextBeat = args.ratioToNextBeat }
+                            { ratioToNextBeat = args.ratioToNextBeat
+                            , beatsPlayed = args.beatsPlayed
+                            }
 
                 Jumping { from, to } ->
                     calcPlayerJumpingPosition
                         { from = getPlatformPosition from
                         , to = getPlatformPosition to
                         , ratioToNextBeat = args.ratioToNextBeat
+                        , beatsPlayed = args.beatsPlayed
                         }
     in
     [ game.platforms |> platforms args
@@ -52,7 +61,10 @@ player ( x, y ) =
 
 
 platforms :
-    { ratioToNextBeat : Float, onClick : PlatformId -> msg }
+    { ratioToNextBeat : Float
+    , onClick : PlatformId -> msg
+    , beatsPlayed : Int
+    }
     -> Dict PlatformId { position : ( Int, Int ), active : Bool }
     -> List (Html msg)
 platforms args dict =
@@ -61,18 +73,36 @@ platforms args dict =
         |> List.map
             (\( platformId, { position, active } ) ->
                 platform { active = active, onClick = args.onClick platformId }
-                    (calcPlatformPosition { ratioToNextBeat = args.ratioToNextBeat } position)
+                    (calcPlatformPosition
+                        { ratioToNextBeat = args.ratioToNextBeat
+                        , beatsPlayed = args.beatsPlayed
+                        }
+                        position
+                    )
             )
 
 
-calcPlayerJumpingPosition : { from : ( Int, Int ), to : ( Int, Int ), ratioToNextBeat : Float } -> ( Float, Float )
+calcPlayerJumpingPosition :
+    { from : ( Int, Int )
+    , to : ( Int, Int )
+    , ratioToNextBeat : Float
+    , beatsPlayed : Int
+    }
+    -> ( Float, Float )
 calcPlayerJumpingPosition args =
     let
+        calcPosition pos =
+            calcPlayerPositionOnPlatform
+                { ratioToNextBeat = args.ratioToNextBeat
+                , beatsPlayed = args.beatsPlayed
+                }
+                pos
+
         ( x1, y1 ) =
-            calcPlayerPositionOnPlatform { ratioToNextBeat = args.ratioToNextBeat } args.to
+            calcPosition args.to
 
         ( x2, y2 ) =
-            calcPlayerPositionOnPlatform { ratioToNextBeat = args.ratioToNextBeat } args.from
+            calcPosition args.from
 
         ratio =
             if args.ratioToNextBeat < Config.jumpTime then
@@ -84,7 +114,7 @@ calcPlayerJumpingPosition args =
     ( x2 + (x1 - x2) * ratio, y2 + (y1 - y2) * ratio )
 
 
-calcPlayerPositionOnPlatform : { ratioToNextBeat : Float } -> ( Int, Int ) -> ( Float, Float )
+calcPlayerPositionOnPlatform : { ratioToNextBeat : Float, beatsPlayed : Int } -> ( Int, Int ) -> ( Float, Float )
 calcPlayerPositionOnPlatform args pos =
     let
         ( x, y ) =
@@ -93,22 +123,18 @@ calcPlayerPositionOnPlatform args pos =
     ( x + Config.platformWidth / 2 - Config.playerSize / 2, y - Config.playerSize )
 
 
-calcPlatformPosition : { ratioToNextBeat : Float } -> ( Int, Int ) -> ( Float, Float )
+calcPlatformPosition : { ratioToNextBeat : Float, beatsPlayed : Int } -> ( Int, Int ) -> ( Float, Float )
 calcPlatformPosition args ( x, y ) =
     let
         ratio =
-            if args.ratioToNextBeat < Config.jumpTime then
-                args.ratioToNextBeat / Config.jumpTime
-
-            else
-                1
+            args.ratioToNextBeat
     in
     ( (Config.platformWidth + Config.horizontalSpaceBetweenPlatforms)
         * toFloat x
         - (Config.platformWidth / 2)
         + (Config.screenWidth / 2)
     , (Config.platformHeight + Config.verticalSpaceBetweenPlatforms)
-        * (toFloat -y + ratio)
+        * (toFloat -y + ratio + toFloat args.beatsPlayed)
         + Config.screenHeight
     )
 

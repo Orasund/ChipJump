@@ -16,6 +16,7 @@ type PlayerPos
 type alias Game =
     { track : Track
     , platforms : Dict PlatformId { position : ( Int, Int ), active : Bool }
+    , rows : Dict Int (List PlatformId)
     , player : PlayerPos
     }
 
@@ -30,16 +31,56 @@ togglePlatform id game =
     }
 
 
+getNextPossiblePlatforms : Game -> PlatformId -> List PlatformId
+getNextPossiblePlatforms game from =
+    game.platforms
+        |> Dict.get from
+        |> Maybe.map .position
+        |> Maybe.andThen (\( _, y ) -> game.rows |> Dict.get (y + 1))
+        |> Maybe.withDefault []
+        |> List.filter
+            (\next ->
+                game.platforms
+                    |> Dict.get next
+                    |> Maybe.map .active
+                    |> (==) (Just True)
+            )
+
+
+recheckNextPlayerPos : Game -> Game
+recheckNextPlayerPos game =
+    case game.player of
+        OnPlatform platformId ->
+            if getNextPossiblePlatforms game platformId /= [] then
+                nextPlayerPos game
+
+            else
+                game
+
+        Jumping _ ->
+            game
+
+
 nextPlayerPos : Game -> Game
 nextPlayerPos game =
     let
-        player =
+        currentPos =
             case game.player of
                 OnPlatform platformId ->
-                    OnPlatform platformId
+                    platformId
 
                 Jumping { to } ->
-                    Jumping { from = to, to = to + 3 }
+                    to
+
+        player =
+            currentPos
+                |> getNextPossiblePlatforms game
+                |> List.head
+                |> Maybe.map
+                    (\next ->
+                        Jumping { from = currentPos, to = next }
+                    )
+                |> Maybe.withDefault (OnPlatform currentPos)
     in
     { game | player = player }
 
@@ -60,10 +101,29 @@ new =
                 |> List.indexedMap Tuple.pair
                 |> Dict.fromList
 
+        rows =
+            platforms
+                |> Dict.foldl
+                    (\id { position } ->
+                        let
+                            ( _, y ) =
+                                position
+                        in
+                        Dict.update y
+                            (\maybe ->
+                                maybe
+                                    |> Maybe.withDefault []
+                                    |> (::) id
+                                    |> Just
+                            )
+                    )
+                    Dict.empty
+
         player =
             Jumping { from = 0, to = 5 }
     in
     { track = track
     , platforms = platforms
     , player = player
+    , rows = rows
     }

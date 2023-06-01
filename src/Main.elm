@@ -3,7 +3,7 @@ module Main exposing (..)
 import Browser
 import Browser.Events
 import Config
-import Game exposing (Game, PlatformId)
+import Game exposing (Game, PlatformId, PlayerPos(..))
 import Html exposing (Html)
 import View
 
@@ -11,6 +11,7 @@ import View
 type alias Model =
     { game : Game
     , msSinceLastBeat : Float
+    , beatsPlayed : Int
     }
 
 
@@ -30,7 +31,12 @@ calcRatioToNextBeat args =
 
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( { game = Game.new, msSinceLastBeat = 0 }, Cmd.none )
+    ( { game = Game.new
+      , msSinceLastBeat = 0
+      , beatsPlayed = 0
+      }
+    , Cmd.none
+    )
 
 
 view : Model -> Html Msg
@@ -41,6 +47,7 @@ view model =
                 calcRatioToNextBeat
                     { msSinceLastBeat = model.msSinceLastBeat }
             , onClick = ActivatePlatform
+            , beatsPlayed = model.beatsPlayed
             }
 
 
@@ -55,6 +62,7 @@ update msg model =
             ( if msSinceLastBeat >= maxDelta then
                 { model
                     | msSinceLastBeat = msSinceLastBeat - maxDelta
+                    , beatsPlayed = model.beatsPlayed + 1
                     , game = model.game |> Game.nextPlayerPos
                 }
 
@@ -64,14 +72,20 @@ update msg model =
             )
 
         ActivatePlatform platformId ->
-            ( { model | game = model.game |> Game.togglePlatform platformId }
+            ( { model | game = model.game |> Game.togglePlatform platformId |> Game.recheckNextPlayerPos }
             , Cmd.none
             )
 
 
 subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Browser.Events.onAnimationFrameDelta NextFrameRequested
+subscriptions model =
+    case model.game.player of
+        OnPlatform _ ->
+            Sub.none
+
+        Jumping _ ->
+            Browser.Events.onAnimationFrameDelta
+                NextFrameRequested
 
 
 main : Program () Model Msg
