@@ -143,6 +143,7 @@ calcPlatformPosition args ( x, y ) =
     , (Config.platformHeight + Config.verticalSpaceBetweenPlatforms)
         * (toFloat -y + ratio + toFloat args.beatsPlayed)
         + Config.screenHeight
+        - Config.platformHeight
     )
 
 
