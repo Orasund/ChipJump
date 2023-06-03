@@ -54,14 +54,18 @@ init () =
 
 view : Model -> Html Msg
 view model =
-    model.game
-        |> View.fromGame
-            { ratioToNextBeat =
-                calcRatioToNextBeat
-                    { msSinceLastBeat = model.msSinceLastBeat }
-            , onClick = ActivatePlatform
-            , beatsPlayed = model.beatsPlayed
-            }
+    if model.showTitle then
+        View.titleScreen { start = StartGame }
+
+    else
+        model.game
+            |> View.fromGame
+                { ratioToNextBeat =
+                    calcRatioToNextBeat
+                        { msSinceLastBeat = model.msSinceLastBeat }
+                , onClick = ActivatePlatform
+                , beatsPlayed = model.beatsPlayed
+                }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )

@@ -15,9 +15,9 @@ default =
     , [ F2 ]
     , [ E2 ]
     , [ C2 ]
-    , [ A1, A2 ]
+    , [ A1, E2 ]
     , [ F1, F2 ]
-    , [ E1, E2 ]
+    , [ E1, A2 ]
     ]
         |> List.repeat 4
         |> List.concat

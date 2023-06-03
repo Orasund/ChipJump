@@ -5291,11 +5291,11 @@ var $author$project$Track$default = $elm$core$Array$fromList(
 					_List_fromArray(
 					[$author$project$Note$C2]),
 					_List_fromArray(
-					[$author$project$Note$A1, $author$project$Note$A2]),
+					[$author$project$Note$A1, $author$project$Note$E2]),
 					_List_fromArray(
 					[$author$project$Note$F1, $author$project$Note$F2]),
 					_List_fromArray(
-					[$author$project$Note$E1, $author$project$Note$E2])
+					[$author$project$Note$E1, $author$project$Note$A2])
 				]))));
 var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
@@ -6443,6 +6443,7 @@ var $author$project$Main$update = F2(
 var $author$project$Main$ActivatePlatform = function (a) {
 	return {$: 'ActivatePlatform', a: a};
 };
+var $author$project$Main$StartGame = {$: 'StartGame'};
 var $author$project$Main$calcRatioToNextBeat = function (args) {
 	return args.msSinceLastBeat / $author$project$Main$maxDelta;
 };
@@ -6454,14 +6455,13 @@ var $elm$core$Basics$negate = function (n) {
 var $author$project$Config$platformWidth = 100;
 var $author$project$Config$platformHeight = $author$project$Config$platformWidth;
 var $author$project$Config$screenHeight = 600;
-var $author$project$Config$screenWidth = 400;
 var $author$project$Config$verticalSpaceBetweenPlatforms = 50;
 var $author$project$View$calcPlatformPosition = F2(
 	function (args, _v0) {
 		var x = _v0.a;
 		var y = _v0.b;
 		var ratio = args.ratioToNextBeat;
-		return _Utils_Tuple2((($author$project$Config$horizontalSpaceBetweenPlatforms * x) - ($author$project$Config$platformWidth / 2)) + ($author$project$Config$screenWidth / 2), ((($author$project$Config$platformHeight + $author$project$Config$verticalSpaceBetweenPlatforms) * (((-y) + ratio) + args.beatsPlayed)) + $author$project$Config$screenHeight) - $author$project$Config$platformHeight);
+		return _Utils_Tuple2(($author$project$Config$horizontalSpaceBetweenPlatforms * x) - ($author$project$Config$platformWidth / 2), ((($author$project$Config$platformHeight + $author$project$Config$verticalSpaceBetweenPlatforms) * (((-y) + ratio) + args.beatsPlayed)) + $author$project$Config$screenHeight) - $author$project$Config$platformHeight);
 	});
 var $author$project$Config$playerSize = 60;
 var $author$project$View$calcPlayerPositionOnPlatform = F2(
@@ -6597,6 +6597,7 @@ var $author$project$View$player = function (_v0) {
 			]),
 		_List_Nil);
 };
+var $author$project$Config$screenWidth = 400;
 var $author$project$View$fromGame = F2(
 	function (args, game) {
 		var getPlatformPosition = function (id) {
@@ -6655,8 +6656,137 @@ var $author$project$View$fromGame = F2(
 						])
 					])));
 	});
-var $author$project$Main$view = function (model) {
+var $Orasund$elm_layout$Layout$alignAtCenter = A2($elm$html$Html$Attributes$style, 'align-items', 'center');
+var $Orasund$elm_layout$Layout$contentCentered = A2($elm$html$Html$Attributes$style, 'justify-content', 'center');
+var $Orasund$elm_layout$Layout$centered = _List_fromArray(
+	[$Orasund$elm_layout$Layout$contentCentered, $Orasund$elm_layout$Layout$alignAtCenter]);
+var $Orasund$elm_layout$Layout$column = function (attrs) {
+	return $elm$html$Html$div(
+		_Utils_ap(
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+					A2($elm$html$Html$Attributes$style, 'flex-direction', 'column')
+				]),
+			attrs));
+};
+var $Orasund$elm_layout$Layout$el = F2(
+	function (attrs, content) {
+		return A2(
+			$elm$html$Html$div,
+			A2(
+				$elm$core$List$cons,
+				A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+				attrs),
+			_List_fromArray(
+				[content]));
+	});
+var $Orasund$elm_layout$Layout$gap = function (n) {
 	return A2(
+		$elm$html$Html$Attributes$style,
+		'gap',
+		$elm$core$String$fromFloat(n) + 'px');
+};
+var $elm$html$Html$h1 = _VirtualDom_node('h1');
+var $Orasund$elm_layout$Layout$heading1 = F2(
+	function (attrs, content) {
+		return A2(
+			$elm$html$Html$h1,
+			A2(
+				$elm$core$List$cons,
+				A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+				attrs),
+			_List_fromArray(
+				[content]));
+	});
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $elm$virtual_dom$VirtualDom$attribute = F2(
+	function (key, value) {
+		return A2(
+			_VirtualDom_attribute,
+			_VirtualDom_noOnOrFormAction(key),
+			_VirtualDom_noJavaScriptOrHtmlUri(value));
+	});
+var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
+var $Orasund$elm_layout$Layout$asButton = function (args) {
+	return _Utils_ap(
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'cursor', 'pointer'),
+				A2($elm$html$Html$Attributes$attribute, 'aria-label', args.label),
+				A2($elm$html$Html$Attributes$attribute, 'role', 'button')
+			]),
+		A2(
+			$elm$core$Maybe$withDefault,
+			_List_Nil,
+			A2(
+				$elm$core$Maybe$map,
+				function (msg) {
+					return _List_fromArray(
+						[
+							$elm$html$Html$Events$onClick(msg)
+						]);
+				},
+				args.onPress)));
+};
+var $Orasund$elm_layout$Layout$textButton = F2(
+	function (attrs, args) {
+		return A2(
+			$elm$html$Html$button,
+			_Utils_ap(
+				$Orasund$elm_layout$Layout$asButton(args),
+				attrs),
+			_List_fromArray(
+				[
+					$elm$html$Html$text(args.label)
+				]));
+	});
+var $author$project$View$titleScreen = function (args) {
+	return A2(
+		$Orasund$elm_layout$Layout$el,
+		_Utils_ap(
+			$Orasund$elm_layout$Layout$centered,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'relative'),
+					A2($elm$html$Html$Attributes$style, 'background-color', $author$project$Config$backgroundColor),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'height',
+					$elm$core$String$fromFloat($author$project$Config$screenHeight) + 'px'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'width',
+					$elm$core$String$fromFloat($author$project$Config$screenWidth) + 'px')
+				])),
+		A2(
+			$Orasund$elm_layout$Layout$column,
+			_List_fromArray(
+				[
+					$Orasund$elm_layout$Layout$gap(100)
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$Orasund$elm_layout$Layout$heading1,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'color', $author$project$Config$playerColor)
+						]),
+					$elm$html$Html$text('<Game Title>')),
+					A2(
+					$Orasund$elm_layout$Layout$textButton,
+					_List_Nil,
+					{
+						label: 'Start',
+						onPress: $elm$core$Maybe$Just(args.start)
+					})
+				])));
+};
+var $author$project$Main$view = function (model) {
+	return model.showTitle ? $author$project$View$titleScreen(
+		{start: $author$project$Main$StartGame}) : A2(
 		$author$project$View$fromGame,
 		{
 			beatsPlayed: model.beatsPlayed,

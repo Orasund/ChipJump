@@ -18,5 +18,5 @@ const sampler = new Tone.Sampler({
 }).toDestination();
 
 export function playSound(notes: string[]) {
-    sampler.triggerAttackRelease(notes, 0.5);
+    sampler.triggerAttackRelease(["C2"], 0.5);
 }

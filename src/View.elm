@@ -12,10 +12,12 @@ import Note exposing (Note)
 
 titleScreen : { start : msg } -> Html msg
 titleScreen args =
-    [ "<Game Title>" |> Layout.text [ Html.Attributes.style "size" "1.8em" ]
+    [ "<Game Title>"
+        |> Html.text
+        |> Layout.heading1 [ Html.Attributes.style "color" Config.playerColor ]
     , Layout.textButton [] { onPress = Just args.start, label = "Start" }
     ]
-        |> Layout.column [ Layout.contentWithSpaceBetween ]
+        |> Layout.column [ Layout.gap 100 ]
         |> Layout.el
             (Layout.centered
                 ++ [ Html.Attributes.style "position" "relative"
@@ -157,7 +159,6 @@ calcPlatformPosition args ( x, y ) =
     ( Config.horizontalSpaceBetweenPlatforms
         * toFloat x
         - (Config.platformWidth / 2)
-        + (Config.screenWidth / 2)
     , (Config.platformHeight + Config.verticalSpaceBetweenPlatforms)
         * (toFloat -y + ratio + toFloat args.beatsPlayed)
         + Config.screenHeight

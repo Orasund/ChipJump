@@ -1,11 +1,9 @@
 import { playSound } from "./sound";
 
-type MessageIn =
+export type MessageIn =
     { name: "playSound", value: string[] }
 
-export function evalMessage(string: string) {
-    const message: MessageIn = JSON.parse(string)
-
+export function evalMessage(message: MessageIn) {
     switch (message.name) {
         case "playSound":
             playSound(message.value)
