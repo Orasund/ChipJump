@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html>
 
-<body>
+<body style="margin:0px">
 	<div id="main"></div>
 
 	<script src="elm.js"></script>
-	<script>
-		var app = Elm.PortExamples.init({
+	<script src="/dist/bundle.js"></script>
+	<script type="module">
+		//import { fromElm } from '/dist/bundle.js'
+
+		var app = Elm.Main.init({
 			node: document.getElementById("main")
 		});
 
-		app.ports.sendData.subscribe(function (data) {
-			console.log("Data from Elm: ", data);
+		app.ports.send.subscribe(function (data) {
+			fromElm(data)
 		});
 	</script>
 </body>

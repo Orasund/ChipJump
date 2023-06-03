@@ -1,6 +1,8 @@
 module Game exposing (..)
 
+import Array exposing (Array)
 import Dict exposing (Dict)
+import Note exposing (Note)
 import Track exposing (Track)
 
 
@@ -15,7 +17,7 @@ type PlayerPos
 
 type alias Game =
     { track : Track
-    , platforms : Dict PlatformId { position : ( Int, Int ), active : Bool }
+    , platforms : Dict PlatformId { position : ( Int, Int ), active : Bool, note : Note }
     , rows : Dict Int (List PlatformId)
     , player : PlayerPos
     }
@@ -61,16 +63,21 @@ recheckNextPlayerPos game =
             game
 
 
+platformIdOfPlayer : Game -> PlatformId
+platformIdOfPlayer game =
+    case game.player of
+        OnPlatform platformId ->
+            platformId
+
+        Jumping { to } ->
+            to
+
+
 nextPlayerPos : Game -> Game
 nextPlayerPos game =
     let
         currentPos =
-            case game.player of
-                OnPlatform platformId ->
-                    platformId
-
-                Jumping { to } ->
-                    to
+            platformIdOfPlayer game
 
         player =
             currentPos
@@ -93,10 +100,18 @@ new =
 
         platforms =
             track
-                |> List.indexedMap
+                |> Array.indexedMap
                     (\j list ->
-                        list |> List.map (\i -> { position = ( i, j ), active = False })
+                        list
+                            |> List.map
+                                (\note ->
+                                    { position = ( Note.toInt note, j )
+                                    , active = False
+                                    , note = note
+                                    }
+                                )
                     )
+                |> Array.toList
                 |> List.concat
                 |> List.indexedMap Tuple.pair
                 |> Dict.fromList

@@ -6,6 +6,24 @@ import Game exposing (Game, PlatformId, PlayerPos(..))
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events
+import Layout
+import Note exposing (Note)
+
+
+titleScreen : { start : msg } -> Html msg
+titleScreen args =
+    [ "<Game Title>" |> Layout.text [ Html.Attributes.style "size" "1.8em" ]
+    , Layout.textButton [] { onPress = Just args.start, label = "Start" }
+    ]
+        |> Layout.column [ Layout.contentWithSpaceBetween ]
+        |> Layout.el
+            (Layout.centered
+                ++ [ Html.Attributes.style "position" "relative"
+                   , Html.Attributes.style "background-color" Config.backgroundColor
+                   , Html.Attributes.style "height" (String.fromFloat Config.screenHeight ++ "px")
+                   , Html.Attributes.style "width" (String.fromFloat Config.screenWidth ++ "px")
+                   ]
+            )
 
 
 fromGame :
@@ -70,7 +88,7 @@ platforms :
     , onClick : PlatformId -> msg
     , beatsPlayed : Int
     }
-    -> Dict PlatformId { position : ( Int, Int ), active : Bool }
+    -> Dict PlatformId { position : ( Int, Int ), active : Bool, note : Note }
     -> List (Html msg)
 platforms args dict =
     dict

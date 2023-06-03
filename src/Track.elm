@@ -1,30 +1,34 @@
 module Track exposing (..)
 
+import Array exposing (Array)
+import Note exposing (Note(..))
+
 
 type alias Track =
-    List (List Int)
+    Array (List Note)
 
 
 default : Track
 default =
-    [ [ 0 ]
-    , [ 2 ]
-    , [ 4 ]
-    , [ 3 ]
-    , [ 0 ]
-    , [ 2, -2 ]
-    , [ 4, -4 ]
-    , [ 3, -3 ]
+    [ [ C2 ]
+    , [ A2 ]
+    , [ F2 ]
+    , [ E2 ]
+    , [ C2 ]
+    , [ A1, A2 ]
+    , [ F1, F2 ]
+    , [ E1, E2 ]
     ]
         |> List.repeat 4
         |> List.concat
+        |> Array.fromList
 
 
-next : Track -> ( List Int, Track )
+next : Track -> ( List Note, Track )
 next track =
-    case track of
+    case track |> Array.toList of
         head :: tail ->
-            ( head, tail ++ [ head ] )
+            ( head, tail ++ [ head ] |> Array.fromList )
 
         [] ->
-            ( [], [] )
+            ( [], Array.empty )
