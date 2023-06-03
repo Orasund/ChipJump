@@ -44,7 +44,12 @@ fromGame args game =
     , [ playerPos |> player ]
     ]
         |> List.concat
-        |> Html.div [ Html.Attributes.style "position" "relative" ]
+        |> Html.div
+            [ Html.Attributes.style "position" "relative"
+            , Html.Attributes.style "background-color" Config.backgroundColor
+            , Html.Attributes.style "height" (String.fromFloat Config.screenHeight ++ "px")
+            , Html.Attributes.style "width" (String.fromFloat Config.screenWidth ++ "px")
+            ]
 
 
 player : ( Float, Float ) -> Html msg
@@ -52,7 +57,7 @@ player ( x, y ) =
     Html.div
         [ Html.Attributes.style "width" (String.fromFloat Config.playerSize ++ "px")
         , Html.Attributes.style "height" (String.fromFloat Config.playerSize ++ "px")
-        , Html.Attributes.style "background-color" "blue"
+        , Html.Attributes.style "background-color" Config.playerColor
         , Html.Attributes.style "position" "absolute"
         , Html.Attributes.style "top" (String.fromFloat y ++ "px")
         , Html.Attributes.style "left" (String.fromFloat x ++ "px")
@@ -120,7 +125,9 @@ calcPlayerPositionOnPlatform args pos =
         ( x, y ) =
             calcPlatformPosition args pos
     in
-    ( x + Config.platformWidth / 2 - Config.playerSize / 2, y - Config.playerSize )
+    ( x + Config.platformWidth / 2 - Config.playerSize / 2
+    , y + Config.platformHeight / 2 - Config.playerSize / 2
+    )
 
 
 calcPlatformPosition : { ratioToNextBeat : Float, beatsPlayed : Int } -> ( Int, Int ) -> ( Float, Float )
@@ -129,7 +136,7 @@ calcPlatformPosition args ( x, y ) =
         ratio =
             args.ratioToNextBeat
     in
-    ( (Config.platformWidth + Config.horizontalSpaceBetweenPlatforms)
+    ( Config.horizontalSpaceBetweenPlatforms
         * toFloat x
         - (Config.platformWidth / 2)
         + (Config.screenWidth / 2)
@@ -146,13 +153,14 @@ platform args ( x, y ) =
         , Html.Attributes.style "height" (String.fromFloat Config.platformHeight ++ "px")
         , Html.Attributes.style "background-color"
             (if args.active then
-                "black"
+                Config.activePlatformColor
 
              else
-                "gray"
+                Config.inactivePlatformColor
             )
         , Html.Attributes.style "position" "absolute"
         , Html.Attributes.style "border" "0px"
+        , Html.Attributes.style "border-radius" "100%"
         , Html.Attributes.style "top" (String.fromFloat y ++ "px")
         , Html.Attributes.style "left" (String.fromFloat x ++ "px")
         , Html.Events.onClick args.onClick

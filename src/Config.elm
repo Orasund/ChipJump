@@ -3,22 +3,22 @@ module Config exposing (..)
 
 platformWidth : Float
 platformWidth =
-    40
+    100
 
 
 platformHeight : Float
 platformHeight =
-    40
+    platformWidth
 
 
 horizontalSpaceBetweenPlatforms : Float
 horizontalSpaceBetweenPlatforms =
-    20
+    30
 
 
 verticalSpaceBetweenPlatforms : Float
 verticalSpaceBetweenPlatforms =
-    100
+    50
 
 
 screenHeight : Float
@@ -33,7 +33,7 @@ screenWidth =
 
 playerSize : Float
 playerSize =
-    50
+    60
 
 
 bpm : Float
@@ -44,3 +44,23 @@ bpm =
 jumpTime : Float
 jumpTime =
     1 / 4
+
+
+backgroundColor : String
+backgroundColor =
+    "#010f16"
+
+
+playerColor : String
+playerColor =
+    "#ce9f39"
+
+
+inactivePlatformColor : String
+inactivePlatformColor =
+    "#6d7753"
+
+
+activePlatformColor : String
+activePlatformColor =
+    "#ee3907"

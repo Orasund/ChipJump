@@ -120,7 +120,7 @@ new =
                     Dict.empty
 
         player =
-            Jumping { from = 0, to = 5 }
+            OnPlatform 0
     in
     { track = track
     , platforms = platforms
