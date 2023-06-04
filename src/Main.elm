@@ -5,7 +5,7 @@ import Browser
 import Browser.Events
 import Config
 import Dict
-import Game exposing (Game, PlatformId, PlayerPos(..))
+import Game exposing (Game, ObjectId, PlayerPos(..))
 import Html exposing (Html)
 import Json.Encode exposing (Value)
 import Note
@@ -29,7 +29,7 @@ type alias Model =
 
 type Msg
     = NextFrameRequested Float
-    | ActivatePlatform PlatformId
+    | ActivatePlatform ObjectId
     | StartGame
 
 

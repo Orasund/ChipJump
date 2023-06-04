@@ -2,12 +2,14 @@ module View exposing (..)
 
 import Config
 import Dict exposing (Dict)
-import Game exposing (Game, Object, ObjectSort(..), PlatformId, PlayerPos(..))
+import Game exposing (Game, Object, ObjectId, ObjectSort(..), PlayerPos(..))
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events
 import Layout
 import Note exposing (Note(..))
+import View.Common
+import View.Object
 
 
 titleScreen : { start : msg } -> Html msg
@@ -30,14 +32,14 @@ titleScreen args =
 
 fromGame :
     { ratioToNextBeat : Float
-    , onClick : PlatformId -> msg
+    , onClick : ObjectId -> msg
     }
     -> Game
     -> Html msg
 fromGame args game =
     let
         getPlatformPosition id =
-            game.platforms
+            game.objects
                 |> Dict.get id
                 |> Maybe.map (\{ start, note } -> ( note, start ))
                 |> Maybe.withDefault ( C1, 0 )
@@ -59,8 +61,8 @@ fromGame args game =
                         , beatsPlayed = game.songPosition
                         }
     in
-    [ game.platforms
-        |> platforms
+    [ game.objects
+        |> View.Object.fromDict
             { ratioToNextBeat = args.ratioToNextBeat
             , onClick = args.onClick
             , beatsPlayed = game.songPosition
@@ -87,31 +89,6 @@ player ( x, y ) =
         , Html.Attributes.style "left" (String.fromFloat x ++ "px")
         ]
         []
-
-
-platforms :
-    { ratioToNextBeat : Float
-    , onClick : PlatformId -> msg
-    , beatsPlayed : Int
-    }
-    -> Dict PlatformId Object
-    -> List (Html msg)
-platforms args dict =
-    dict
-        |> Dict.toList
-        |> List.map
-            (\( platformId, { start, note, sort } ) ->
-                case sort of
-                    LilyPad { active } ->
-                        lilyPad { active = active, onClick = args.onClick platformId }
-                            (calcPlatformPosition
-                                { ratioToNextBeat = args.ratioToNextBeat
-                                , beatsPlayed = args.beatsPlayed
-                                , start = start
-                                , note = note
-                                }
-                            )
-            )
 
 
 calcPlayerJumpingPosition :
@@ -154,7 +131,7 @@ calcPlayerPositionOnPlatform :
 calcPlayerPositionOnPlatform args ( note, start ) =
     let
         ( x, y ) =
-            calcPlatformPosition
+            View.Common.calcPlatformPosition
                 { ratioToNextBeat = args.ratioToNextBeat
                 , beatsPlayed = args.beatsPlayed
                 , start = start
@@ -164,46 +141,3 @@ calcPlayerPositionOnPlatform args ( note, start ) =
     ( x + Config.platformWidth / 2 - Config.playerSize / 2
     , y + Config.platformHeight / 2 - Config.playerSize / 2
     )
-
-
-calcPlatformPosition : { ratioToNextBeat : Float, beatsPlayed : Int, start : Int, note : Note } -> ( Float, Float )
-calcPlatformPosition args =
-    let
-        ratio =
-            args.ratioToNextBeat
-    in
-    ( Config.horizontalSpaceBetweenPlatforms
-        * toFloat (Note.toInt args.note)
-    , (Config.platformHeight + Config.verticalSpaceBetweenPlatforms)
-        * (toFloat -args.start + ratio + toFloat args.beatsPlayed)
-        + Config.screenHeight
-        - (Config.platformHeight
-            * 2
-          )
-    )
-
-
-lilyPad : { active : Bool, onClick : msg } -> ( Float, Float ) -> Html msg
-lilyPad args ( x, y ) =
-    Html.button
-        ([ Html.Attributes.style "width" (String.fromFloat Config.platformWidth ++ "px")
-         , Html.Attributes.style "height" (String.fromFloat Config.platformHeight ++ "px")
-         , Html.Attributes.style "position" "absolute"
-         , Html.Attributes.style "border-radius" "100%"
-         , Html.Attributes.style "top" (String.fromFloat y ++ "px")
-         , Html.Attributes.style "left" (String.fromFloat x ++ "px")
-         , Html.Events.onClick args.onClick
-         ]
-            ++ (if args.active then
-                    [ Html.Attributes.style "background-color" Config.lilyPadColor
-                    , Html.Attributes.style "border" ("8px solid " ++ Config.lilyPadColor)
-                    ]
-
-                else
-                    [ Html.Attributes.style "background-color" "transparent"
-                    , Html.Attributes.style "border" ("8px dashed " ++ Config.lilyPadColor)
-                    , Html.Attributes.style "z-index" "10"
-                    ]
-               )
-        )
-        []

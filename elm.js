@@ -5279,7 +5279,7 @@ var $elm$core$List$repeat = F2(
 	function (n, value) {
 		return A3($elm$core$List$repeatHelp, _List_Nil, n, value);
 	});
-var $author$project$Track$default = $elm$core$Array$fromList(
+var $author$project$Song$default = $elm$core$Array$fromList(
 	_Utils_ap(
 		$elm$core$List$concat(
 			A2(
@@ -5934,7 +5934,7 @@ var $elm$core$Maybe$withDefault = F2(
 		}
 	});
 var $author$project$Game$new = function () {
-	var track = $author$project$Track$default;
+	var track = $author$project$Song$default;
 	var player = $author$project$Game$OnPlatform(0);
 	var platforms = $elm$core$Dict$fromList(
 		A2(
@@ -6163,15 +6163,19 @@ var $author$project$Game$activatePlatform = F2(
 					$elm$core$Maybe$map(
 						function (platform) {
 							var _v0 = platform.sort;
-							var lilyPad = _v0.a;
-							return _Utils_update(
-								platform,
-								{
-									sort: $author$project$Game$LilyPad(
-										_Utils_update(
-											lilyPad,
-											{active: true}))
-								});
+							if (_v0.$ === 'LilyPad') {
+								var lilyPad = _v0.a;
+								return _Utils_update(
+									platform,
+									{
+										sort: $author$project$Game$LilyPad(
+											_Utils_update(
+												lilyPad,
+												{active: true}))
+									});
+							} else {
+								return platform;
+							}
 						}),
 					game.platforms)
 			});
@@ -6231,8 +6235,12 @@ var $author$project$Game$getNextPossiblePlatforms = F2(
 						$elm$core$Maybe$map,
 						function (object) {
 							var _v0 = object.sort;
-							var active = _v0.a.active;
-							return active;
+							if (_v0.$ === 'LilyPad') {
+								var active = _v0.a.active;
+								return active;
+							} else {
+								return false;
+							}
 						},
 						A2($elm$core$Dict$get, next, game.platforms)));
 			},
@@ -6298,8 +6306,12 @@ var $author$project$Game$nextBeat = function (game) {
 			function (_v0) {
 				var note = _v0.note;
 				var sort = _v0.sort;
-				var active = sort.a.active;
-				return active ? $elm$core$Maybe$Just(note) : $elm$core$Maybe$Nothing;
+				if (sort.$ === 'LilyPad') {
+					var active = sort.a.active;
+					return active ? $elm$core$Maybe$Just(note) : $elm$core$Maybe$Nothing;
+				} else {
+					return $elm$core$Maybe$Just(note);
+				}
 			},
 			A2(
 				$elm$core$List$filterMap,
@@ -6580,6 +6592,32 @@ var $author$project$View$lilyPad = F2(
 					])),
 			_List_Nil);
 	});
+var $author$project$View$wave = function (_v0) {
+	var x = _v0.a;
+	var y = _v0.b;
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$Attributes$style,
+				'width',
+				$elm$core$String$fromFloat($author$project$Config$platformWidth) + 'px'),
+				A2(
+				$elm$html$Html$Attributes$style,
+				'height',
+				$elm$core$String$fromFloat($author$project$Config$platformHeight) + 'px'),
+				A2(
+				$elm$html$Html$Attributes$style,
+				'top',
+				$elm$core$String$fromFloat(y) + 'px'),
+				A2(
+				$elm$html$Html$Attributes$style,
+				'left',
+				$elm$core$String$fromFloat(x) + 'px')
+			]),
+		_List_Nil);
+};
 var $author$project$View$platforms = F2(
 	function (args, dict) {
 		return A2(
@@ -6589,13 +6627,18 @@ var $author$project$View$platforms = F2(
 				var start = _v0.b.start;
 				var note = _v0.b.note;
 				var sort = _v0.b.sort;
-				var active = sort.a.active;
-				return A2(
-					$author$project$View$lilyPad,
-					{
-						active: active,
-						onClick: args.onClick(platformId)
-					},
+				return function () {
+					if (sort.$ === 'LilyPad') {
+						var active = sort.a.active;
+						return $author$project$View$lilyPad(
+							{
+								active: active,
+								onClick: args.onClick(platformId)
+							});
+					} else {
+						return $author$project$View$wave;
+					}
+				}()(
 					$author$project$View$calcPlatformPosition(
 						{beatsPlayed: args.beatsPlayed, note: note, ratioToNextBeat: args.ratioToNextBeat, start: start}));
 			},

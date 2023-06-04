@@ -10,11 +10,7 @@ const sampler = new Tone.Sampler({
         A2: "A2.mp3",
     },
     baseUrl: "assets/samples/casio/",
-    onload: () => {
-        sampler.triggerAttackRelease(["C1", "E1", "G1", "B1"], 0.5);
-        //play a middle 'C' for the duration of an 8th note
-        synth.triggerAttackRelease("C4", "8n");
-    }
+    onload: () => { }
 }).toDestination();
 
 export function playSound(notes: string[]) {

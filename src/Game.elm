@@ -3,16 +3,16 @@ module Game exposing (..)
 import Array
 import Dict exposing (Dict)
 import Note exposing (Note)
-import Track exposing (Track)
+import Song exposing (Song)
 
 
-type alias PlatformId =
+type alias ObjectId =
     Int
 
 
 type PlayerPos
-    = OnPlatform PlatformId
-    | Jumping { from : PlatformId, to : PlatformId }
+    = OnPlatform ObjectId
+    | Jumping { from : ObjectId, to : ObjectId }
 
 
 type alias Object =
@@ -21,49 +21,56 @@ type alias Object =
 
 type ObjectSort
     = LilyPad { active : Bool }
+    | Wave
 
 
 type alias Game =
-    { track : Track
-    , platforms : Dict PlatformId Object
-    , rows : Dict Int (List PlatformId)
+    { track : Song
+    , objects : Dict ObjectId Object
+    , rows : Dict Int (List ObjectId)
     , player : PlayerPos
     , songPosition : Int
     }
 
 
-activatePlatform : PlatformId -> Game -> Game
+activatePlatform : ObjectId -> Game -> Game
 activatePlatform id game =
     { game
-        | platforms =
-            game.platforms
+        | objects =
+            game.objects
                 |> Dict.update id
                     (Maybe.map
                         (\platform ->
                             case platform.sort of
                                 LilyPad lilyPad ->
                                     { platform | sort = LilyPad { lilyPad | active = True } }
+
+                                Wave ->
+                                    platform
                         )
                     )
     }
 
 
-getNextPossiblePlatforms : Game -> PlatformId -> List PlatformId
+getNextPossiblePlatforms : Game -> ObjectId -> List ObjectId
 getNextPossiblePlatforms game from =
-    game.platforms
+    game.objects
         |> Dict.get from
         |> Maybe.map .start
         |> Maybe.andThen (\y -> game.rows |> Dict.get (y + 1))
         |> Maybe.withDefault []
         |> List.filter
             (\next ->
-                game.platforms
+                game.objects
                     |> Dict.get next
                     |> Maybe.map
                         (\object ->
                             case object.sort of
                                 LilyPad { active } ->
                                     active
+
+                                Wave ->
+                                    False
                         )
                     |> (==) (Just True)
             )
@@ -83,7 +90,7 @@ recheckNextPlayerPos game =
             game
 
 
-platformIdOfPlayer : Game -> PlatformId
+platformIdOfPlayer : Game -> ObjectId
 platformIdOfPlayer game =
     case game.player of
         OnPlatform platformId ->
@@ -120,7 +127,7 @@ nextBeat game =
         |> Maybe.withDefault []
         |> List.filterMap
             (\id ->
-                game.platforms
+                game.objects
                     |> Dict.get id
             )
         |> List.filterMap
@@ -132,6 +139,9 @@ nextBeat game =
 
                         else
                             Nothing
+
+                    Wave ->
+                        Just note
             )
     )
 
@@ -140,9 +150,9 @@ new : Game
 new =
     let
         track =
-            Track.default
+            Song.default
 
-        platforms =
+        objects =
             track
                 |> Array.indexedMap
                     (\j list ->
@@ -161,7 +171,7 @@ new =
                 |> Dict.fromList
 
         rows =
-            platforms
+            objects
                 |> Dict.foldl
                     (\id { start } ->
                         Dict.update start
@@ -181,7 +191,7 @@ new =
             0
     in
     { track = track
-    , platforms = platforms
+    , objects = objects
     , player = player
     , rows = rows
     , songPosition = currentRow

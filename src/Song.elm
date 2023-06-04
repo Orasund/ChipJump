@@ -1,14 +1,19 @@
-module Track exposing (..)
+module Song exposing (..)
 
 import Array exposing (Array)
 import Note exposing (Note(..))
 
 
-type alias Track =
+type Instrument
+    = LilyPadSample
+    | WaveSample
+
+
+type alias Song =
     Array (List Note)
 
 
-default : Track
+default : Song
 default =
     ([ [ C2, C1, C3 ]
      , [ A2 ]
@@ -41,7 +46,7 @@ default =
 --GBD
 
 
-next : Track -> ( List Note, Track )
+next : Song -> ( List Note, Song )
 next track =
     case track |> Array.toList of
         head :: tail ->
