@@ -1,7 +1,29 @@
 <!DOCTYPE html>
 <html>
 
-<body style="margin:0px">
+<head>
+	<style>
+		body {
+			margin: 0px;
+		}
+
+		.button {
+			background-color: #6d7753;
+			border: 0px;
+			border-radius: 1rem;
+			padding: 0.5rem;
+		}
+
+		.button:hover {
+			filter: brightness(0.8)
+		}
+
+		.button:active {
+			filter: brightness(0.5)
+		}
+	</style>
+</head>
+< <body>
 	<div id="main"></div>
 
 	<script src="elm.js"></script>
@@ -16,6 +38,7 @@
 			window.fromElm(data)
 		});
 	</script>
-</body>
+
+	</body>
 
 </html>

@@ -10,6 +10,7 @@ import Html exposing (Html)
 import Json.Encode exposing (Value)
 import Note
 import Port
+import Time
 import View
 
 
@@ -22,7 +23,6 @@ port send : Value -> Cmd msg
 type alias Model =
     { game : Game
     , msSinceLastBeat : Float
-    , beatsPlayed : Int
     , showTitle : Bool
     }
 
@@ -46,7 +46,6 @@ init : () -> ( Model, Cmd Msg )
 init () =
     ( { game = Game.new
       , msSinceLastBeat = 0
-      , beatsPlayed = 0
       , showTitle = True
       }
     , Cmd.none
@@ -65,7 +64,6 @@ view model =
                     calcRatioToNextBeat
                         { msSinceLastBeat = model.msSinceLastBeat }
                 , onClick = ActivatePlatform
-                , beatsPlayed = model.beatsPlayed
                 }
 
 
@@ -78,42 +76,29 @@ update msg model =
                     model.msSinceLastBeat + delta
             in
             if msSinceLastBeat >= maxDelta then
-                ( { model
-                    | msSinceLastBeat = msSinceLastBeat - maxDelta
-                    , beatsPlayed = model.beatsPlayed + 1
-                    , game = model.game |> Game.nextPlayerPos
-                  }
-                , model.game.platforms
-                    |> Dict.get (Game.platformIdOfPlayer model.game)
-                    |> Maybe.map
-                        (\{ start } ->
-                            model.game.rows
-                                |> Dict.get start
-                                |> Maybe.withDefault []
-                                |> List.filterMap
-                                    (\id ->
-                                        model.game.platforms
-                                            |> Dict.get id
-                                    )
-                                |> List.filterMap
-                                    (\{ note, active } ->
-                                        if active then
-                                            Just note
-
-                                        else
-                                            Nothing
-                                    )
-                        )
-                    |> Maybe.withDefault []
-                    |> Port.playSound
-                    |> send
-                )
+                model.game
+                    |> Game.nextBeat
+                    |> (\( game, notes ) ->
+                            ( { model
+                                | msSinceLastBeat = msSinceLastBeat - maxDelta
+                                , game = game
+                              }
+                            , notes
+                                |> Port.playSound
+                                |> send
+                            )
+                       )
 
             else
                 ( { model | msSinceLastBeat = msSinceLastBeat }, Cmd.none )
 
         ActivatePlatform platformId ->
-            ( { model | game = model.game |> Game.activatePlatform platformId |> Game.recheckNextPlayerPos }
+            ( { model
+                | game =
+                    model.game
+                        |> Game.activatePlatform platformId
+                        |> Game.recheckNextPlayerPos
+              }
             , Cmd.none
             )
 
@@ -132,8 +117,10 @@ subscriptions model =
                 Sub.none
 
             Jumping _ ->
-                Browser.Events.onAnimationFrameDelta
+                [ Browser.Events.onAnimationFrameDelta
                     NextFrameRequested
+                ]
+                    |> Sub.batch
 
 
 main : Program () Model Msg

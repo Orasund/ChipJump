@@ -15,7 +15,7 @@ titleScreen args =
     [ "<Game Title>"
         |> Html.text
         |> Layout.heading1 [ Html.Attributes.style "color" Config.playerColor ]
-    , Layout.textButton [] { onPress = Just args.start, label = "Start" }
+    , Layout.textButton [ Html.Attributes.class "button" ] { onPress = Just args.start, label = "Start" }
     ]
         |> Layout.column [ Layout.gap 100 ]
         |> Layout.el
@@ -31,7 +31,6 @@ titleScreen args =
 fromGame :
     { ratioToNextBeat : Float
     , onClick : PlatformId -> msg
-    , beatsPlayed : Int
     }
     -> Game
     -> Html msg
@@ -49,7 +48,7 @@ fromGame args game =
                     getPlatformPosition id
                         |> calcPlayerPositionOnPlatform
                             { ratioToNextBeat = args.ratioToNextBeat
-                            , beatsPlayed = args.beatsPlayed
+                            , beatsPlayed = game.songPosition
                             }
 
                 Jumping { from, to } ->
@@ -57,10 +56,15 @@ fromGame args game =
                         { from = getPlatformPosition from
                         , to = getPlatformPosition to
                         , ratioToNextBeat = args.ratioToNextBeat
-                        , beatsPlayed = args.beatsPlayed
+                        , beatsPlayed = game.songPosition
                         }
     in
-    [ game.platforms |> platforms args
+    [ game.platforms
+        |> platforms
+            { ratioToNextBeat = args.ratioToNextBeat
+            , onClick = args.onClick
+            , beatsPlayed = game.songPosition
+            }
     , [ playerPos |> player ]
     ]
         |> List.concat

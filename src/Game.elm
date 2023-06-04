@@ -24,7 +24,7 @@ type alias Game =
     , platforms : Dict PlatformId Platform
     , rows : Dict Int (List PlatformId)
     , player : PlayerPos
-    , currentRow : Int
+    , songPosition : Int
     }
 
 
@@ -97,6 +97,28 @@ nextPlayerPos game =
     { game | player = player }
 
 
+nextBeat : Game -> ( Game, List Note )
+nextBeat game =
+    ( { game | songPosition = game.songPosition + 1 } |> nextPlayerPos
+    , game.rows
+        |> Dict.get (game.songPosition + 1)
+        |> Maybe.withDefault []
+        |> List.filterMap
+            (\id ->
+                game.platforms
+                    |> Dict.get id
+            )
+        |> List.filterMap
+            (\{ note, active } ->
+                if active then
+                    Just note
+
+                else
+                    Nothing
+            )
+    )
+
+
 new : Game
 new =
     let
@@ -145,5 +167,5 @@ new =
     , platforms = platforms
     , player = player
     , rows = rows
-    , currentRow = currentRow
+    , songPosition = currentRow
     }

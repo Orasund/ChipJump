@@ -5970,13 +5970,13 @@ var $author$project$Game$new = function () {
 		$elm$core$Dict$empty,
 		platforms);
 	var currentRow = 0;
-	return {currentRow: currentRow, platforms: platforms, player: player, rows: rows, track: track};
+	return {platforms: platforms, player: player, rows: rows, songPosition: currentRow, track: track};
 }();
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Main$init = function (_v0) {
 	return _Utils_Tuple2(
-		{beatsPlayed: 0, game: $author$project$Game$new, msSinceLastBeat: 0, showTitle: true},
+		{game: $author$project$Game$new, msSinceLastBeat: 0, showTitle: true},
 		$elm$core$Platform$Cmd$none);
 };
 var $author$project$Main$NextFrameRequested = function (a) {
@@ -6126,7 +6126,11 @@ var $author$project$Main$subscriptions = function (model) {
 		if (_v0.$ === 'OnPlatform') {
 			return $elm$core$Platform$Sub$none;
 		} else {
-			return $elm$browser$Browser$Events$onAnimationFrameDelta($author$project$Main$NextFrameRequested);
+			return $elm$core$Platform$Sub$batch(
+				_List_fromArray(
+					[
+						$elm$browser$Browser$Events$onAnimationFrameDelta($author$project$Main$NextFrameRequested)
+					]));
 		}
 	}
 };
@@ -6157,6 +6161,9 @@ var $author$project$Game$activatePlatform = F2(
 					game.platforms)
 			});
 	});
+var $elm$core$Basics$ge = _Utils_ge;
+var $author$project$Config$bpm = 80;
+var $author$project$Main$maxDelta = (60 * 1000) / $author$project$Config$bpm;
 var $elm$core$List$maybeCons = F3(
 	function (f, mx, xs) {
 		var _v0 = f(mx);
@@ -6175,9 +6182,6 @@ var $elm$core$List$filterMap = F2(
 			_List_Nil,
 			xs);
 	});
-var $elm$core$Basics$ge = _Utils_ge;
-var $author$project$Config$bpm = 80;
-var $author$project$Main$maxDelta = (60 * 1000) / $author$project$Config$bpm;
 var $author$project$Game$Jumping = function (a) {
 	return {$: 'Jumping', a: a};
 };
@@ -6265,6 +6269,29 @@ var $author$project$Game$nextPlayerPos = function (game) {
 	return _Utils_update(
 		game,
 		{player: player});
+};
+var $author$project$Game$nextBeat = function (game) {
+	return _Utils_Tuple2(
+		$author$project$Game$nextPlayerPos(
+			_Utils_update(
+				game,
+				{songPosition: game.songPosition + 1})),
+		A2(
+			$elm$core$List$filterMap,
+			function (_v0) {
+				var note = _v0.note;
+				var active = _v0.active;
+				return active ? $elm$core$Maybe$Just(note) : $elm$core$Maybe$Nothing;
+			},
+			A2(
+				$elm$core$List$filterMap,
+				function (id) {
+					return A2($elm$core$Dict$get, id, game.platforms);
+				},
+				A2(
+					$elm$core$Maybe$withDefault,
+					_List_Nil,
+					A2($elm$core$Dict$get, game.songPosition + 1, game.rows)))));
 };
 var $elm$json$Json$Encode$list = F2(
 	function (func, entries) {
@@ -6357,44 +6384,17 @@ var $author$project$Main$update = F2(
 			case 'NextFrameRequested':
 				var delta = msg.a;
 				var msSinceLastBeat = model.msSinceLastBeat + delta;
-				return (_Utils_cmp(msSinceLastBeat, $author$project$Main$maxDelta) > -1) ? _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							beatsPlayed: model.beatsPlayed + 1,
-							game: $author$project$Game$nextPlayerPos(model.game),
-							msSinceLastBeat: msSinceLastBeat - $author$project$Main$maxDelta
-						}),
-					$author$project$Main$send(
-						$author$project$Port$playSound(
-							A2(
-								$elm$core$Maybe$withDefault,
-								_List_Nil,
-								A2(
-									$elm$core$Maybe$map,
-									function (_v1) {
-										var start = _v1.start;
-										return A2(
-											$elm$core$List$filterMap,
-											function (_v2) {
-												var note = _v2.note;
-												var active = _v2.active;
-												return active ? $elm$core$Maybe$Just(note) : $elm$core$Maybe$Nothing;
-											},
-											A2(
-												$elm$core$List$filterMap,
-												function (id) {
-													return A2($elm$core$Dict$get, id, model.game.platforms);
-												},
-												A2(
-													$elm$core$Maybe$withDefault,
-													_List_Nil,
-													A2($elm$core$Dict$get, start, model.game.rows))));
-									},
-									A2(
-										$elm$core$Dict$get,
-										$author$project$Game$platformIdOfPlayer(model.game),
-										model.game.platforms)))))) : _Utils_Tuple2(
+				return (_Utils_cmp(msSinceLastBeat, $author$project$Main$maxDelta) > -1) ? function (_v1) {
+					var game = _v1.a;
+					var notes = _v1.b;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{game: game, msSinceLastBeat: msSinceLastBeat - $author$project$Main$maxDelta}),
+						$author$project$Main$send(
+							$author$project$Port$playSound(notes)));
+				}(
+					$author$project$Game$nextBeat(model.game)) : _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{msSinceLastBeat: msSinceLastBeat}),
@@ -6627,14 +6627,14 @@ var $author$project$View$fromGame = F2(
 				var id = _v0.a;
 				return A2(
 					$author$project$View$calcPlayerPositionOnPlatform,
-					{beatsPlayed: args.beatsPlayed, ratioToNextBeat: args.ratioToNextBeat},
+					{beatsPlayed: game.songPosition, ratioToNextBeat: args.ratioToNextBeat},
 					getPlatformPosition(id));
 			} else {
 				var from = _v0.a.from;
 				var to = _v0.a.to;
 				return $author$project$View$calcPlayerJumpingPosition(
 					{
-						beatsPlayed: args.beatsPlayed,
+						beatsPlayed: game.songPosition,
 						from: getPlatformPosition(from),
 						ratioToNextBeat: args.ratioToNextBeat,
 						to: getPlatformPosition(to)
@@ -6659,7 +6659,10 @@ var $author$project$View$fromGame = F2(
 			$elm$core$List$concat(
 				_List_fromArray(
 					[
-						A2($author$project$View$platforms, args, game.platforms),
+						A2(
+						$author$project$View$platforms,
+						{beatsPlayed: game.songPosition, onClick: args.onClick, ratioToNextBeat: args.ratioToNextBeat},
+						game.platforms),
 						_List_fromArray(
 						[
 							$author$project$View$player(playerPos)
@@ -6670,6 +6673,14 @@ var $Orasund$elm_layout$Layout$alignAtCenter = A2($elm$html$Html$Attributes$styl
 var $Orasund$elm_layout$Layout$contentCentered = A2($elm$html$Html$Attributes$style, 'justify-content', 'center');
 var $Orasund$elm_layout$Layout$centered = _List_fromArray(
 	[$Orasund$elm_layout$Layout$contentCentered, $Orasund$elm_layout$Layout$alignAtCenter]);
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
 var $Orasund$elm_layout$Layout$column = function (attrs) {
 	return $elm$html$Html$div(
 		_Utils_ap(
@@ -6787,7 +6798,10 @@ var $author$project$View$titleScreen = function (args) {
 					$elm$html$Html$text('<Game Title>')),
 					A2(
 					$Orasund$elm_layout$Layout$textButton,
-					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('button')
+						]),
 					{
 						label: 'Start',
 						onPress: $elm$core$Maybe$Just(args.start)
@@ -6799,7 +6813,6 @@ var $author$project$Main$view = function (model) {
 		{start: $author$project$Main$StartGame}) : A2(
 		$author$project$View$fromGame,
 		{
-			beatsPlayed: model.beatsPlayed,
 			onClick: $author$project$Main$ActivatePlatform,
 			ratioToNextBeat: $author$project$Main$calcRatioToNextBeat(
 				{msSinceLastBeat: model.msSinceLastBeat})
