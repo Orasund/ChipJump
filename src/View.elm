@@ -2,12 +2,12 @@ module View exposing (..)
 
 import Config
 import Dict exposing (Dict)
-import Game exposing (Game, PlatformId, PlayerPos(..))
+import Game exposing (Game, Platform, PlatformId, PlayerPos(..))
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events
 import Layout
-import Note exposing (Note)
+import Note exposing (Note(..))
 
 
 titleScreen : { start : msg } -> Html msg
@@ -40,8 +40,8 @@ fromGame args game =
         getPlatformPosition id =
             game.platforms
                 |> Dict.get id
-                |> Maybe.map .position
-                |> Maybe.withDefault ( 0, 0 )
+                |> Maybe.map (\{ start, note } -> ( note, start ))
+                |> Maybe.withDefault ( C1, 0 )
 
         playerPos =
             case game.player of
@@ -90,38 +90,38 @@ platforms :
     , onClick : PlatformId -> msg
     , beatsPlayed : Int
     }
-    -> Dict PlatformId { position : ( Int, Int ), active : Bool, note : Note }
+    -> Dict PlatformId Platform
     -> List (Html msg)
 platforms args dict =
     dict
         |> Dict.toList
         |> List.map
-            (\( platformId, { position, active } ) ->
+            (\( platformId, { start, note, active } ) ->
                 platform { active = active, onClick = args.onClick platformId }
                     (calcPlatformPosition
                         { ratioToNextBeat = args.ratioToNextBeat
                         , beatsPlayed = args.beatsPlayed
+                        , start = start
+                        , note = note
                         }
-                        position
                     )
             )
 
 
 calcPlayerJumpingPosition :
-    { from : ( Int, Int )
-    , to : ( Int, Int )
+    { from : ( Note, Int )
+    , to : ( Note, Int )
     , ratioToNextBeat : Float
     , beatsPlayed : Int
     }
     -> ( Float, Float )
 calcPlayerJumpingPosition args =
     let
-        calcPosition pos =
+        calcPosition =
             calcPlayerPositionOnPlatform
                 { ratioToNextBeat = args.ratioToNextBeat
                 , beatsPlayed = args.beatsPlayed
                 }
-                pos
 
         ( x1, y1 ) =
             calcPosition args.to
@@ -139,27 +139,37 @@ calcPlayerJumpingPosition args =
     ( x2 + (x1 - x2) * ratio, y2 + (y1 - y2) * ratio )
 
 
-calcPlayerPositionOnPlatform : { ratioToNextBeat : Float, beatsPlayed : Int } -> ( Int, Int ) -> ( Float, Float )
-calcPlayerPositionOnPlatform args pos =
+calcPlayerPositionOnPlatform :
+    { ratioToNextBeat : Float
+    , beatsPlayed : Int
+    }
+    -> ( Note, Int )
+    -> ( Float, Float )
+calcPlayerPositionOnPlatform args ( note, start ) =
     let
         ( x, y ) =
-            calcPlatformPosition args pos
+            calcPlatformPosition
+                { ratioToNextBeat = args.ratioToNextBeat
+                , beatsPlayed = args.beatsPlayed
+                , start = start
+                , note = note
+                }
     in
     ( x + Config.platformWidth / 2 - Config.playerSize / 2
     , y + Config.platformHeight / 2 - Config.playerSize / 2
     )
 
 
-calcPlatformPosition : { ratioToNextBeat : Float, beatsPlayed : Int } -> ( Int, Int ) -> ( Float, Float )
-calcPlatformPosition args ( x, y ) =
+calcPlatformPosition : { ratioToNextBeat : Float, beatsPlayed : Int, start : Int, note : Note } -> ( Float, Float )
+calcPlatformPosition args =
     let
         ratio =
             args.ratioToNextBeat
     in
     ( Config.horizontalSpaceBetweenPlatforms
-        * toFloat x
+        * toFloat (Note.toInt args.note)
     , (Config.platformHeight + Config.verticalSpaceBetweenPlatforms)
-        * (toFloat -y + ratio + toFloat args.beatsPlayed)
+        * (toFloat -args.start + ratio + toFloat args.beatsPlayed)
         + Config.screenHeight
         - (Config.platformHeight
             * 2

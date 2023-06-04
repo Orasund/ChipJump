@@ -5517,40 +5517,6 @@ var $elm$core$Tuple$pair = F2(
 	function (a, b) {
 		return _Utils_Tuple2(a, b);
 	});
-var $author$project$Note$toInt = function (note) {
-	switch (note.$) {
-		case 'C1':
-			return 0;
-		case 'D1':
-			return 1;
-		case 'E1':
-			return 2;
-		case 'F1':
-			return 3;
-		case 'G1':
-			return 4;
-		case 'A1':
-			return 5;
-		case 'B1':
-			return 6;
-		case 'C2':
-			return 7;
-		case 'D2':
-			return 8;
-		case 'E2':
-			return 9;
-		case 'F2':
-			return 10;
-		case 'G2':
-			return 11;
-		case 'A2':
-			return 12;
-		case 'B2':
-			return 13;
-		default:
-			return 14;
-	}
-};
 var $elm$core$Dict$get = F2(
 	function (targetKey, dict) {
 		get:
@@ -5980,13 +5946,7 @@ var $author$project$Game$new = function () {
 								return A2(
 									$elm$core$List$map,
 									function (note) {
-										return {
-											active: false,
-											note: note,
-											position: _Utils_Tuple2(
-												$author$project$Note$toInt(note),
-												j)
-										};
+										return {active: false, note: note, start: j};
 									},
 									list);
 							}),
@@ -5995,12 +5955,10 @@ var $author$project$Game$new = function () {
 		$elm$core$Dict$foldl,
 		F2(
 			function (id, _v0) {
-				var position = _v0.position;
-				var _v1 = position;
-				var y = _v1.b;
+				var start = _v0.start;
 				return A2(
 					$elm$core$Dict$update,
-					y,
+					start,
 					function (maybe) {
 						return $elm$core$Maybe$Just(
 							A2(
@@ -6262,14 +6220,13 @@ var $author$project$Game$getNextPossiblePlatforms = F2(
 				_List_Nil,
 				A2(
 					$elm$core$Maybe$andThen,
-					function (_v0) {
-						var y = _v0.b;
+					function (y) {
 						return A2($elm$core$Dict$get, y + 1, game.rows);
 					},
 					A2(
 						$elm$core$Maybe$map,
 						function ($) {
-							return $.position;
+							return $.start;
 						},
 						A2($elm$core$Dict$get, from, game.platforms)))));
 	});
@@ -6416,14 +6373,12 @@ var $author$project$Main$update = F2(
 								A2(
 									$elm$core$Maybe$map,
 									function (_v1) {
-										var position = _v1.position;
-										var _v2 = position;
-										var y = _v2.b;
+										var start = _v1.start;
 										return A2(
 											$elm$core$List$filterMap,
-											function (_v3) {
-												var note = _v3.note;
-												var active = _v3.active;
+											function (_v2) {
+												var note = _v2.note;
+												var active = _v2.active;
 												return active ? $elm$core$Maybe$Just(note) : $elm$core$Maybe$Nothing;
 											},
 											A2(
@@ -6434,7 +6389,7 @@ var $author$project$Main$update = F2(
 												A2(
 													$elm$core$Maybe$withDefault,
 													_List_Nil,
-													A2($elm$core$Dict$get, y, model.game.rows))));
+													A2($elm$core$Dict$get, start, model.game.rows))));
 									},
 									A2(
 										$elm$core$Dict$get,
@@ -6478,31 +6433,63 @@ var $elm$core$Basics$negate = function (n) {
 };
 var $author$project$Config$platformHeight = $author$project$Config$platformWidth;
 var $author$project$Config$screenHeight = 600;
+var $author$project$Note$toInt = function (note) {
+	switch (note.$) {
+		case 'C1':
+			return 0;
+		case 'D1':
+			return 1;
+		case 'E1':
+			return 2;
+		case 'F1':
+			return 3;
+		case 'G1':
+			return 4;
+		case 'A1':
+			return 5;
+		case 'B1':
+			return 6;
+		case 'C2':
+			return 7;
+		case 'D2':
+			return 8;
+		case 'E2':
+			return 9;
+		case 'F2':
+			return 10;
+		case 'G2':
+			return 11;
+		case 'A2':
+			return 12;
+		case 'B2':
+			return 13;
+		default:
+			return 14;
+	}
+};
 var $author$project$Config$verticalSpaceBetweenPlatforms = 50;
-var $author$project$View$calcPlatformPosition = F2(
-	function (args, _v0) {
-		var x = _v0.a;
-		var y = _v0.b;
-		var ratio = args.ratioToNextBeat;
-		return _Utils_Tuple2($author$project$Config$horizontalSpaceBetweenPlatforms * x, ((($author$project$Config$platformHeight + $author$project$Config$verticalSpaceBetweenPlatforms) * (((-y) + ratio) + args.beatsPlayed)) + $author$project$Config$screenHeight) - ($author$project$Config$platformHeight * 2));
-	});
+var $author$project$View$calcPlatformPosition = function (args) {
+	var ratio = args.ratioToNextBeat;
+	return _Utils_Tuple2(
+		$author$project$Config$horizontalSpaceBetweenPlatforms * $author$project$Note$toInt(args.note),
+		((($author$project$Config$platformHeight + $author$project$Config$verticalSpaceBetweenPlatforms) * (((-args.start) + ratio) + args.beatsPlayed)) + $author$project$Config$screenHeight) - ($author$project$Config$platformHeight * 2));
+};
 var $author$project$Config$playerSize = 60;
 var $author$project$View$calcPlayerPositionOnPlatform = F2(
-	function (args, pos) {
-		var _v0 = A2($author$project$View$calcPlatformPosition, args, pos);
-		var x = _v0.a;
-		var y = _v0.b;
+	function (args, _v0) {
+		var note = _v0.a;
+		var start = _v0.b;
+		var _v1 = $author$project$View$calcPlatformPosition(
+			{beatsPlayed: args.beatsPlayed, note: note, ratioToNextBeat: args.ratioToNextBeat, start: start});
+		var x = _v1.a;
+		var y = _v1.b;
 		return _Utils_Tuple2((x + ($author$project$Config$platformWidth / 2)) - ($author$project$Config$playerSize / 2), (y + ($author$project$Config$platformHeight / 2)) - ($author$project$Config$playerSize / 2));
 	});
 var $author$project$Config$jumpTime = 1 / 4;
 var $author$project$View$calcPlayerJumpingPosition = function (args) {
 	var ratio = (_Utils_cmp(args.ratioToNextBeat, 1 - $author$project$Config$jumpTime) > 0) ? ((args.ratioToNextBeat - (1 - $author$project$Config$jumpTime)) / $author$project$Config$jumpTime) : 0;
-	var calcPosition = function (pos) {
-		return A2(
-			$author$project$View$calcPlayerPositionOnPlatform,
-			{beatsPlayed: args.beatsPlayed, ratioToNextBeat: args.ratioToNextBeat},
-			pos);
-	};
+	var calcPosition = $author$project$View$calcPlayerPositionOnPlatform(
+		{beatsPlayed: args.beatsPlayed, ratioToNextBeat: args.ratioToNextBeat});
 	var _v0 = calcPosition(args.from);
 	var x2 = _v0.a;
 	var y2 = _v0.b;
@@ -6576,7 +6563,8 @@ var $author$project$View$platforms = F2(
 			$elm$core$List$map,
 			function (_v0) {
 				var platformId = _v0.a;
-				var position = _v0.b.position;
+				var start = _v0.b.start;
+				var note = _v0.b.note;
 				var active = _v0.b.active;
 				return A2(
 					$author$project$View$platform,
@@ -6584,10 +6572,8 @@ var $author$project$View$platforms = F2(
 						active: active,
 						onClick: args.onClick(platformId)
 					},
-					A2(
-						$author$project$View$calcPlatformPosition,
-						{beatsPlayed: args.beatsPlayed, ratioToNextBeat: args.ratioToNextBeat},
-						position));
+					$author$project$View$calcPlatformPosition(
+						{beatsPlayed: args.beatsPlayed, note: note, ratioToNextBeat: args.ratioToNextBeat, start: start}));
 			},
 			$elm$core$Dict$toList(dict));
 	});
@@ -6625,11 +6611,13 @@ var $author$project$View$fromGame = F2(
 		var getPlatformPosition = function (id) {
 			return A2(
 				$elm$core$Maybe$withDefault,
-				_Utils_Tuple2(0, 0),
+				_Utils_Tuple2($author$project$Note$C1, 0),
 				A2(
 					$elm$core$Maybe$map,
-					function ($) {
-						return $.position;
+					function (_v1) {
+						var start = _v1.start;
+						var note = _v1.note;
+						return _Utils_Tuple2(note, start);
 					},
 					A2($elm$core$Dict$get, id, game.platforms)));
 		};

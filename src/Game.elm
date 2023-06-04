@@ -15,9 +15,13 @@ type PlayerPos
     | Jumping { from : PlatformId, to : PlatformId }
 
 
+type alias Platform =
+    { start : Int, active : Bool, note : Note }
+
+
 type alias Game =
     { track : Track
-    , platforms : Dict PlatformId { position : ( Int, Int ), active : Bool, note : Note }
+    , platforms : Dict PlatformId Platform
     , rows : Dict Int (List PlatformId)
     , player : PlayerPos
     , currentRow : Int
@@ -38,8 +42,8 @@ getNextPossiblePlatforms : Game -> PlatformId -> List PlatformId
 getNextPossiblePlatforms game from =
     game.platforms
         |> Dict.get from
-        |> Maybe.map .position
-        |> Maybe.andThen (\( _, y ) -> game.rows |> Dict.get (y + 1))
+        |> Maybe.map .start
+        |> Maybe.andThen (\y -> game.rows |> Dict.get (y + 1))
         |> Maybe.withDefault []
         |> List.filter
             (\next ->
@@ -106,7 +110,7 @@ new =
                         list
                             |> List.map
                                 (\note ->
-                                    { position = ( Note.toInt note, j )
+                                    { start = j
                                     , active = False
                                     , note = note
                                     }
@@ -120,12 +124,8 @@ new =
         rows =
             platforms
                 |> Dict.foldl
-                    (\id { position } ->
-                        let
-                            ( _, y ) =
-                                position
-                        in
-                        Dict.update y
+                    (\id { start } ->
+                        Dict.update start
                             (\maybe ->
                                 maybe
                                     |> Maybe.withDefault []

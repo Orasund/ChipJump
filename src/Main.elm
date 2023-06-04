@@ -86,13 +86,9 @@ update msg model =
                 , model.game.platforms
                     |> Dict.get (Game.platformIdOfPlayer model.game)
                     |> Maybe.map
-                        (\{ position } ->
-                            let
-                                ( _, y ) =
-                                    position
-                            in
+                        (\{ start } ->
                             model.game.rows
-                                |> Dict.get y
+                                |> Dict.get start
                                 |> Maybe.withDefault []
                                 |> List.filterMap
                                     (\id ->
