@@ -20,16 +20,17 @@ type alias Game =
     , platforms : Dict PlatformId { position : ( Int, Int ), active : Bool, note : Note }
     , rows : Dict Int (List PlatformId)
     , player : PlayerPos
+    , currentRow : Int
     }
 
 
-togglePlatform : PlatformId -> Game -> Game
-togglePlatform id game =
+activatePlatform : PlatformId -> Game -> Game
+activatePlatform id game =
     { game
         | platforms =
             game.platforms
                 |> Dict.update id
-                    (Maybe.map (\platform -> { platform | active = not platform.active }))
+                    (Maybe.map (\platform -> { platform | active = True }))
     }
 
 
@@ -136,9 +137,13 @@ new =
 
         player =
             OnPlatform 0
+
+        currentRow =
+            0
     in
     { track = track
     , platforms = platforms
     , player = player
     , rows = rows
+    , currentRow = currentRow
     }

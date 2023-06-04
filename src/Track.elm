@@ -10,7 +10,7 @@ type alias Track =
 
 default : Track
 default =
-    ([ [ C2 ]
+    ([ [ C2, C1, C3 ]
      , [ A2 ]
      , [ F2 ]
      , [ E2 ]

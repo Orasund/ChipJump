@@ -5214,6 +5214,7 @@ var $author$project$Note$A1 = {$: 'A1'};
 var $author$project$Note$A2 = {$: 'A2'};
 var $author$project$Note$C1 = {$: 'C1'};
 var $author$project$Note$C2 = {$: 'C2'};
+var $author$project$Note$C3 = {$: 'C3'};
 var $author$project$Note$D2 = {$: 'D2'};
 var $author$project$Note$E2 = {$: 'E2'};
 var $author$project$Note$F1 = {$: 'F1'};
@@ -5284,7 +5285,7 @@ var $author$project$Track$default = $elm$core$Array$fromList(
 				_List_fromArray(
 					[
 						_List_fromArray(
-						[$author$project$Note$C2]),
+						[$author$project$Note$C2, $author$project$Note$C1, $author$project$Note$C3]),
 						_List_fromArray(
 						[$author$project$Note$A2]),
 						_List_fromArray(
@@ -6010,7 +6011,8 @@ var $author$project$Game$new = function () {
 			}),
 		$elm$core$Dict$empty,
 		platforms);
-	return {platforms: platforms, player: player, rows: rows, track: track};
+	var currentRow = 0;
+	return {currentRow: currentRow, platforms: platforms, player: player, rows: rows, track: track};
 }();
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
@@ -6170,6 +6172,57 @@ var $author$project$Main$subscriptions = function (model) {
 		}
 	}
 };
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $author$project$Game$activatePlatform = F2(
+	function (id, game) {
+		return _Utils_update(
+			game,
+			{
+				platforms: A3(
+					$elm$core$Dict$update,
+					id,
+					$elm$core$Maybe$map(
+						function (platform) {
+							return _Utils_update(
+								platform,
+								{active: true});
+						}),
+					game.platforms)
+			});
+	});
+var $elm$core$List$maybeCons = F3(
+	function (f, mx, xs) {
+		var _v0 = f(mx);
+		if (_v0.$ === 'Just') {
+			var x = _v0.a;
+			return A2($elm$core$List$cons, x, xs);
+		} else {
+			return xs;
+		}
+	});
+var $elm$core$List$filterMap = F2(
+	function (f, xs) {
+		return A3(
+			$elm$core$List$foldr,
+			$elm$core$List$maybeCons(f),
+			_List_Nil,
+			xs);
+	});
+var $elm$core$Basics$ge = _Utils_ge;
+var $author$project$Config$bpm = 80;
+var $author$project$Main$maxDelta = (60 * 1000) / $author$project$Config$bpm;
+var $author$project$Game$Jumping = function (a) {
+	return {$: 'Jumping', a: a};
+};
 var $elm$core$Maybe$andThen = F2(
 	function (callback, maybeValue) {
 		if (maybeValue.$ === 'Just') {
@@ -6179,48 +6232,6 @@ var $elm$core$Maybe$andThen = F2(
 			return $elm$core$Maybe$Nothing;
 		}
 	});
-var $elm$core$Basics$ge = _Utils_ge;
-var $elm$core$Bitwise$and = _Bitwise_and;
-var $elm$core$Array$bitMask = 4294967295 >>> (32 - $elm$core$Array$shiftStep);
-var $elm$core$Elm$JsArray$unsafeGet = _JsArray_unsafeGet;
-var $elm$core$Array$getHelp = F3(
-	function (shift, index, tree) {
-		getHelp:
-		while (true) {
-			var pos = $elm$core$Array$bitMask & (index >>> shift);
-			var _v0 = A2($elm$core$Elm$JsArray$unsafeGet, pos, tree);
-			if (_v0.$ === 'SubTree') {
-				var subTree = _v0.a;
-				var $temp$shift = shift - $elm$core$Array$shiftStep,
-					$temp$index = index,
-					$temp$tree = subTree;
-				shift = $temp$shift;
-				index = $temp$index;
-				tree = $temp$tree;
-				continue getHelp;
-			} else {
-				var values = _v0.a;
-				return A2($elm$core$Elm$JsArray$unsafeGet, $elm$core$Array$bitMask & index, values);
-			}
-		}
-	});
-var $elm$core$Array$get = F2(
-	function (index, _v0) {
-		var len = _v0.a;
-		var startShift = _v0.b;
-		var tree = _v0.c;
-		var tail = _v0.d;
-		return ((index < 0) || (_Utils_cmp(index, len) > -1)) ? $elm$core$Maybe$Nothing : ((_Utils_cmp(
-			index,
-			$elm$core$Array$tailIndex(len)) > -1) ? $elm$core$Maybe$Just(
-			A2($elm$core$Elm$JsArray$unsafeGet, $elm$core$Array$bitMask & index, tail)) : $elm$core$Maybe$Just(
-			A3($elm$core$Array$getHelp, startShift, index, tree)));
-	});
-var $author$project$Config$bpm = 80;
-var $author$project$Main$maxDelta = (60 * 1000) / $author$project$Config$bpm;
-var $author$project$Game$Jumping = function (a) {
-	return {$: 'Jumping', a: a};
-};
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
 		return A3(
@@ -6231,16 +6242,6 @@ var $elm$core$List$filter = F2(
 				}),
 			_List_Nil,
 			list);
-	});
-var $elm$core$Maybe$map = F2(
-	function (f, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return $elm$core$Maybe$Just(
-				f(value));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
 	});
 var $author$project$Game$getNextPossiblePlatforms = F2(
 	function (game, from) {
@@ -6393,24 +6394,6 @@ var $author$project$Game$recheckNextPlayerPos = function (game) {
 	}
 };
 var $author$project$Main$send = _Platform_outgoingPort('send', $elm$core$Basics$identity);
-var $elm$core$Basics$not = _Basics_not;
-var $author$project$Game$togglePlatform = F2(
-	function (id, game) {
-		return _Utils_update(
-			game,
-			{
-				platforms: A3(
-					$elm$core$Dict$update,
-					id,
-					$elm$core$Maybe$map(
-						function (platform) {
-							return _Utils_update(
-								platform,
-								{active: !platform.active});
-						}),
-					game.platforms)
-			});
-	});
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -6431,12 +6414,27 @@ var $author$project$Main$update = F2(
 								$elm$core$Maybe$withDefault,
 								_List_Nil,
 								A2(
-									$elm$core$Maybe$andThen,
+									$elm$core$Maybe$map,
 									function (_v1) {
 										var position = _v1.position;
 										var _v2 = position;
-										var y1 = _v2.b;
-										return A2($elm$core$Array$get, y1, model.game.track);
+										var y = _v2.b;
+										return A2(
+											$elm$core$List$filterMap,
+											function (_v3) {
+												var note = _v3.note;
+												var active = _v3.active;
+												return active ? $elm$core$Maybe$Just(note) : $elm$core$Maybe$Nothing;
+											},
+											A2(
+												$elm$core$List$filterMap,
+												function (id) {
+													return A2($elm$core$Dict$get, id, model.game.platforms);
+												},
+												A2(
+													$elm$core$Maybe$withDefault,
+													_List_Nil,
+													A2($elm$core$Dict$get, y, model.game.rows))));
 									},
 									A2(
 										$elm$core$Dict$get,
@@ -6453,7 +6451,7 @@ var $author$project$Main$update = F2(
 						model,
 						{
 							game: $author$project$Game$recheckNextPlayerPos(
-								A2($author$project$Game$togglePlatform, platformId, model.game))
+								A2($author$project$Game$activatePlatform, platformId, model.game))
 						}),
 					$elm$core$Platform$Cmd$none);
 			default:
@@ -6472,11 +6470,12 @@ var $author$project$Main$calcRatioToNextBeat = function (args) {
 	return args.msSinceLastBeat / $author$project$Main$maxDelta;
 };
 var $author$project$Config$backgroundColor = '#010f16';
-var $author$project$Config$horizontalSpaceBetweenPlatforms = 30;
+var $author$project$Config$platformWidth = 100;
+var $author$project$Config$screenWidth = 400;
+var $author$project$Config$horizontalSpaceBetweenPlatforms = ($author$project$Config$screenWidth - $author$project$Config$platformWidth) / 14;
 var $elm$core$Basics$negate = function (n) {
 	return -n;
 };
-var $author$project$Config$platformWidth = 100;
 var $author$project$Config$platformHeight = $author$project$Config$platformWidth;
 var $author$project$Config$screenHeight = 600;
 var $author$project$Config$verticalSpaceBetweenPlatforms = 50;
@@ -6485,7 +6484,7 @@ var $author$project$View$calcPlatformPosition = F2(
 		var x = _v0.a;
 		var y = _v0.b;
 		var ratio = args.ratioToNextBeat;
-		return _Utils_Tuple2(($author$project$Config$horizontalSpaceBetweenPlatforms * x) - ($author$project$Config$platformWidth / 2), ((($author$project$Config$platformHeight + $author$project$Config$verticalSpaceBetweenPlatforms) * (((-y) + ratio) + args.beatsPlayed)) + $author$project$Config$screenHeight) - $author$project$Config$platformHeight);
+		return _Utils_Tuple2($author$project$Config$horizontalSpaceBetweenPlatforms * x, ((($author$project$Config$platformHeight + $author$project$Config$verticalSpaceBetweenPlatforms) * (((-y) + ratio) + args.beatsPlayed)) + $author$project$Config$screenHeight) - ($author$project$Config$platformHeight * 2));
 	});
 var $author$project$Config$playerSize = 60;
 var $author$project$View$calcPlayerPositionOnPlatform = F2(
@@ -6497,7 +6496,7 @@ var $author$project$View$calcPlayerPositionOnPlatform = F2(
 	});
 var $author$project$Config$jumpTime = 1 / 4;
 var $author$project$View$calcPlayerJumpingPosition = function (args) {
-	var ratio = (_Utils_cmp(args.ratioToNextBeat, $author$project$Config$jumpTime) < 0) ? (args.ratioToNextBeat / $author$project$Config$jumpTime) : 1;
+	var ratio = (_Utils_cmp(args.ratioToNextBeat, 1 - $author$project$Config$jumpTime) > 0) ? ((args.ratioToNextBeat - (1 - $author$project$Config$jumpTime)) / $author$project$Config$jumpTime) : 0;
 	var calcPosition = function (pos) {
 		return A2(
 			$author$project$View$calcPlayerPositionOnPlatform,
@@ -6621,7 +6620,6 @@ var $author$project$View$player = function (_v0) {
 			]),
 		_List_Nil);
 };
-var $author$project$Config$screenWidth = 400;
 var $author$project$View$fromGame = F2(
 	function (args, game) {
 		var getPlatformPosition = function (id) {

@@ -130,11 +130,11 @@ calcPlayerJumpingPosition args =
             calcPosition args.from
 
         ratio =
-            if args.ratioToNextBeat < Config.jumpTime then
-                args.ratioToNextBeat / Config.jumpTime
+            if args.ratioToNextBeat > (1 - Config.jumpTime) then
+                (args.ratioToNextBeat - (1 - Config.jumpTime)) / Config.jumpTime
 
             else
-                1
+                0
     in
     ( x2 + (x1 - x2) * ratio, y2 + (y1 - y2) * ratio )
 
@@ -158,11 +158,12 @@ calcPlatformPosition args ( x, y ) =
     in
     ( Config.horizontalSpaceBetweenPlatforms
         * toFloat x
-        - (Config.platformWidth / 2)
     , (Config.platformHeight + Config.verticalSpaceBetweenPlatforms)
         * (toFloat -y + ratio + toFloat args.beatsPlayed)
         + Config.screenHeight
-        - Config.platformHeight
+        - (Config.platformHeight
+            * 2
+          )
     )
 
 

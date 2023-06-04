@@ -13,7 +13,7 @@ platformHeight =
 
 horizontalSpaceBetweenPlatforms : Float
 horizontalSpaceBetweenPlatforms =
-    30
+    (screenWidth - platformWidth) / 14
 
 
 verticalSpaceBetweenPlatforms : Float
@@ -64,3 +64,8 @@ inactivePlatformColor =
 activePlatformColor : String
 activePlatformColor =
     "#ee3907"
+
+
+padColor : String
+padColor =
+    "#001518"

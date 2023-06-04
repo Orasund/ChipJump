@@ -8,6 +8,7 @@ import Dict
 import Game exposing (Game, PlatformId, PlayerPos(..))
 import Html exposing (Html)
 import Json.Encode exposing (Value)
+import Note
 import Port
 import View
 
@@ -84,13 +85,28 @@ update msg model =
                   }
                 , model.game.platforms
                     |> Dict.get (Game.platformIdOfPlayer model.game)
-                    |> Maybe.andThen
+                    |> Maybe.map
                         (\{ position } ->
                             let
-                                ( _, y1 ) =
+                                ( _, y ) =
                                     position
                             in
-                            model.game.track |> Array.get y1
+                            model.game.rows
+                                |> Dict.get y
+                                |> Maybe.withDefault []
+                                |> List.filterMap
+                                    (\id ->
+                                        model.game.platforms
+                                            |> Dict.get id
+                                    )
+                                |> List.filterMap
+                                    (\{ note, active } ->
+                                        if active then
+                                            Just note
+
+                                        else
+                                            Nothing
+                                    )
                         )
                     |> Maybe.withDefault []
                     |> Port.playSound
@@ -101,7 +117,7 @@ update msg model =
                 ( { model | msSinceLastBeat = msSinceLastBeat }, Cmd.none )
 
         ActivatePlatform platformId ->
-            ( { model | game = model.game |> Game.togglePlatform platformId |> Game.recheckNextPlayerPos }
+            ( { model | game = model.game |> Game.activatePlatform platformId |> Game.recheckNextPlayerPos }
             , Cmd.none
             )
 
