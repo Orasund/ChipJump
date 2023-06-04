@@ -38,7 +38,7 @@ playerSize =
 
 bpm : Float
 bpm =
-    60
+    80
 
 
 jumpTime : Float

@@ -5212,11 +5212,13 @@ var $elm$core$List$concat = function (lists) {
 };
 var $author$project$Note$A1 = {$: 'A1'};
 var $author$project$Note$A2 = {$: 'A2'};
+var $author$project$Note$C1 = {$: 'C1'};
 var $author$project$Note$C2 = {$: 'C2'};
-var $author$project$Note$E1 = {$: 'E1'};
+var $author$project$Note$D2 = {$: 'D2'};
 var $author$project$Note$E2 = {$: 'E2'};
 var $author$project$Note$F1 = {$: 'F1'};
 var $author$project$Note$F2 = {$: 'F2'};
+var $author$project$Note$G1 = {$: 'G1'};
 var $elm$core$Array$fromListHelp = F3(
 	function (list, nodeList, nodeListSize) {
 		fromListHelp:
@@ -5274,29 +5276,51 @@ var $elm$core$List$repeat = F2(
 		return A3($elm$core$List$repeatHelp, _List_Nil, n, value);
 	});
 var $author$project$Track$default = $elm$core$Array$fromList(
-	$elm$core$List$concat(
-		A2(
-			$elm$core$List$repeat,
-			4,
-			_List_fromArray(
-				[
-					_List_fromArray(
-					[$author$project$Note$C2]),
-					_List_fromArray(
-					[$author$project$Note$A2]),
-					_List_fromArray(
-					[$author$project$Note$F2]),
-					_List_fromArray(
-					[$author$project$Note$E2]),
-					_List_fromArray(
-					[$author$project$Note$C2]),
-					_List_fromArray(
-					[$author$project$Note$A1, $author$project$Note$E2]),
-					_List_fromArray(
-					[$author$project$Note$F1, $author$project$Note$F2]),
-					_List_fromArray(
-					[$author$project$Note$E1, $author$project$Note$A2])
-				]))));
+	_Utils_ap(
+		$elm$core$List$concat(
+			A2(
+				$elm$core$List$repeat,
+				4,
+				_List_fromArray(
+					[
+						_List_fromArray(
+						[$author$project$Note$C2]),
+						_List_fromArray(
+						[$author$project$Note$A2]),
+						_List_fromArray(
+						[$author$project$Note$F2]),
+						_List_fromArray(
+						[$author$project$Note$E2]),
+						_List_fromArray(
+						[$author$project$Note$C2, $author$project$Note$G1]),
+						_List_fromArray(
+						[$author$project$Note$A1]),
+						_List_fromArray(
+						[$author$project$Note$F1, $author$project$Note$C2]),
+						_List_fromArray(
+						[$author$project$Note$D2]),
+						_List_fromArray(
+						[$author$project$Note$F1, $author$project$Note$C2]),
+						_List_fromArray(
+						[$author$project$Note$F1, $author$project$Note$A2]),
+						_List_fromArray(
+						[$author$project$Note$C1, $author$project$Note$F2]),
+						_List_fromArray(
+						[$author$project$Note$C1, $author$project$Note$E2]),
+						_List_fromArray(
+						[$author$project$Note$F1, $author$project$Note$C2, $author$project$Note$G1]),
+						_List_fromArray(
+						[$author$project$Note$F1, $author$project$Note$A1]),
+						_List_fromArray(
+						[$author$project$Note$A1, $author$project$Note$F1, $author$project$Note$C2]),
+						_List_fromArray(
+						[$author$project$Note$D2])
+					]))),
+		_List_fromArray(
+			[
+				_List_fromArray(
+				[$author$project$Note$C2])
+			])));
 var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $elm$core$Dict$foldl = F3(
@@ -6192,7 +6216,7 @@ var $elm$core$Array$get = F2(
 			A2($elm$core$Elm$JsArray$unsafeGet, $elm$core$Array$bitMask & index, tail)) : $elm$core$Maybe$Just(
 			A3($elm$core$Array$getHelp, startShift, index, tree)));
 	});
-var $author$project$Config$bpm = 60;
+var $author$project$Config$bpm = 80;
 var $author$project$Main$maxDelta = (60 * 1000) / $author$project$Config$bpm;
 var $author$project$Game$Jumping = function (a) {
 	return {$: 'Jumping', a: a};

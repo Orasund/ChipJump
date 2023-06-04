@@ -12,6 +12,7 @@
 		});
 
 		app.ports.send.subscribe(function (data) {
+			console.log(data)
 			window.fromElm(data)
 		});
 	</script>

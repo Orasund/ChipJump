@@ -9,7 +9,7 @@ const sampler = new Tone.Sampler({
         A1: "A1.mp3",
         A2: "A2.mp3",
     },
-    baseUrl: "https://tonejs.github.io/audio/casio/",
+    baseUrl: "assets/samples/casio/",
     onload: () => {
         sampler.triggerAttackRelease(["C1", "E1", "G1", "B1"], 0.5);
         //play a middle 'C' for the duration of an 8th note
@@ -18,5 +18,5 @@ const sampler = new Tone.Sampler({
 }).toDestination();
 
 export function playSound(notes: string[]) {
-    sampler.triggerAttackRelease(["C2"], 0.5);
+    sampler.triggerAttackRelease(notes, 0.5);
 }
