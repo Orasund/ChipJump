@@ -56,13 +56,13 @@ playerColor =
     "#ce9f39"
 
 
-inactivePlatformColor : String
-inactivePlatformColor =
+lilyPadColor : String
+lilyPadColor =
     "#6d7753"
 
 
-activePlatformColor : String
-activePlatformColor =
+fireflyColor : String
+fireflyColor =
     "#ee3907"
 
 

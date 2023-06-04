@@ -1,6 +1,6 @@
 module Game exposing (..)
 
-import Array exposing (Array)
+import Array
 import Dict exposing (Dict)
 import Note exposing (Note)
 import Track exposing (Track)
@@ -15,13 +15,17 @@ type PlayerPos
     | Jumping { from : PlatformId, to : PlatformId }
 
 
-type alias Platform =
-    { start : Int, active : Bool, note : Note }
+type alias Object =
+    { start : Int, note : Note, sort : ObjectSort }
+
+
+type ObjectSort
+    = LilyPad { active : Bool }
 
 
 type alias Game =
     { track : Track
-    , platforms : Dict PlatformId Platform
+    , platforms : Dict PlatformId Object
     , rows : Dict Int (List PlatformId)
     , player : PlayerPos
     , songPosition : Int
@@ -34,7 +38,13 @@ activatePlatform id game =
         | platforms =
             game.platforms
                 |> Dict.update id
-                    (Maybe.map (\platform -> { platform | active = True }))
+                    (Maybe.map
+                        (\platform ->
+                            case platform.sort of
+                                LilyPad lilyPad ->
+                                    { platform | sort = LilyPad { lilyPad | active = True } }
+                        )
+                    )
     }
 
 
@@ -49,7 +59,12 @@ getNextPossiblePlatforms game from =
             (\next ->
                 game.platforms
                     |> Dict.get next
-                    |> Maybe.map .active
+                    |> Maybe.map
+                        (\object ->
+                            case object.sort of
+                                LilyPad { active } ->
+                                    active
+                        )
                     |> (==) (Just True)
             )
 
@@ -109,12 +124,14 @@ nextBeat game =
                     |> Dict.get id
             )
         |> List.filterMap
-            (\{ note, active } ->
-                if active then
-                    Just note
+            (\{ note, sort } ->
+                case sort of
+                    LilyPad { active } ->
+                        if active then
+                            Just note
 
-                else
-                    Nothing
+                        else
+                            Nothing
             )
     )
 
@@ -133,7 +150,7 @@ new =
                             |> List.map
                                 (\note ->
                                     { start = j
-                                    , active = False
+                                    , sort = LilyPad { active = j == 0 }
                                     , note = note
                                     }
                                 )

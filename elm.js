@@ -5196,6 +5196,9 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
+var $author$project$Game$LilyPad = function (a) {
+	return {$: 'LilyPad', a: a};
+};
 var $author$project$Game$OnPlatform = function (a) {
 	return {$: 'OnPlatform', a: a};
 };
@@ -5946,7 +5949,12 @@ var $author$project$Game$new = function () {
 								return A2(
 									$elm$core$List$map,
 									function (note) {
-										return {active: false, note: note, start: j};
+										return {
+											note: note,
+											sort: $author$project$Game$LilyPad(
+												{active: !j}),
+											start: j
+										};
 									},
 									list);
 							}),
@@ -6154,9 +6162,16 @@ var $author$project$Game$activatePlatform = F2(
 					id,
 					$elm$core$Maybe$map(
 						function (platform) {
+							var _v0 = platform.sort;
+							var lilyPad = _v0.a;
 							return _Utils_update(
 								platform,
-								{active: true});
+								{
+									sort: $author$project$Game$LilyPad(
+										_Utils_update(
+											lilyPad,
+											{active: true}))
+								});
 						}),
 					game.platforms)
 			});
@@ -6214,8 +6229,10 @@ var $author$project$Game$getNextPossiblePlatforms = F2(
 					$elm$core$Maybe$Just(true),
 					A2(
 						$elm$core$Maybe$map,
-						function ($) {
-							return $.active;
+						function (object) {
+							var _v0 = object.sort;
+							var active = _v0.a.active;
+							return active;
 						},
 						A2($elm$core$Dict$get, next, game.platforms)));
 			},
@@ -6280,7 +6297,8 @@ var $author$project$Game$nextBeat = function (game) {
 			$elm$core$List$filterMap,
 			function (_v0) {
 				var note = _v0.note;
-				var active = _v0.active;
+				var sort = _v0.sort;
+				var active = sort.a.active;
 				return active ? $elm$core$Maybe$Just(note) : $elm$core$Maybe$Nothing;
 			},
 			A2(
@@ -6500,9 +6518,8 @@ var $author$project$View$calcPlayerJumpingPosition = function (args) {
 };
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$core$String$fromFloat = _String_fromNumber;
-var $author$project$Config$activePlatformColor = '#ee3907';
 var $elm$html$Html$button = _VirtualDom_node('button');
-var $author$project$Config$inactivePlatformColor = '#6d7753';
+var $author$project$Config$lilyPadColor = '#6d7753';
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -6522,39 +6539,45 @@ var $elm$html$Html$Events$onClick = function (msg) {
 };
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
-var $author$project$View$platform = F2(
+var $author$project$View$lilyPad = F2(
 	function (args, _v0) {
 		var x = _v0.a;
 		var y = _v0.b;
 		return A2(
 			$elm$html$Html$button,
-			_List_fromArray(
-				[
-					A2(
-					$elm$html$Html$Attributes$style,
-					'width',
-					$elm$core$String$fromFloat($author$project$Config$platformWidth) + 'px'),
-					A2(
-					$elm$html$Html$Attributes$style,
-					'height',
-					$elm$core$String$fromFloat($author$project$Config$platformHeight) + 'px'),
-					A2(
-					$elm$html$Html$Attributes$style,
-					'background-color',
-					args.active ? $author$project$Config$activePlatformColor : $author$project$Config$inactivePlatformColor),
-					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-					A2($elm$html$Html$Attributes$style, 'border', '0px'),
-					A2($elm$html$Html$Attributes$style, 'border-radius', '100%'),
-					A2(
-					$elm$html$Html$Attributes$style,
-					'top',
-					$elm$core$String$fromFloat(y) + 'px'),
-					A2(
-					$elm$html$Html$Attributes$style,
-					'left',
-					$elm$core$String$fromFloat(x) + 'px'),
-					$elm$html$Html$Events$onClick(args.onClick)
-				]),
+			_Utils_ap(
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$Attributes$style,
+						'width',
+						$elm$core$String$fromFloat($author$project$Config$platformWidth) + 'px'),
+						A2(
+						$elm$html$Html$Attributes$style,
+						'height',
+						$elm$core$String$fromFloat($author$project$Config$platformHeight) + 'px'),
+						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+						A2($elm$html$Html$Attributes$style, 'border-radius', '100%'),
+						A2(
+						$elm$html$Html$Attributes$style,
+						'top',
+						$elm$core$String$fromFloat(y) + 'px'),
+						A2(
+						$elm$html$Html$Attributes$style,
+						'left',
+						$elm$core$String$fromFloat(x) + 'px'),
+						$elm$html$Html$Events$onClick(args.onClick)
+					]),
+				args.active ? _List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'background-color', $author$project$Config$lilyPadColor),
+						A2($elm$html$Html$Attributes$style, 'border', '8px solid ' + $author$project$Config$lilyPadColor)
+					]) : _List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'background-color', 'transparent'),
+						A2($elm$html$Html$Attributes$style, 'border', '8px dashed ' + $author$project$Config$lilyPadColor),
+						A2($elm$html$Html$Attributes$style, 'z-index', '10')
+					])),
 			_List_Nil);
 	});
 var $author$project$View$platforms = F2(
@@ -6565,9 +6588,10 @@ var $author$project$View$platforms = F2(
 				var platformId = _v0.a;
 				var start = _v0.b.start;
 				var note = _v0.b.note;
-				var active = _v0.b.active;
+				var sort = _v0.b.sort;
+				var active = sort.a.active;
 				return A2(
-					$author$project$View$platform,
+					$author$project$View$lilyPad,
 					{
 						active: active,
 						onClick: args.onClick(platformId)

@@ -2,7 +2,7 @@ module View exposing (..)
 
 import Config
 import Dict exposing (Dict)
-import Game exposing (Game, Platform, PlatformId, PlayerPos(..))
+import Game exposing (Game, Object, ObjectSort(..), PlatformId, PlayerPos(..))
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events
@@ -94,21 +94,23 @@ platforms :
     , onClick : PlatformId -> msg
     , beatsPlayed : Int
     }
-    -> Dict PlatformId Platform
+    -> Dict PlatformId Object
     -> List (Html msg)
 platforms args dict =
     dict
         |> Dict.toList
         |> List.map
-            (\( platformId, { start, note, active } ) ->
-                platform { active = active, onClick = args.onClick platformId }
-                    (calcPlatformPosition
-                        { ratioToNextBeat = args.ratioToNextBeat
-                        , beatsPlayed = args.beatsPlayed
-                        , start = start
-                        , note = note
-                        }
-                    )
+            (\( platformId, { start, note, sort } ) ->
+                case sort of
+                    LilyPad { active } ->
+                        lilyPad { active = active, onClick = args.onClick platformId }
+                            (calcPlatformPosition
+                                { ratioToNextBeat = args.ratioToNextBeat
+                                , beatsPlayed = args.beatsPlayed
+                                , start = start
+                                , note = note
+                                }
+                            )
             )
 
 
@@ -181,23 +183,27 @@ calcPlatformPosition args =
     )
 
 
-platform : { active : Bool, onClick : msg } -> ( Float, Float ) -> Html msg
-platform args ( x, y ) =
+lilyPad : { active : Bool, onClick : msg } -> ( Float, Float ) -> Html msg
+lilyPad args ( x, y ) =
     Html.button
-        [ Html.Attributes.style "width" (String.fromFloat Config.platformWidth ++ "px")
-        , Html.Attributes.style "height" (String.fromFloat Config.platformHeight ++ "px")
-        , Html.Attributes.style "background-color"
-            (if args.active then
-                Config.activePlatformColor
+        ([ Html.Attributes.style "width" (String.fromFloat Config.platformWidth ++ "px")
+         , Html.Attributes.style "height" (String.fromFloat Config.platformHeight ++ "px")
+         , Html.Attributes.style "position" "absolute"
+         , Html.Attributes.style "border-radius" "100%"
+         , Html.Attributes.style "top" (String.fromFloat y ++ "px")
+         , Html.Attributes.style "left" (String.fromFloat x ++ "px")
+         , Html.Events.onClick args.onClick
+         ]
+            ++ (if args.active then
+                    [ Html.Attributes.style "background-color" Config.lilyPadColor
+                    , Html.Attributes.style "border" ("8px solid " ++ Config.lilyPadColor)
+                    ]
 
-             else
-                Config.inactivePlatformColor
-            )
-        , Html.Attributes.style "position" "absolute"
-        , Html.Attributes.style "border" "0px"
-        , Html.Attributes.style "border-radius" "100%"
-        , Html.Attributes.style "top" (String.fromFloat y ++ "px")
-        , Html.Attributes.style "left" (String.fromFloat x ++ "px")
-        , Html.Events.onClick args.onClick
-        ]
+                else
+                    [ Html.Attributes.style "background-color" "transparent"
+                    , Html.Attributes.style "border" ("8px dashed " ++ Config.lilyPadColor)
+                    , Html.Attributes.style "z-index" "10"
+                    ]
+               )
+        )
         []
