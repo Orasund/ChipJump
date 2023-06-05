@@ -5593,7 +5593,7 @@ var $author$project$Song$default = function () {
 							$elm$core$List$concat(
 								A2(
 									$elm$core$List$repeat,
-									2,
+									1,
 									$elm$core$List$concat(
 										$elm$core$List$concat(
 											_List_fromArray(
@@ -6178,7 +6178,9 @@ var $author$project$Game$new = function () {
 			}),
 		$elm$core$Dict$empty,
 		objects);
-	return {bpm: 60, objects: objects, player: player, rows: rows, running: running, songPosition: songPosition, track: track};
+	var bpm = 60;
+	var statistics = {maxBpm: bpm, stops: 0};
+	return {bpm: bpm, objects: objects, player: player, rows: rows, running: running, songPosition: songPosition, statistics: statistics, track: track};
 }();
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
@@ -6450,7 +6452,12 @@ var $author$project$Game$nextPlayerPos = function (game) {
 			{
 				bpm: game.bpm - (game.bpm * $author$project$Config$bpmPercentDecrease),
 				player: $author$project$Game$OnPlatform(currentObjectId),
-				running: false
+				running: false,
+				statistics: function (statistics) {
+					return _Utils_update(
+						statistics,
+						{stops: statistics.stops + 1});
+				}(game.statistics)
 			}),
 		A2(
 			$elm$core$Maybe$map,
@@ -6472,11 +6479,22 @@ var $author$project$Game$nextPlayerPos = function (game) {
 				A2($author$project$Game$getNextPossibleLilyPads, game, currentObjectId))));
 };
 var $author$project$Game$nextBeat = function (game) {
+	var bpm = game.bpm + $author$project$Config$bpmIncrease;
 	return _Utils_Tuple2(
 		$author$project$Game$nextPlayerPos(
 			_Utils_update(
 				game,
-				{bpm: game.bpm + $author$project$Config$bpmIncrease, songPosition: game.songPosition + 1})),
+				{
+					bpm: bpm,
+					songPosition: game.songPosition + 1,
+					statistics: function (statistics) {
+						return _Utils_update(
+							statistics,
+							{
+								maxBpm: A2($elm$core$Basics$max, game.statistics.maxBpm, bpm)
+							});
+					}(game.statistics)
+				})),
 		A2(
 			$elm$core$List$filterMap,
 			function (_v0) {
@@ -6637,7 +6655,7 @@ var $author$project$Main$calcRatioToNextBeat = F2(
 	});
 var $author$project$Config$backgroundColor = '#010f16';
 var $author$project$Note$bang = $author$project$Note$C1;
-var $author$project$Config$lilyPadSize = 90;
+var $author$project$Config$lilyPadSize = 100;
 var $author$project$Config$screenWidth = 400;
 var $author$project$Config$horizontalSpaceBetweenPlatforms = ($author$project$Config$screenWidth - $author$project$Config$lilyPadSize) / 14;
 var $elm$core$Basics$negate = function (n) {

@@ -79,6 +79,20 @@ fromGame args game =
             ]
 
 
+endgame : Game -> Html msg
+endgame game =
+    Layout.column []
+        [ "Thanks for Playing" |> Html.text |> Layout.heading2 []
+        ]
+        |> Layout.el
+            [ Html.Attributes.style "position" "absolute"
+            , Html.Attributes.style "top" (String.fromFloat Config.lilyPadSize ++ "px")
+            , Html.Attributes.style "width" "100%"
+            , Html.Attributes.style "color" Config.playerColor
+            , Layout.contentCentered
+            ]
+
+
 player : ( Float, Float ) -> Html msg
 player ( x, y ) =
     Html.img

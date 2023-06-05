@@ -27,6 +27,7 @@ type ObjectSort
 
 type alias Statistics =
     { maxBpm : Float
+    , stops : Int
     }
 
 
@@ -149,12 +150,26 @@ nextPlayerPos game =
                 | player = OnPlatform currentObjectId
                 , running = False
                 , bpm = game.bpm - game.bpm * Config.bpmPercentDecrease
+                , statistics =
+                    game.statistics
+                        |> (\statistics -> { statistics | stops = statistics.stops + 1 })
             }
 
 
 nextBeat : Game -> ( Game, List Note )
 nextBeat game =
-    ( { game | songPosition = game.songPosition + 1, bpm = game.bpm + Config.bpmIncrease } |> nextPlayerPos
+    let
+        bpm =
+            game.bpm + Config.bpmIncrease
+    in
+    ( { game
+        | songPosition = game.songPosition + 1
+        , bpm = bpm
+        , statistics =
+            game.statistics
+                |> (\statistics -> { statistics | maxBpm = max game.statistics.maxBpm bpm })
+      }
+        |> nextPlayerPos
     , game.rows
         |> Dict.get (game.songPosition + 1)
         |> Maybe.withDefault []
@@ -250,7 +265,9 @@ new =
             60
 
         statistics =
-            { maxBpm = bpm }
+            { maxBpm = bpm
+            , stops = 0
+            }
     in
     { track = track
     , objects = objects

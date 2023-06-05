@@ -85,7 +85,7 @@ default =
                 ]
                     |> List.concat
                     |> List.concat
-                    |> List.repeat 2
+                    |> List.repeat 1
                     |> List.concat
                )
             ++ [ c2 ++ c1 ++ c3 ]
