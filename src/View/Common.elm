@@ -4,8 +4,8 @@ import Config
 import Note exposing (Note)
 
 
-calcPlatformPosition : { ratioToNextBeat : Float, beatsPlayed : Int, start : Int, note : Note } -> ( Float, Float )
-calcPlatformPosition args =
+calcLilyPadPosition : { ratioToNextBeat : Float, beatsPlayed : Int, start : Int, note : Note } -> ( Float, Float )
+calcLilyPadPosition args =
     let
         ratio =
             args.ratioToNextBeat
@@ -15,7 +15,7 @@ calcPlatformPosition args =
     , Config.verticalSpaceBetweenPlatforms
         * (toFloat -args.start + ratio + toFloat args.beatsPlayed)
         + Config.screenHeight
-        - (Config.platformHeight
+        - (Config.lilyPadSize
             * 2
           )
     )

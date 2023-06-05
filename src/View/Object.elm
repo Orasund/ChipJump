@@ -21,7 +21,7 @@ fromDict args dict =
         |> Dict.toList
         |> List.map
             (\( platformId, { start, note, sort } ) ->
-                View.Common.calcPlatformPosition
+                View.Common.calcLilyPadPosition
                     { ratioToNextBeat = args.ratioToNextBeat
                     , beatsPlayed = args.beatsPlayed
                     , start = start
@@ -29,7 +29,17 @@ fromDict args dict =
                     }
                     |> (case sort of
                             LilyPad { active } ->
-                                lilyPad { active = active, onClick = args.onClick platformId }
+                                lilyPad
+                                    { active = active
+                                    , onClick = args.onClick platformId
+                                    , size =
+                                        case start |> modBy Config.maxJumpSize of
+                                            1 ->
+                                                0.75
+
+                                            _ ->
+                                                1
+                                    }
 
                             Wave ->
                                 wave
@@ -37,15 +47,22 @@ fromDict args dict =
             )
 
 
-lilyPad : { active : Bool, onClick : msg } -> ( Float, Float ) -> Html msg
+lilyPad : { active : Bool, onClick : msg, size : Float } -> ( Float, Float ) -> Html msg
 lilyPad args ( x, y ) =
+    let
+        lilyPadSize =
+            args.size * Config.lilyPadSize
+
+        offSet =
+            Config.lilyPadSize / 2 - lilyPadSize / 2
+    in
     Html.button
-        ([ Html.Attributes.style "width" (String.fromFloat Config.platformWidth ++ "px")
-         , Html.Attributes.style "height" (String.fromFloat Config.platformHeight ++ "px")
+        ([ Html.Attributes.style "width" (String.fromFloat lilyPadSize ++ "px")
+         , Html.Attributes.style "height" (String.fromFloat lilyPadSize ++ "px")
          , Html.Attributes.style "position" "absolute"
          , Html.Attributes.style "border-radius" "100%"
-         , Html.Attributes.style "top" (String.fromFloat y ++ "px")
-         , Html.Attributes.style "left" (String.fromFloat x ++ "px")
+         , Html.Attributes.style "top" (String.fromFloat (y + offSet) ++ "px")
+         , Html.Attributes.style "left" (String.fromFloat (x + offSet) ++ "px")
          , Html.Events.onClick args.onClick
          ]
             ++ (if args.active then
@@ -66,8 +83,8 @@ lilyPad args ( x, y ) =
 wave : ( Float, Float ) -> Html msg
 wave ( x, y ) =
     Html.div
-        [ Html.Attributes.style "width" (String.fromFloat Config.platformWidth ++ "px")
-        , Html.Attributes.style "height" (String.fromFloat Config.platformHeight ++ "px")
+        [ Html.Attributes.style "width" (String.fromFloat Config.lilyPadSize ++ "px")
+        , Html.Attributes.style "height" (String.fromFloat Config.lilyPadSize ++ "px")
         , Html.Attributes.style "top" (String.fromFloat y ++ "px")
         , Html.Attributes.style "left" (String.fromFloat x ++ "px")
         ]

@@ -1,19 +1,14 @@
 module Config exposing (..)
 
 
-platformWidth : Float
-platformWidth =
+lilyPadSize : Float
+lilyPadSize =
     100
-
-
-platformHeight : Float
-platformHeight =
-    platformWidth
 
 
 horizontalSpaceBetweenPlatforms : Float
 horizontalSpaceBetweenPlatforms =
-    (screenWidth - platformWidth) / 14
+    (screenWidth - lilyPadSize) / 14
 
 
 verticalSpaceBetweenPlatforms : Float

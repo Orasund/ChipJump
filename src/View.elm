@@ -131,13 +131,13 @@ calcPlayerPositionOnPlatform :
 calcPlayerPositionOnPlatform args ( note, start ) =
     let
         ( x, y ) =
-            View.Common.calcPlatformPosition
+            View.Common.calcLilyPadPosition
                 { ratioToNextBeat = args.ratioToNextBeat
                 , beatsPlayed = args.beatsPlayed
                 , start = start
                 , note = note
                 }
     in
-    ( x + Config.platformWidth / 2 - Config.playerSize / 2
-    , y + Config.platformHeight / 2 - Config.playerSize / 2
+    ( x + Config.lilyPadSize / 2 - Config.playerSize / 2
+    , y + Config.lilyPadSize / 2 - Config.playerSize / 2
     )

@@ -6538,13 +6538,12 @@ var $author$project$Main$calcRatioToNextBeat = function (args) {
 	return args.msSinceLastBeat / $author$project$Main$maxDelta;
 };
 var $author$project$Config$backgroundColor = '#010f16';
-var $author$project$Config$platformWidth = 100;
+var $author$project$Config$lilyPadSize = 100;
 var $author$project$Config$screenWidth = 400;
-var $author$project$Config$horizontalSpaceBetweenPlatforms = ($author$project$Config$screenWidth - $author$project$Config$platformWidth) / 14;
+var $author$project$Config$horizontalSpaceBetweenPlatforms = ($author$project$Config$screenWidth - $author$project$Config$lilyPadSize) / 14;
 var $elm$core$Basics$negate = function (n) {
 	return -n;
 };
-var $author$project$Config$platformHeight = $author$project$Config$platformWidth;
 var $author$project$Config$screenHeight = 600;
 var $author$project$Note$toInt = function (note) {
 	switch (note.$) {
@@ -6581,22 +6580,22 @@ var $author$project$Note$toInt = function (note) {
 	}
 };
 var $author$project$Config$verticalSpaceBetweenPlatforms = 100;
-var $author$project$View$Common$calcPlatformPosition = function (args) {
+var $author$project$View$Common$calcLilyPadPosition = function (args) {
 	var ratio = args.ratioToNextBeat;
 	return _Utils_Tuple2(
 		$author$project$Config$horizontalSpaceBetweenPlatforms * $author$project$Note$toInt(args.note),
-		(($author$project$Config$verticalSpaceBetweenPlatforms * (((-args.start) + ratio) + args.beatsPlayed)) + $author$project$Config$screenHeight) - ($author$project$Config$platformHeight * 2));
+		(($author$project$Config$verticalSpaceBetweenPlatforms * (((-args.start) + ratio) + args.beatsPlayed)) + $author$project$Config$screenHeight) - ($author$project$Config$lilyPadSize * 2));
 };
 var $author$project$Config$playerSize = 60;
 var $author$project$View$calcPlayerPositionOnPlatform = F2(
 	function (args, _v0) {
 		var note = _v0.a;
 		var start = _v0.b;
-		var _v1 = $author$project$View$Common$calcPlatformPosition(
+		var _v1 = $author$project$View$Common$calcLilyPadPosition(
 			{beatsPlayed: args.beatsPlayed, note: note, ratioToNextBeat: args.ratioToNextBeat, start: start});
 		var x = _v1.a;
 		var y = _v1.b;
-		return _Utils_Tuple2((x + ($author$project$Config$platformWidth / 2)) - ($author$project$Config$playerSize / 2), (y + ($author$project$Config$platformHeight / 2)) - ($author$project$Config$playerSize / 2));
+		return _Utils_Tuple2((x + ($author$project$Config$lilyPadSize / 2)) - ($author$project$Config$playerSize / 2), (y + ($author$project$Config$lilyPadSize / 2)) - ($author$project$Config$playerSize / 2));
 	});
 var $author$project$Config$jumpTime = 1 / 4;
 var $author$project$View$calcPlayerJumpingPosition = function (args) {
@@ -6638,6 +6637,8 @@ var $author$project$View$Object$lilyPad = F2(
 	function (args, _v0) {
 		var x = _v0.a;
 		var y = _v0.b;
+		var lilyPadSize = args.size * $author$project$Config$lilyPadSize;
+		var offSet = ($author$project$Config$lilyPadSize / 2) - (lilyPadSize / 2);
 		return A2(
 			$elm$html$Html$button,
 			_Utils_ap(
@@ -6646,21 +6647,21 @@ var $author$project$View$Object$lilyPad = F2(
 						A2(
 						$elm$html$Html$Attributes$style,
 						'width',
-						$elm$core$String$fromFloat($author$project$Config$platformWidth) + 'px'),
+						$elm$core$String$fromFloat(lilyPadSize) + 'px'),
 						A2(
 						$elm$html$Html$Attributes$style,
 						'height',
-						$elm$core$String$fromFloat($author$project$Config$platformHeight) + 'px'),
+						$elm$core$String$fromFloat(lilyPadSize) + 'px'),
 						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 						A2($elm$html$Html$Attributes$style, 'border-radius', '100%'),
 						A2(
 						$elm$html$Html$Attributes$style,
 						'top',
-						$elm$core$String$fromFloat(y) + 'px'),
+						$elm$core$String$fromFloat(y + offSet) + 'px'),
 						A2(
 						$elm$html$Html$Attributes$style,
 						'left',
-						$elm$core$String$fromFloat(x) + 'px'),
+						$elm$core$String$fromFloat(x + offSet) + 'px'),
 						$elm$html$Html$Events$onClick(args.onClick)
 					]),
 				args.active ? _List_fromArray(
@@ -6675,6 +6676,7 @@ var $author$project$View$Object$lilyPad = F2(
 					])),
 			_List_Nil);
 	});
+var $elm$core$Basics$modBy = _Basics_modBy;
 var $author$project$View$Object$wave = function (_v0) {
 	var x = _v0.a;
 	var y = _v0.b;
@@ -6685,11 +6687,11 @@ var $author$project$View$Object$wave = function (_v0) {
 				A2(
 				$elm$html$Html$Attributes$style,
 				'width',
-				$elm$core$String$fromFloat($author$project$Config$platformWidth) + 'px'),
+				$elm$core$String$fromFloat($author$project$Config$lilyPadSize) + 'px'),
 				A2(
 				$elm$html$Html$Attributes$style,
 				'height',
-				$elm$core$String$fromFloat($author$project$Config$platformHeight) + 'px'),
+				$elm$core$String$fromFloat($author$project$Config$lilyPadSize) + 'px'),
 				A2(
 				$elm$html$Html$Attributes$style,
 				'top',
@@ -6716,13 +6718,21 @@ var $author$project$View$Object$fromDict = F2(
 						return $author$project$View$Object$lilyPad(
 							{
 								active: active,
-								onClick: args.onClick(platformId)
+								onClick: args.onClick(platformId),
+								size: function () {
+									var _v2 = A2($elm$core$Basics$modBy, $author$project$Config$maxJumpSize, start);
+									if (_v2 === 1) {
+										return 0.75;
+									} else {
+										return 1;
+									}
+								}()
 							});
 					} else {
 						return $author$project$View$Object$wave;
 					}
 				}()(
-					$author$project$View$Common$calcPlatformPosition(
+					$author$project$View$Common$calcLilyPadPosition(
 						{beatsPlayed: args.beatsPlayed, note: note, ratioToNextBeat: args.ratioToNextBeat, start: start}));
 			},
 			$elm$core$Dict$toList(dict));
