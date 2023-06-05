@@ -6131,9 +6131,9 @@ var $author$project$Game$new = function () {
 			$elm$core$Tuple$pair,
 			A2(
 				$elm$core$List$concatMap,
-				function (_v1) {
-					var instrument = _v1.a;
-					var array = _v1.b;
+				function (_v3) {
+					var instrument = _v3.a;
+					var array = _v3.b;
 					return $elm$core$List$concat(
 						A2(
 							$elm$core$List$filterMap,
@@ -6160,27 +6160,34 @@ var $author$project$Game$new = function () {
 									array))));
 				},
 				$elm$core$Dict$toList(track))));
-	var rows = A3(
-		$elm$core$Dict$foldl,
-		F2(
-			function (id, _v0) {
-				var start = _v0.start;
-				return A2(
-					$elm$core$Dict$update,
-					start,
-					function (maybe) {
-						return $elm$core$Maybe$Just(
-							A2(
-								$elm$core$List$cons,
-								id,
-								A2($elm$core$Maybe$withDefault, _List_Nil, maybe)));
-					});
-			}),
-		$elm$core$Dict$empty,
-		objects);
 	var bpm = 60;
 	var statistics = {maxBpm: bpm, stops: 0};
-	return {bpm: bpm, objects: objects, player: player, rows: rows, running: running, songPosition: songPosition, statistics: statistics, track: track};
+	var _v0 = A3(
+		$elm$core$Dict$foldl,
+		F3(
+			function (id, _v1, _v2) {
+				var start = _v1.start;
+				var d = _v2.a;
+				var e = _v2.b;
+				return _Utils_Tuple2(
+					A3(
+						$elm$core$Dict$update,
+						start,
+						function (maybe) {
+							return $elm$core$Maybe$Just(
+								A2(
+									$elm$core$List$cons,
+									id,
+									A2($elm$core$Maybe$withDefault, _List_Nil, maybe)));
+						},
+						d),
+					A2($elm$core$Basics$max, e, start));
+			}),
+		_Utils_Tuple2($elm$core$Dict$empty, 0),
+		objects);
+	var rows = _v0.a;
+	var endPosition = _v0.b;
+	return {bpm: bpm, endPosition: endPosition, objects: objects, player: player, rows: rows, running: running, songPosition: songPosition, statistics: statistics, track: track};
 }();
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
@@ -6479,6 +6486,7 @@ var $author$project$Game$nextPlayerPos = function (game) {
 				A2($author$project$Game$getNextPossibleLilyPads, game, currentObjectId))));
 };
 var $author$project$Game$nextBeat = function (game) {
+	var songPosition = game.songPosition + 1;
 	var bpm = game.bpm + $author$project$Config$bpmIncrease;
 	return _Utils_Tuple2(
 		$author$project$Game$nextPlayerPos(
@@ -6486,7 +6494,7 @@ var $author$project$Game$nextBeat = function (game) {
 				game,
 				{
 					bpm: bpm,
-					songPosition: game.songPosition + 1,
+					songPosition: songPosition,
 					statistics: function (statistics) {
 						return _Utils_update(
 							statistics,
@@ -6515,7 +6523,7 @@ var $author$project$Game$nextBeat = function (game) {
 				A2(
 					$elm$core$Maybe$withDefault,
 					_List_Nil,
-					A2($elm$core$Dict$get, game.songPosition + 1, game.rows)))));
+					A2($elm$core$Dict$get, songPosition, game.rows)))));
 };
 var $elm$json$Json$Encode$list = F2(
 	function (func, entries) {
@@ -6728,9 +6736,109 @@ var $author$project$View$calcPlayerJumpingPosition = function (args) {
 	return _Utils_Tuple2(x2 + ((x1 - x2) * ratio), y2 + ((y1 - y2) * ratio));
 };
 var $elm$html$Html$div = _VirtualDom_node('div');
-var $elm$html$Html$button = _VirtualDom_node('button');
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $Orasund$elm_layout$Layout$column = function (attrs) {
+	return $elm$html$Html$div(
+		_Utils_ap(
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+					A2($elm$html$Html$Attributes$style, 'flex-direction', 'column')
+				]),
+			attrs));
+};
+var $Orasund$elm_layout$Layout$contentCentered = A2($elm$html$Html$Attributes$style, 'justify-content', 'center');
+var $Orasund$elm_layout$Layout$el = F2(
+	function (attrs, content) {
+		return A2(
+			$elm$html$Html$div,
+			A2(
+				$elm$core$List$cons,
+				A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+				attrs),
+			_List_fromArray(
+				[content]));
+	});
+var $elm$core$Dict$filter = F2(
+	function (isGood, dict) {
+		return A3(
+			$elm$core$Dict$foldl,
+			F3(
+				function (k, v, d) {
+					return A2(isGood, k, v) ? A3($elm$core$Dict$insert, k, v, d) : d;
+				}),
+			$elm$core$Dict$empty,
+			dict);
+	});
 var $elm$core$String$fromFloat = _String_fromNumber;
+var $Orasund$elm_layout$Layout$gap = function (n) {
+	return A2(
+		$elm$html$Html$Attributes$style,
+		'gap',
+		$elm$core$String$fromFloat(n) + 'px');
+};
+var $elm$html$Html$h2 = _VirtualDom_node('h2');
+var $Orasund$elm_layout$Layout$heading2 = F2(
+	function (attrs, content) {
+		return A2(
+			$elm$html$Html$h2,
+			A2(
+				$elm$core$List$cons,
+				A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+				attrs),
+			_List_fromArray(
+				[content]));
+	});
 var $author$project$Config$lilyPadColor = '#6d7753';
+var $elm$core$Basics$not = _Basics_not;
+var $author$project$Config$playerColor = '#ce9f39';
+var $elm$core$Basics$round = _Basics_round;
+var $elm$core$Dict$sizeHelp = F2(
+	function (n, dict) {
+		sizeHelp:
+		while (true) {
+			if (dict.$ === 'RBEmpty_elm_builtin') {
+				return n;
+			} else {
+				var left = dict.d;
+				var right = dict.e;
+				var $temp$n = A2($elm$core$Dict$sizeHelp, n + 1, right),
+					$temp$dict = left;
+				n = $temp$n;
+				dict = $temp$dict;
+				continue sizeHelp;
+			}
+		}
+	});
+var $elm$core$Dict$size = function (dict) {
+	return A2($elm$core$Dict$sizeHelp, 0, dict);
+};
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $Orasund$elm_layout$Layout$text = F2(
+	function (attrs, content) {
+		return A2(
+			$Orasund$elm_layout$Layout$el,
+			attrs,
+			$elm$html$Html$text(content));
+	});
+var $elm$virtual_dom$VirtualDom$attribute = F2(
+	function (key, value) {
+		return A2(
+			_VirtualDom_attribute,
+			_VirtualDom_noOnOrFormAction(key),
+			_VirtualDom_noJavaScriptOrHtmlUri(value));
+	});
+var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -6748,8 +6856,112 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
-var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $Orasund$elm_layout$Layout$asButton = function (args) {
+	return _Utils_ap(
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'cursor', 'pointer'),
+				A2($elm$html$Html$Attributes$attribute, 'aria-label', args.label),
+				A2($elm$html$Html$Attributes$attribute, 'role', 'button')
+			]),
+		A2(
+			$elm$core$Maybe$withDefault,
+			_List_Nil,
+			A2(
+				$elm$core$Maybe$map,
+				function (msg) {
+					return _List_fromArray(
+						[
+							$elm$html$Html$Events$onClick(msg)
+						]);
+				},
+				args.onPress)));
+};
+var $elm$html$Html$button = _VirtualDom_node('button');
+var $Orasund$elm_layout$Layout$textButton = F2(
+	function (attrs, args) {
+		return A2(
+			$elm$html$Html$button,
+			_Utils_ap(
+				$Orasund$elm_layout$Layout$asButton(args),
+				attrs),
+			_List_fromArray(
+				[
+					$elm$html$Html$text(args.label)
+				]));
+	});
+var $author$project$View$endgame = F2(
+	function (args, game) {
+		return A2(
+			$Orasund$elm_layout$Layout$el,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'top',
+					$elm$core$String$fromFloat($author$project$Config$lilyPadSize) + 'px'),
+					A2($elm$html$Html$Attributes$style, 'width', '100%'),
+					A2($elm$html$Html$Attributes$style, 'color', $author$project$Config$lilyPadColor),
+					$Orasund$elm_layout$Layout$contentCentered
+				]),
+			A2(
+				$Orasund$elm_layout$Layout$column,
+				_List_fromArray(
+					[
+						$Orasund$elm_layout$Layout$gap(8)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$Orasund$elm_layout$Layout$heading2,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$style, 'color', $author$project$Config$playerColor)
+							]),
+						$elm$html$Html$text('Thanks for Playing')),
+						A2(
+						$Orasund$elm_layout$Layout$text,
+						_List_Nil,
+						'Max Bpm: ' + $elm$core$String$fromFloat(
+							function (f) {
+								return f / 100;
+							}(
+								$elm$core$Basics$round(game.statistics.maxBpm * 100)))),
+						A2(
+						$Orasund$elm_layout$Layout$text,
+						_List_Nil,
+						'Stops: ' + $elm$core$String$fromInt(game.statistics.stops)),
+						A2(
+						$Orasund$elm_layout$Layout$text,
+						_List_Nil,
+						'Notes missed: ' + $elm$core$String$fromInt(
+							$elm$core$Dict$size(
+								A2(
+									$elm$core$Dict$filter,
+									F2(
+										function (_v0, object) {
+											var _v1 = object.sort;
+											if (_v1.$ === 'LilyPad') {
+												var active = _v1.a.active;
+												return !active;
+											} else {
+												return false;
+											}
+										}),
+									game.objects)))),
+						A2(
+						$Orasund$elm_layout$Layout$textButton,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('button')
+							]),
+						{
+							label: 'Restart',
+							onPress: $elm$core$Maybe$Just(args.start)
+						})
+					])));
+	});
 var $author$project$View$Object$lilyPad = F2(
 	function (args, _v0) {
 		var x = _v0.a;
@@ -6857,13 +7069,6 @@ var $author$project$View$Object$fromDict = F2(
 	});
 var $elm$html$Html$img = _VirtualDom_node('img');
 var $author$project$Config$playerZIndex = 100;
-var $elm$html$Html$Attributes$stringProperty = F2(
-	function (key, string) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$string(string));
-	});
 var $elm$html$Html$Attributes$src = function (url) {
 	return A2(
 		$elm$html$Html$Attributes$stringProperty,
@@ -6963,41 +7168,19 @@ var $author$project$View$fromGame = F2(
 						_List_fromArray(
 						[
 							$author$project$View$player(playerPos)
-						])
+						]),
+						_Utils_eq(game.songPosition, game.endPosition) ? _List_fromArray(
+						[
+							A2(
+							$author$project$View$endgame,
+							{start: args.start},
+							game)
+						]) : _List_Nil
 					])));
 	});
 var $Orasund$elm_layout$Layout$alignAtCenter = A2($elm$html$Html$Attributes$style, 'align-items', 'center');
-var $Orasund$elm_layout$Layout$contentCentered = A2($elm$html$Html$Attributes$style, 'justify-content', 'center');
 var $Orasund$elm_layout$Layout$centered = _List_fromArray(
 	[$Orasund$elm_layout$Layout$contentCentered, $Orasund$elm_layout$Layout$alignAtCenter]);
-var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
-var $Orasund$elm_layout$Layout$column = function (attrs) {
-	return $elm$html$Html$div(
-		_Utils_ap(
-			_List_fromArray(
-				[
-					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
-					A2($elm$html$Html$Attributes$style, 'flex-direction', 'column')
-				]),
-			attrs));
-};
-var $Orasund$elm_layout$Layout$el = F2(
-	function (attrs, content) {
-		return A2(
-			$elm$html$Html$div,
-			A2(
-				$elm$core$List$cons,
-				A2($elm$html$Html$Attributes$style, 'display', 'flex'),
-				attrs),
-			_List_fromArray(
-				[content]));
-	});
-var $Orasund$elm_layout$Layout$gap = function (n) {
-	return A2(
-		$elm$html$Html$Attributes$style,
-		'gap',
-		$elm$core$String$fromFloat(n) + 'px');
-};
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $Orasund$elm_layout$Layout$heading1 = F2(
 	function (attrs, content) {
@@ -7009,50 +7192,6 @@ var $Orasund$elm_layout$Layout$heading1 = F2(
 				attrs),
 			_List_fromArray(
 				[content]));
-	});
-var $author$project$Config$playerColor = '#ce9f39';
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $elm$virtual_dom$VirtualDom$attribute = F2(
-	function (key, value) {
-		return A2(
-			_VirtualDom_attribute,
-			_VirtualDom_noOnOrFormAction(key),
-			_VirtualDom_noJavaScriptOrHtmlUri(value));
-	});
-var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
-var $Orasund$elm_layout$Layout$asButton = function (args) {
-	return _Utils_ap(
-		_List_fromArray(
-			[
-				A2($elm$html$Html$Attributes$style, 'cursor', 'pointer'),
-				A2($elm$html$Html$Attributes$attribute, 'aria-label', args.label),
-				A2($elm$html$Html$Attributes$attribute, 'role', 'button')
-			]),
-		A2(
-			$elm$core$Maybe$withDefault,
-			_List_Nil,
-			A2(
-				$elm$core$Maybe$map,
-				function (msg) {
-					return _List_fromArray(
-						[
-							$elm$html$Html$Events$onClick(msg)
-						]);
-				},
-				args.onPress)));
-};
-var $Orasund$elm_layout$Layout$textButton = F2(
-	function (attrs, args) {
-		return A2(
-			$elm$html$Html$button,
-			_Utils_ap(
-				$Orasund$elm_layout$Layout$asButton(args),
-				attrs),
-			_List_fromArray(
-				[
-					$elm$html$Html$text(args.label)
-				]));
 	});
 var $author$project$View$titleScreen = function (args) {
 	return A2(
@@ -7108,7 +7247,8 @@ var $author$project$Main$view = function (model) {
 			ratioToNextBeat: A2(
 				$author$project$Main$calcRatioToNextBeat,
 				{msSinceLastBeat: model.msSinceLastBeat},
-				model.game)
+				model.game),
+			start: $author$project$Main$StartGame
 		},
 		model.game);
 };

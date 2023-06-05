@@ -33,6 +33,7 @@ titleScreen args =
 fromGame :
     { ratioToNextBeat : Float
     , onClick : ObjectId -> msg
+    , start : msg
     }
     -> Game
     -> Html msg
@@ -68,6 +69,11 @@ fromGame args game =
             , beatsPlayed = game.songPosition
             }
     , [ playerPos |> player ]
+    , if game.songPosition == game.endPosition then
+        [ endgame { start = args.start } game ]
+
+      else
+        []
     ]
         |> List.concat
         |> Html.div
@@ -79,16 +85,40 @@ fromGame args game =
             ]
 
 
-endgame : Game -> Html msg
-endgame game =
-    Layout.column []
-        [ "Thanks for Playing" |> Html.text |> Layout.heading2 []
-        ]
+endgame : { start : msg } -> Game -> Html msg
+endgame args game =
+    [ "Thanks for Playing"
+        |> Html.text
+        |> Layout.heading2 [ Html.Attributes.style "color" Config.playerColor ]
+    , "Max Bpm: "
+        ++ String.fromFloat (game.statistics.maxBpm * 100 |> round |> toFloat |> (\f -> f / 100))
+        |> Layout.text []
+    , "Stops: "
+        ++ String.fromInt game.statistics.stops
+        |> Layout.text []
+    , "Notes missed: "
+        ++ (game.objects
+                |> Dict.filter
+                    (\_ object ->
+                        case object.sort of
+                            LilyPad { active } ->
+                                not active
+
+                            _ ->
+                                False
+                    )
+                |> Dict.size
+                |> String.fromInt
+           )
+        |> Layout.text []
+    , Layout.textButton [ Html.Attributes.class "button" ] { onPress = Just args.start, label = "Restart" }
+    ]
+        |> Layout.column [ Layout.gap 8 ]
         |> Layout.el
             [ Html.Attributes.style "position" "absolute"
             , Html.Attributes.style "top" (String.fromFloat Config.lilyPadSize ++ "px")
             , Html.Attributes.style "width" "100%"
-            , Html.Attributes.style "color" Config.playerColor
+            , Html.Attributes.style "color" Config.lilyPadColor
             , Layout.contentCentered
             ]
 

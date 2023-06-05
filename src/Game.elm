@@ -37,6 +37,7 @@ type alias Game =
     , rows : Dict Int (List ObjectId)
     , player : PlayerPos
     , songPosition : Int
+    , endPosition : Int
     , running : Bool
     , bpm : Float
     , statistics : Statistics
@@ -161,9 +162,12 @@ nextBeat game =
     let
         bpm =
             game.bpm + Config.bpmIncrease
+
+        songPosition =
+            game.songPosition + 1
     in
     ( { game
-        | songPosition = game.songPosition + 1
+        | songPosition = songPosition
         , bpm = bpm
         , statistics =
             game.statistics
@@ -171,7 +175,7 @@ nextBeat game =
       }
         |> nextPlayerPos
     , game.rows
-        |> Dict.get (game.songPosition + 1)
+        |> Dict.get songPosition
         |> Maybe.withDefault []
         |> List.filterMap
             (\id ->
@@ -238,19 +242,22 @@ new =
                 |> List.indexedMap Tuple.pair
                 |> Dict.fromList
 
-        rows =
+        ( rows, endPosition ) =
             objects
                 |> Dict.foldl
-                    (\id { start } ->
-                        Dict.update start
-                            (\maybe ->
-                                maybe
-                                    |> Maybe.withDefault []
-                                    |> (::) id
-                                    |> Just
-                            )
+                    (\id { start } ( d, e ) ->
+                        ( d
+                            |> Dict.update start
+                                (\maybe ->
+                                    maybe
+                                        |> Maybe.withDefault []
+                                        |> (::) id
+                                        |> Just
+                                )
+                        , max e start
+                        )
                     )
-                    Dict.empty
+                    ( Dict.empty, 0 )
 
         player =
             OnPlatform 0
@@ -274,6 +281,7 @@ new =
     , player = player
     , rows = rows
     , songPosition = songPosition
+    , endPosition = endPosition
     , running = running
     , bpm = bpm
     , statistics = statistics

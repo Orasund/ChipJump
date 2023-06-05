@@ -57,6 +57,7 @@ view model =
                         { msSinceLastBeat = model.msSinceLastBeat }
                         model.game
                 , onClick = ActivatePlatform
+                , start = StartGame
                 }
 
 
