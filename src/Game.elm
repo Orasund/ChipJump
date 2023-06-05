@@ -54,8 +54,8 @@ activatePlatform id game =
     }
 
 
-getNextPossiblePlatforms : Game -> ObjectId -> List ObjectId
-getNextPossiblePlatforms game from =
+getNextPossibleLilyPads : Game -> ObjectId -> List ( ObjectId, Object )
+getNextPossibleLilyPads game from =
     game.objects
         |> Dict.get from
         |> Maybe.map .start
@@ -70,20 +70,23 @@ getNextPossiblePlatforms game from =
                         )
             )
         |> Maybe.withDefault []
-        |> List.filter
+        |> List.filterMap
             (\next ->
                 game.objects
                     |> Dict.get next
-                    |> Maybe.map
+                    |> Maybe.andThen
                         (\object ->
                             case object.sort of
                                 LilyPad { active } ->
-                                    active
+                                    if active then
+                                        Just ( next, object )
+
+                                    else
+                                        Nothing
 
                                 Wave ->
-                                    False
+                                    Nothing
                         )
-                    |> (==) (Just True)
             )
 
 
@@ -91,8 +94,8 @@ recheckNextPlayerPos : Game -> Game
 recheckNextPlayerPos game =
     case game.player of
         OnPlatform platformId ->
-            if getNextPossiblePlatforms game platformId /= [] then
-                { game | running = True }
+            if getNextPossibleLilyPads game platformId /= [] then
+                { game | running = True } |> nextPlayerPos
 
             else
                 game
@@ -120,29 +123,23 @@ nextPlayerPos game =
         endPosition =
             game.objects
                 |> Dict.get currentObjectId
-                |> Maybe.map (\{ start } -> start + 1)
+                |> Maybe.map (\{ start } -> start)
                 |> Maybe.withDefault 0
-
-        maybePlayer =
-            currentObjectId
-                |> getNextPossiblePlatforms game
-                |> List.head
-                |> Maybe.map
-                    (\next ->
-                        Jumping { from = currentObjectId, to = next }
-                    )
     in
-    if endPosition <= game.songPosition then
-        maybePlayer
-            |> Maybe.map (\player -> { game | player = player })
-            |> Maybe.withDefault
-                { game
-                    | player = OnPlatform currentObjectId
-                    , running = False
-                }
+    currentObjectId
+        |> getNextPossibleLilyPads game
+        |> List.head
+        |> Maybe.map
+            (\( next, object ) ->
+                if object.start - 1 == game.songPosition then
+                    { game | player = Jumping { from = currentObjectId, to = next } }
 
-    else
-        { game | player = OnPlatform currentObjectId }
+                else
+                    { game
+                        | player = OnPlatform currentObjectId
+                    }
+            )
+        |> Maybe.withDefault { game | player = OnPlatform currentObjectId, running = False }
 
 
 nextBeat : Game -> ( Game, List Note )

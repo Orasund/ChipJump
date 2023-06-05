@@ -42,7 +42,7 @@ fromGame args game =
             game.objects
                 |> Dict.get id
                 |> Maybe.map (\{ start, note } -> ( note, start ))
-                |> Maybe.withDefault ( C1, 0 )
+                |> Maybe.withDefault ( Note.bang, 0 )
 
         playerPos =
             case game.player of

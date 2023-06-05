@@ -1,4 +1,4 @@
-module Note exposing (..)
+module Note exposing (Note, a1, a2, b1, b2, bang, bar, c1, c2, c3, d1, d2, e1, e2, f1, f2, g1, g2, pause, toInt, toString)
 
 import Config
 
@@ -19,6 +19,11 @@ type Note
     | A2
     | B2
     | C3
+
+
+bang : Note
+bang =
+    C1
 
 
 toInt : Note -> Int
@@ -128,3 +133,67 @@ bar list =
 
     else
         list
+
+
+c1 =
+    [ C1 ]
+
+
+d1 =
+    [ D1 ]
+
+
+e1 =
+    [ E1 ]
+
+
+f1 =
+    [ F1 ]
+
+
+g1 =
+    [ G1 ]
+
+
+a1 =
+    [ A1 ]
+
+
+b1 =
+    [ B1 ]
+
+
+c2 =
+    [ C2 ]
+
+
+d2 =
+    [ D2 ]
+
+
+e2 =
+    [ E2 ]
+
+
+f2 =
+    [ F2 ]
+
+
+g2 =
+    [ G2 ]
+
+
+a2 =
+    [ A2 ]
+
+
+b2 =
+    [ B2 ]
+
+
+c3 =
+    [ C3 ]
+
+
+pause =
+    []

@@ -3,7 +3,7 @@ module Config exposing (..)
 
 lilyPadSize : Float
 lilyPadSize =
-    100
+    90
 
 
 horizontalSpaceBetweenPlatforms : Float
