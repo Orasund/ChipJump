@@ -6649,7 +6649,7 @@ var $author$project$Main$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{showTitle: false}),
+						{game: $author$project$Game$new, msSinceLastBeat: 0, showTitle: false}),
 					$elm$core$Platform$Cmd$none);
 		}
 	});

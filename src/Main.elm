@@ -100,7 +100,13 @@ update msg model =
             )
 
         StartGame ->
-            ( { model | showTitle = False }, Cmd.none )
+            ( { model
+                | game = Game.new
+                , msSinceLastBeat = 0
+                , showTitle = False
+              }
+            , Cmd.none
+            )
 
 
 subscriptions : Model -> Sub Msg
