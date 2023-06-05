@@ -5202,6 +5202,7 @@ var $author$project$Game$LilyPad = function (a) {
 var $author$project$Game$OnPlatform = function (a) {
 	return {$: 'OnPlatform', a: a};
 };
+var $author$project$Game$Wave = {$: 'Wave'};
 var $elm$core$List$append = F2(
 	function (xs, ys) {
 		if (!ys.b) {
@@ -5213,16 +5214,36 @@ var $elm$core$List$append = F2(
 var $elm$core$List$concat = function (lists) {
 	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
 };
+var $elm$core$List$concatMap = F2(
+	function (f, list) {
+		return $elm$core$List$concat(
+			A2($elm$core$List$map, f, list));
+	});
 var $author$project$Note$A1 = {$: 'A1'};
 var $author$project$Note$A2 = {$: 'A2'};
 var $author$project$Note$C1 = {$: 'C1'};
 var $author$project$Note$C2 = {$: 'C2'};
 var $author$project$Note$C3 = {$: 'C3'};
+var $author$project$Note$D1 = {$: 'D1'};
 var $author$project$Note$D2 = {$: 'D2'};
 var $author$project$Note$E2 = {$: 'E2'};
 var $author$project$Note$F1 = {$: 'F1'};
 var $author$project$Note$F2 = {$: 'F2'};
 var $author$project$Note$G1 = {$: 'G1'};
+var $author$project$Note$G2 = {$: 'G2'};
+var $author$project$Config$beatsPerBar = 8;
+var $author$project$Note$bar = function (list) {
+	return (_Utils_cmp(
+		$elm$core$List$length(list),
+		$author$project$Config$beatsPerBar) < 0) ? $author$project$Note$bar(
+		A2(
+			$elm$core$List$concatMap,
+			function (l) {
+				return _List_fromArray(
+					[l, _List_Nil]);
+			},
+			list)) : list;
+};
 var $elm$core$Array$fromListHelp = F3(
 	function (list, nodeList, nodeListSize) {
 		fromListHelp:
@@ -5258,100 +5279,8 @@ var $elm$core$Array$fromList = function (list) {
 		return A3($elm$core$Array$fromListHelp, list, _List_Nil, 0);
 	}
 };
-var $elm$core$List$repeatHelp = F3(
-	function (result, n, value) {
-		repeatHelp:
-		while (true) {
-			if (n <= 0) {
-				return result;
-			} else {
-				var $temp$result = A2($elm$core$List$cons, value, result),
-					$temp$n = n - 1,
-					$temp$value = value;
-				result = $temp$result;
-				n = $temp$n;
-				value = $temp$value;
-				continue repeatHelp;
-			}
-		}
-	});
-var $elm$core$List$repeat = F2(
-	function (n, value) {
-		return A3($elm$core$List$repeatHelp, _List_Nil, n, value);
-	});
-var $author$project$Song$default = $elm$core$Array$fromList(
-	_Utils_ap(
-		$elm$core$List$concat(
-			A2(
-				$elm$core$List$repeat,
-				4,
-				_List_fromArray(
-					[
-						_List_fromArray(
-						[$author$project$Note$C2, $author$project$Note$C1, $author$project$Note$C3]),
-						_List_fromArray(
-						[$author$project$Note$A2]),
-						_List_fromArray(
-						[$author$project$Note$F2]),
-						_List_fromArray(
-						[$author$project$Note$E2]),
-						_List_fromArray(
-						[$author$project$Note$C2, $author$project$Note$G1]),
-						_List_fromArray(
-						[$author$project$Note$A1]),
-						_List_fromArray(
-						[$author$project$Note$F1, $author$project$Note$C2]),
-						_List_fromArray(
-						[$author$project$Note$D2]),
-						_List_fromArray(
-						[$author$project$Note$F1, $author$project$Note$C2]),
-						_List_fromArray(
-						[$author$project$Note$F1, $author$project$Note$A2]),
-						_List_fromArray(
-						[$author$project$Note$C1, $author$project$Note$F2]),
-						_List_fromArray(
-						[$author$project$Note$C1, $author$project$Note$E2]),
-						_List_fromArray(
-						[$author$project$Note$F1, $author$project$Note$C2, $author$project$Note$G1]),
-						_List_fromArray(
-						[$author$project$Note$F1, $author$project$Note$A1]),
-						_List_fromArray(
-						[$author$project$Note$A1, $author$project$Note$F1, $author$project$Note$C2]),
-						_List_fromArray(
-						[$author$project$Note$D2])
-					]))),
-		_List_fromArray(
-			[
-				_List_fromArray(
-				[$author$project$Note$C2])
-			])));
 var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
-var $elm$core$Dict$foldl = F3(
-	function (func, acc, dict) {
-		foldl:
-		while (true) {
-			if (dict.$ === 'RBEmpty_elm_builtin') {
-				return acc;
-			} else {
-				var key = dict.b;
-				var value = dict.c;
-				var left = dict.d;
-				var right = dict.e;
-				var $temp$func = func,
-					$temp$acc = A3(
-					func,
-					key,
-					value,
-					A3($elm$core$Dict$foldl, func, acc, left)),
-					$temp$dict = right;
-				func = $temp$func;
-				acc = $temp$acc;
-				dict = $temp$dict;
-				continue foldl;
-			}
-		}
-	});
 var $elm$core$Dict$Black = {$: 'Black'};
 var $elm$core$Dict$RBNode_elm_builtin = F5(
 	function (a, b, c, d, e) {
@@ -5473,6 +5402,147 @@ var $elm$core$Dict$fromList = function (assocs) {
 		$elm$core$Dict$empty,
 		assocs);
 };
+var $author$project$Song$lilyPadInstrument = 'lilyPadInstrument';
+var $elm$core$List$repeatHelp = F3(
+	function (result, n, value) {
+		repeatHelp:
+		while (true) {
+			if (n <= 0) {
+				return result;
+			} else {
+				var $temp$result = A2($elm$core$List$cons, value, result),
+					$temp$n = n - 1,
+					$temp$value = value;
+				result = $temp$result;
+				n = $temp$n;
+				value = $temp$value;
+				continue repeatHelp;
+			}
+		}
+	});
+var $elm$core$List$repeat = F2(
+	function (n, value) {
+		return A3($elm$core$List$repeatHelp, _List_Nil, n, value);
+	});
+var $author$project$Song$default = $elm$core$Dict$fromList(
+	_List_fromArray(
+		[
+			_Utils_Tuple2(
+			$author$project$Song$lilyPadInstrument,
+			$elm$core$Array$fromList(
+				_Utils_ap(
+					$elm$core$List$concat(
+						A2(
+							$elm$core$List$repeat,
+							4,
+							$elm$core$List$concat(
+								_List_fromArray(
+									[
+										$author$project$Note$bar(
+										_List_fromArray(
+											[
+												_List_fromArray(
+												[$author$project$Note$C2, $author$project$Note$C1, $author$project$Note$C3]),
+												_List_fromArray(
+												[$author$project$Note$A2]),
+												_List_fromArray(
+												[$author$project$Note$F2]),
+												_List_fromArray(
+												[$author$project$Note$E2])
+											])),
+										$author$project$Note$bar(
+										_List_fromArray(
+											[
+												_List_fromArray(
+												[$author$project$Note$C2, $author$project$Note$G1]),
+												_List_fromArray(
+												[$author$project$Note$A1]),
+												_List_fromArray(
+												[$author$project$Note$F1, $author$project$Note$C2]),
+												_List_fromArray(
+												[$author$project$Note$D2])
+											])),
+										$author$project$Note$bar(
+										_List_fromArray(
+											[
+												_List_fromArray(
+												[$author$project$Note$F1, $author$project$Note$C2]),
+												_List_fromArray(
+												[$author$project$Note$D2]),
+												_List_fromArray(
+												[$author$project$Note$F1, $author$project$Note$A2]),
+												_List_Nil,
+												_List_fromArray(
+												[$author$project$Note$C1, $author$project$Note$F2]),
+												_List_fromArray(
+												[$author$project$Note$G2]),
+												_List_fromArray(
+												[$author$project$Note$D1, $author$project$Note$E2]),
+												_List_fromArray(
+												[$author$project$Note$D2])
+											])),
+										$author$project$Note$bar(
+										_List_fromArray(
+											[
+												_List_fromArray(
+												[$author$project$Note$F1, $author$project$Note$C2, $author$project$Note$G1]),
+												_List_fromArray(
+												[$author$project$Note$F1, $author$project$Note$A1]),
+												_List_fromArray(
+												[$author$project$Note$A1, $author$project$Note$F1, $author$project$Note$C2]),
+												_List_fromArray(
+												[$author$project$Note$D2])
+											]))
+									])))),
+					_List_fromArray(
+						[
+							_List_fromArray(
+							[$author$project$Note$C2])
+						]))))
+		]));
+var $elm$core$List$maybeCons = F3(
+	function (f, mx, xs) {
+		var _v0 = f(mx);
+		if (_v0.$ === 'Just') {
+			var x = _v0.a;
+			return A2($elm$core$List$cons, x, xs);
+		} else {
+			return xs;
+		}
+	});
+var $elm$core$List$filterMap = F2(
+	function (f, xs) {
+		return A3(
+			$elm$core$List$foldr,
+			$elm$core$List$maybeCons(f),
+			_List_Nil,
+			xs);
+	});
+var $elm$core$Dict$foldl = F3(
+	function (func, acc, dict) {
+		foldl:
+		while (true) {
+			if (dict.$ === 'RBEmpty_elm_builtin') {
+				return acc;
+			} else {
+				var key = dict.b;
+				var value = dict.c;
+				var left = dict.d;
+				var right = dict.e;
+				var $temp$func = func,
+					$temp$acc = A3(
+					func,
+					key,
+					value,
+					A3($elm$core$Dict$foldl, func, acc, left)),
+					$temp$dict = right;
+				func = $temp$func;
+				acc = $temp$acc;
+				dict = $temp$dict;
+				continue foldl;
+			}
+		}
+	});
 var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
 var $elm$core$Elm$JsArray$indexedMap = _JsArray_indexedMap;
 var $elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
@@ -5515,6 +5585,16 @@ var $elm$core$Array$indexedMap = F2(
 			$elm$core$Array$builderToArray,
 			true,
 			A3($elm$core$Elm$JsArray$foldl, helper, initialBuilder, tree));
+	});
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
 	});
 var $elm$core$Tuple$pair = F2(
 	function (a, b) {
@@ -5924,6 +6004,7 @@ var $elm$core$Dict$update = F3(
 			return A2($elm$core$Dict$remove, targetKey, dictionary);
 		}
 	});
+var $author$project$Song$waveInstrument = 'waveInstrument';
 var $elm$core$Maybe$withDefault = F2(
 	function (_default, maybe) {
 		if (maybe.$ === 'Just') {
@@ -5935,30 +6016,44 @@ var $elm$core$Maybe$withDefault = F2(
 	});
 var $author$project$Game$new = function () {
 	var track = $author$project$Song$default;
+	var songPosition = 0;
+	var running = false;
 	var player = $author$project$Game$OnPlatform(0);
-	var platforms = $elm$core$Dict$fromList(
+	var objects = $elm$core$Dict$fromList(
 		A2(
 			$elm$core$List$indexedMap,
 			$elm$core$Tuple$pair,
-			$elm$core$List$concat(
-				$elm$core$Array$toList(
-					A2(
-						$elm$core$Array$indexedMap,
-						F2(
-							function (j, list) {
-								return A2(
-									$elm$core$List$map,
-									function (note) {
-										return {
-											note: note,
-											sort: $author$project$Game$LilyPad(
-												{active: !j}),
-											start: j
-										};
-									},
-									list);
-							}),
-						track)))));
+			A2(
+				$elm$core$List$concatMap,
+				function (_v1) {
+					var instrument = _v1.a;
+					var array = _v1.b;
+					return $elm$core$List$concat(
+						A2(
+							$elm$core$List$filterMap,
+							$elm$core$Basics$identity,
+							$elm$core$Array$toList(
+								A2(
+									$elm$core$Array$indexedMap,
+									F2(
+										function (j, list) {
+											return A2(
+												$elm$core$Maybe$map,
+												function (sort) {
+													return A2(
+														$elm$core$List$map,
+														function (note) {
+															return {note: note, sort: sort, start: j};
+														},
+														list);
+												},
+												_Utils_eq(instrument, $author$project$Song$lilyPadInstrument) ? $elm$core$Maybe$Just(
+													$author$project$Game$LilyPad(
+														{active: !j})) : (_Utils_eq(instrument, $author$project$Song$waveInstrument) ? $elm$core$Maybe$Just($author$project$Game$Wave) : $elm$core$Maybe$Nothing));
+										}),
+									array))));
+				},
+				$elm$core$Dict$toList(track))));
 	var rows = A3(
 		$elm$core$Dict$foldl,
 		F2(
@@ -5976,9 +6071,8 @@ var $author$project$Game$new = function () {
 					});
 			}),
 		$elm$core$Dict$empty,
-		platforms);
-	var currentRow = 0;
-	return {platforms: platforms, player: player, rows: rows, songPosition: currentRow, track: track};
+		objects);
+	return {objects: objects, player: player, rows: rows, running: running, songPosition: songPosition, track: track};
 }();
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
@@ -6127,37 +6221,18 @@ var $elm$browser$Browser$AnimationManager$onAnimationFrameDelta = function (tagg
 };
 var $elm$browser$Browser$Events$onAnimationFrameDelta = $elm$browser$Browser$AnimationManager$onAnimationFrameDelta;
 var $author$project$Main$subscriptions = function (model) {
-	if (model.showTitle) {
-		return $elm$core$Platform$Sub$none;
-	} else {
-		var _v0 = model.game.player;
-		if (_v0.$ === 'OnPlatform') {
-			return $elm$core$Platform$Sub$none;
-		} else {
-			return $elm$core$Platform$Sub$batch(
-				_List_fromArray(
-					[
-						$elm$browser$Browser$Events$onAnimationFrameDelta($author$project$Main$NextFrameRequested)
-					]));
-		}
-	}
+	return model.showTitle ? $elm$core$Platform$Sub$none : (model.game.running ? $elm$core$Platform$Sub$batch(
+		_List_fromArray(
+			[
+				$elm$browser$Browser$Events$onAnimationFrameDelta($author$project$Main$NextFrameRequested)
+			])) : $elm$core$Platform$Sub$none);
 };
-var $elm$core$Maybe$map = F2(
-	function (f, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return $elm$core$Maybe$Just(
-				f(value));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
 var $author$project$Game$activatePlatform = F2(
 	function (id, game) {
 		return _Utils_update(
 			game,
 			{
-				platforms: A3(
+				objects: A3(
 					$elm$core$Dict$update,
 					id,
 					$elm$core$Maybe$map(
@@ -6177,42 +6252,16 @@ var $author$project$Game$activatePlatform = F2(
 								return platform;
 							}
 						}),
-					game.platforms)
+					game.objects)
 			});
 	});
 var $elm$core$Basics$ge = _Utils_ge;
-var $author$project$Config$bpm = 80;
-var $author$project$Main$maxDelta = (60 * 1000) / $author$project$Config$bpm;
-var $elm$core$List$maybeCons = F3(
-	function (f, mx, xs) {
-		var _v0 = f(mx);
-		if (_v0.$ === 'Just') {
-			var x = _v0.a;
-			return A2($elm$core$List$cons, x, xs);
-		} else {
-			return xs;
-		}
-	});
-var $elm$core$List$filterMap = F2(
-	function (f, xs) {
-		return A3(
-			$elm$core$List$foldr,
-			$elm$core$List$maybeCons(f),
-			_List_Nil,
-			xs);
-	});
+var $author$project$Config$bpm = 60;
+var $author$project$Config$maxJumpSize = 2;
+var $author$project$Main$maxDelta = (60 * 1000) / ($author$project$Config$bpm * $author$project$Config$maxJumpSize);
 var $author$project$Game$Jumping = function (a) {
 	return {$: 'Jumping', a: a};
 };
-var $elm$core$Maybe$andThen = F2(
-	function (callback, maybeValue) {
-		if (maybeValue.$ === 'Just') {
-			var value = maybeValue.a;
-			return callback(value);
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
 		return A3(
@@ -6242,22 +6291,30 @@ var $author$project$Game$getNextPossiblePlatforms = F2(
 								return false;
 							}
 						},
-						A2($elm$core$Dict$get, next, game.platforms)));
+						A2($elm$core$Dict$get, next, game.objects)));
 			},
 			A2(
 				$elm$core$Maybe$withDefault,
 				_List_Nil,
 				A2(
-					$elm$core$Maybe$andThen,
+					$elm$core$Maybe$map,
 					function (y) {
-						return A2($elm$core$Dict$get, y + 1, game.rows);
+						return A2(
+							$elm$core$List$concatMap,
+							function (amount) {
+								return A2(
+									$elm$core$Maybe$withDefault,
+									_List_Nil,
+									A2($elm$core$Dict$get, y + amount, game.rows));
+							},
+							A2($elm$core$List$range, 1, $author$project$Config$maxJumpSize));
 					},
 					A2(
 						$elm$core$Maybe$map,
 						function ($) {
 							return $.start;
 						},
-						A2($elm$core$Dict$get, from, game.platforms)))));
+						A2($elm$core$Dict$get, from, game.objects)))));
 	});
 var $elm$core$List$head = function (list) {
 	if (list.b) {
@@ -6268,7 +6325,7 @@ var $elm$core$List$head = function (list) {
 		return $elm$core$Maybe$Nothing;
 	}
 };
-var $author$project$Game$platformIdOfPlayer = function (game) {
+var $author$project$Game$objectIdOfPlayer = function (game) {
 	var _v0 = game.player;
 	if (_v0.$ === 'OnPlatform') {
 		var platformId = _v0.a;
@@ -6279,21 +6336,45 @@ var $author$project$Game$platformIdOfPlayer = function (game) {
 	}
 };
 var $author$project$Game$nextPlayerPos = function (game) {
-	var currentPos = $author$project$Game$platformIdOfPlayer(game);
-	var player = A2(
+	var currentObjectId = $author$project$Game$objectIdOfPlayer(game);
+	var endPosition = A2(
 		$elm$core$Maybe$withDefault,
-		$author$project$Game$OnPlatform(currentPos),
+		0,
 		A2(
 			$elm$core$Maybe$map,
-			function (next) {
-				return $author$project$Game$Jumping(
-					{from: currentPos, to: next});
+			function (_v0) {
+				var start = _v0.start;
+				return start + 1;
 			},
-			$elm$core$List$head(
-				A2($author$project$Game$getNextPossiblePlatforms, game, currentPos))));
-	return _Utils_update(
+			A2($elm$core$Dict$get, currentObjectId, game.objects)));
+	var maybePlayer = A2(
+		$elm$core$Maybe$map,
+		function (next) {
+			return $author$project$Game$Jumping(
+				{from: currentObjectId, to: next});
+		},
+		$elm$core$List$head(
+			A2($author$project$Game$getNextPossiblePlatforms, game, currentObjectId)));
+	return (_Utils_cmp(endPosition, game.songPosition) < 1) ? A2(
+		$elm$core$Maybe$withDefault,
+		_Utils_update(
+			game,
+			{
+				player: $author$project$Game$OnPlatform(currentObjectId),
+				running: false
+			}),
+		A2(
+			$elm$core$Maybe$map,
+			function (player) {
+				return _Utils_update(
+					game,
+					{player: player});
+			},
+			maybePlayer)) : _Utils_update(
 		game,
-		{player: player});
+		{
+			player: $author$project$Game$OnPlatform(currentObjectId)
+		});
 };
 var $author$project$Game$nextBeat = function (game) {
 	return _Utils_Tuple2(
@@ -6316,7 +6397,7 @@ var $author$project$Game$nextBeat = function (game) {
 			A2(
 				$elm$core$List$filterMap,
 				function (id) {
-					return A2($elm$core$Dict$get, id, game.platforms);
+					return A2($elm$core$Dict$get, id, game.objects);
 				},
 				A2(
 					$elm$core$Maybe$withDefault,
@@ -6402,7 +6483,9 @@ var $author$project$Game$recheckNextPlayerPos = function (game) {
 		var platformId = _v0.a;
 		return (!_Utils_eq(
 			A2($author$project$Game$getNextPossiblePlatforms, game, platformId),
-			_List_Nil)) ? $author$project$Game$nextPlayerPos(game) : game;
+			_List_Nil)) ? _Utils_update(
+			game,
+			{running: true}) : game;
 	} else {
 		return game;
 	}
@@ -6497,19 +6580,19 @@ var $author$project$Note$toInt = function (note) {
 			return 14;
 	}
 };
-var $author$project$Config$verticalSpaceBetweenPlatforms = 50;
-var $author$project$View$calcPlatformPosition = function (args) {
+var $author$project$Config$verticalSpaceBetweenPlatforms = 100;
+var $author$project$View$Common$calcPlatformPosition = function (args) {
 	var ratio = args.ratioToNextBeat;
 	return _Utils_Tuple2(
 		$author$project$Config$horizontalSpaceBetweenPlatforms * $author$project$Note$toInt(args.note),
-		((($author$project$Config$platformHeight + $author$project$Config$verticalSpaceBetweenPlatforms) * (((-args.start) + ratio) + args.beatsPlayed)) + $author$project$Config$screenHeight) - ($author$project$Config$platformHeight * 2));
+		(($author$project$Config$verticalSpaceBetweenPlatforms * (((-args.start) + ratio) + args.beatsPlayed)) + $author$project$Config$screenHeight) - ($author$project$Config$platformHeight * 2));
 };
 var $author$project$Config$playerSize = 60;
 var $author$project$View$calcPlayerPositionOnPlatform = F2(
 	function (args, _v0) {
 		var note = _v0.a;
 		var start = _v0.b;
-		var _v1 = $author$project$View$calcPlatformPosition(
+		var _v1 = $author$project$View$Common$calcPlatformPosition(
 			{beatsPlayed: args.beatsPlayed, note: note, ratioToNextBeat: args.ratioToNextBeat, start: start});
 		var x = _v1.a;
 		var y = _v1.b;
@@ -6529,8 +6612,8 @@ var $author$project$View$calcPlayerJumpingPosition = function (args) {
 	return _Utils_Tuple2(x2 + ((x1 - x2) * ratio), y2 + ((y1 - y2) * ratio));
 };
 var $elm$html$Html$div = _VirtualDom_node('div');
-var $elm$core$String$fromFloat = _String_fromNumber;
 var $elm$html$Html$button = _VirtualDom_node('button');
+var $elm$core$String$fromFloat = _String_fromNumber;
 var $author$project$Config$lilyPadColor = '#6d7753';
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
@@ -6551,7 +6634,7 @@ var $elm$html$Html$Events$onClick = function (msg) {
 };
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
-var $author$project$View$lilyPad = F2(
+var $author$project$View$Object$lilyPad = F2(
 	function (args, _v0) {
 		var x = _v0.a;
 		var y = _v0.b;
@@ -6592,7 +6675,7 @@ var $author$project$View$lilyPad = F2(
 					])),
 			_List_Nil);
 	});
-var $author$project$View$wave = function (_v0) {
+var $author$project$View$Object$wave = function (_v0) {
 	var x = _v0.a;
 	var y = _v0.b;
 	return A2(
@@ -6618,7 +6701,7 @@ var $author$project$View$wave = function (_v0) {
 			]),
 		_List_Nil);
 };
-var $author$project$View$platforms = F2(
+var $author$project$View$Object$fromDict = F2(
 	function (args, dict) {
 		return A2(
 			$elm$core$List$map,
@@ -6630,16 +6713,16 @@ var $author$project$View$platforms = F2(
 				return function () {
 					if (sort.$ === 'LilyPad') {
 						var active = sort.a.active;
-						return $author$project$View$lilyPad(
+						return $author$project$View$Object$lilyPad(
 							{
 								active: active,
 								onClick: args.onClick(platformId)
 							});
 					} else {
-						return $author$project$View$wave;
+						return $author$project$View$Object$wave;
 					}
 				}()(
-					$author$project$View$calcPlatformPosition(
+					$author$project$View$Common$calcPlatformPosition(
 						{beatsPlayed: args.beatsPlayed, note: note, ratioToNextBeat: args.ratioToNextBeat, start: start}));
 			},
 			$elm$core$Dict$toList(dict));
@@ -6686,7 +6769,7 @@ var $author$project$View$fromGame = F2(
 						var note = _v1.note;
 						return _Utils_Tuple2(note, start);
 					},
-					A2($elm$core$Dict$get, id, game.platforms)));
+					A2($elm$core$Dict$get, id, game.objects)));
 		};
 		var playerPos = function () {
 			var _v0 = game.player;
@@ -6727,9 +6810,9 @@ var $author$project$View$fromGame = F2(
 				_List_fromArray(
 					[
 						A2(
-						$author$project$View$platforms,
+						$author$project$View$Object$fromDict,
 						{beatsPlayed: game.songPosition, onClick: args.onClick, ratioToNextBeat: args.ratioToNextBeat},
-						game.platforms),
+						game.objects),
 						_List_fromArray(
 						[
 							$author$project$View$player(playerPos)

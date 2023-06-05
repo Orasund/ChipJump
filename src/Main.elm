@@ -1,16 +1,12 @@
 port module Main exposing (..)
 
-import Array
 import Browser
 import Browser.Events
 import Config
-import Dict
 import Game exposing (Game, ObjectId, PlayerPos(..))
 import Html exposing (Html)
 import Json.Encode exposing (Value)
-import Note
 import Port
-import Time
 import View
 
 
@@ -34,7 +30,7 @@ type Msg
 
 
 maxDelta =
-    (60 * 1000) / Config.bpm
+    (60 * 1000) / (Config.bpm * toFloat Config.maxJumpSize)
 
 
 calcRatioToNextBeat : { msSinceLastBeat : Float } -> Float
@@ -111,16 +107,14 @@ subscriptions model =
     if model.showTitle then
         Sub.none
 
-    else
-        case model.game.player of
-            OnPlatform _ ->
-                Sub.none
+    else if model.game.running then
+        [ Browser.Events.onAnimationFrameDelta
+            NextFrameRequested
+        ]
+            |> Sub.batch
 
-            Jumping _ ->
-                [ Browser.Events.onAnimationFrameDelta
-                    NextFrameRequested
-                ]
-                    |> Sub.batch
+    else
+        Sub.none
 
 
 main : Program () Model Msg

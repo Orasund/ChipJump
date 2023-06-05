@@ -1,6 +1,7 @@
 module Game exposing (..)
 
 import Array
+import Config
 import Dict exposing (Dict)
 import Note exposing (Note)
 import Song exposing (Song)
@@ -30,6 +31,7 @@ type alias Game =
     , rows : Dict Int (List ObjectId)
     , player : PlayerPos
     , songPosition : Int
+    , running : Bool
     }
 
 
@@ -57,7 +59,16 @@ getNextPossiblePlatforms game from =
     game.objects
         |> Dict.get from
         |> Maybe.map .start
-        |> Maybe.andThen (\y -> game.rows |> Dict.get (y + 1))
+        |> Maybe.map
+            (\y ->
+                List.range 1 Config.maxJumpSize
+                    |> List.concatMap
+                        (\amount ->
+                            game.rows
+                                |> Dict.get (y + amount)
+                                |> Maybe.withDefault []
+                        )
+            )
         |> Maybe.withDefault []
         |> List.filter
             (\next ->
@@ -81,7 +92,7 @@ recheckNextPlayerPos game =
     case game.player of
         OnPlatform platformId ->
             if getNextPossiblePlatforms game platformId /= [] then
-                nextPlayerPos game
+                { game | running = True }
 
             else
                 game
@@ -90,8 +101,8 @@ recheckNextPlayerPos game =
             game
 
 
-platformIdOfPlayer : Game -> ObjectId
-platformIdOfPlayer game =
+objectIdOfPlayer : Game -> ObjectId
+objectIdOfPlayer game =
     case game.player of
         OnPlatform platformId ->
             platformId
@@ -103,20 +114,35 @@ platformIdOfPlayer game =
 nextPlayerPos : Game -> Game
 nextPlayerPos game =
     let
-        currentPos =
-            platformIdOfPlayer game
+        currentObjectId =
+            objectIdOfPlayer game
 
-        player =
-            currentPos
+        endPosition =
+            game.objects
+                |> Dict.get currentObjectId
+                |> Maybe.map (\{ start } -> start + 1)
+                |> Maybe.withDefault 0
+
+        maybePlayer =
+            currentObjectId
                 |> getNextPossiblePlatforms game
                 |> List.head
                 |> Maybe.map
                     (\next ->
-                        Jumping { from = currentPos, to = next }
+                        Jumping { from = currentObjectId, to = next }
                     )
-                |> Maybe.withDefault (OnPlatform currentPos)
     in
-    { game | player = player }
+    if endPosition <= game.songPosition then
+        maybePlayer
+            |> Maybe.map (\player -> { game | player = player })
+            |> Maybe.withDefault
+                { game
+                    | player = OnPlatform currentObjectId
+                    , running = False
+                }
+
+    else
+        { game | player = OnPlatform currentObjectId }
 
 
 nextBeat : Game -> ( Game, List Note )
@@ -152,21 +178,41 @@ new =
         track =
             Song.default
 
+        objects : Dict ObjectId Object
         objects =
             track
-                |> Array.indexedMap
-                    (\j list ->
-                        list
-                            |> List.map
-                                (\note ->
-                                    { start = j
-                                    , sort = LilyPad { active = j == 0 }
-                                    , note = note
-                                    }
+                |> Dict.toList
+                |> List.concatMap
+                    (\( instrument, array ) ->
+                        array
+                            |> Array.indexedMap
+                                (\j list ->
+                                    (if instrument == Song.lilyPadInstrument then
+                                        LilyPad { active = j == 0 }
+                                            |> Just
+
+                                     else if instrument == Song.waveInstrument then
+                                        Wave |> Just
+
+                                     else
+                                        Nothing
+                                    )
+                                        |> Maybe.map
+                                            (\sort ->
+                                                list
+                                                    |> List.map
+                                                        (\note ->
+                                                            { start = j
+                                                            , sort = sort
+                                                            , note = note
+                                                            }
+                                                        )
+                                            )
                                 )
+                            |> Array.toList
+                            |> List.filterMap identity
+                            |> List.concat
                     )
-                |> Array.toList
-                |> List.concat
                 |> List.indexedMap Tuple.pair
                 |> Dict.fromList
 
@@ -187,12 +233,16 @@ new =
         player =
             OnPlatform 0
 
-        currentRow =
+        songPosition =
             0
+
+        running =
+            False
     in
     { track = track
     , objects = objects
     , player = player
     , rows = rows
-    , songPosition = currentRow
+    , songPosition = songPosition
+    , running = running
     }

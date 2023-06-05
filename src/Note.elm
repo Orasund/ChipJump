@@ -1,5 +1,7 @@
 module Note exposing (..)
 
+import Config
+
 
 type Note
     = C1
@@ -115,3 +117,14 @@ toString note =
 
         C3 ->
             "C3"
+
+
+bar : List (List Note) -> List (List Note)
+bar list =
+    if List.length list < Config.beatsPerBar then
+        list
+            |> List.concatMap (\l -> [ l, [] ])
+            |> bar
+
+    else
+        list

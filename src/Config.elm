@@ -18,7 +18,7 @@ horizontalSpaceBetweenPlatforms =
 
 verticalSpaceBetweenPlatforms : Float
 verticalSpaceBetweenPlatforms =
-    50
+    100
 
 
 screenHeight : Float
@@ -38,12 +38,22 @@ playerSize =
 
 bpm : Float
 bpm =
-    80
+    60
 
 
 jumpTime : Float
 jumpTime =
     1 / 4
+
+
+maxJumpSize : Int
+maxJumpSize =
+    2
+
+
+beatsPerBar : Int
+beatsPerBar =
+    8
 
 
 backgroundColor : String

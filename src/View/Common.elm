@@ -12,7 +12,7 @@ calcPlatformPosition args =
     in
     ( Config.horizontalSpaceBetweenPlatforms
         * toFloat (Note.toInt args.note)
-    , (Config.platformHeight + Config.verticalSpaceBetweenPlatforms)
+    , Config.verticalSpaceBetweenPlatforms
         * (toFloat -args.start + ratio + toFloat args.beatsPlayed)
         + Config.screenHeight
         - (Config.platformHeight
