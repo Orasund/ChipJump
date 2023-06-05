@@ -29,13 +29,9 @@ type Msg
     | StartGame
 
 
-maxDelta =
-    (60 * 1000) / (Config.bpm * toFloat Config.maxJumpSize)
-
-
-calcRatioToNextBeat : { msSinceLastBeat : Float } -> Float
-calcRatioToNextBeat args =
-    args.msSinceLastBeat / maxDelta
+calcRatioToNextBeat : { msSinceLastBeat : Float } -> Game -> Float
+calcRatioToNextBeat args game =
+    args.msSinceLastBeat / Game.calcMaxDelta game
 
 
 init : () -> ( Model, Cmd Msg )
@@ -59,6 +55,7 @@ view model =
                 { ratioToNextBeat =
                     calcRatioToNextBeat
                         { msSinceLastBeat = model.msSinceLastBeat }
+                        model.game
                 , onClick = ActivatePlatform
                 }
 
@@ -70,6 +67,9 @@ update msg model =
             let
                 msSinceLastBeat =
                     model.msSinceLastBeat + delta
+
+                maxDelta =
+                    Game.calcMaxDelta model.game
             in
             if msSinceLastBeat >= maxDelta then
                 model.game

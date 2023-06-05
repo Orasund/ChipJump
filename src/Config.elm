@@ -31,9 +31,14 @@ playerSize =
     60
 
 
-bpm : Float
-bpm =
-    60
+bpmIncrease : Float
+bpmIncrease =
+    0.25
+
+
+bpmPercentDecrease : Float
+bpmPercentDecrease =
+    0.07
 
 
 jumpTime : Float

@@ -75,6 +75,7 @@ fromGame args game =
             , Html.Attributes.style "background-color" Config.backgroundColor
             , Html.Attributes.style "height" (String.fromFloat Config.screenHeight ++ "px")
             , Html.Attributes.style "width" (String.fromFloat Config.screenWidth ++ "px")
+            , Html.Attributes.style "overflow" "hidden"
             ]
 
 

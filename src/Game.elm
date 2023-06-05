@@ -25,6 +25,11 @@ type ObjectSort
     | Wave
 
 
+type alias Statistics =
+    { maxBpm : Float
+    }
+
+
 type alias Game =
     { track : Song
     , objects : Dict ObjectId Object
@@ -32,7 +37,13 @@ type alias Game =
     , player : PlayerPos
     , songPosition : Int
     , running : Bool
+    , bpm : Float
+    , statistics : Statistics
     }
+
+
+calcMaxDelta game =
+    (60 * 1000) / (game.bpm * toFloat Config.maxJumpSize)
 
 
 activatePlatform : ObjectId -> Game -> Game
@@ -119,12 +130,6 @@ nextPlayerPos game =
     let
         currentObjectId =
             objectIdOfPlayer game
-
-        endPosition =
-            game.objects
-                |> Dict.get currentObjectId
-                |> Maybe.map (\{ start } -> start)
-                |> Maybe.withDefault 0
     in
     currentObjectId
         |> getNextPossibleLilyPads game
@@ -139,12 +144,17 @@ nextPlayerPos game =
                         | player = OnPlatform currentObjectId
                     }
             )
-        |> Maybe.withDefault { game | player = OnPlatform currentObjectId, running = False }
+        |> Maybe.withDefault
+            { game
+                | player = OnPlatform currentObjectId
+                , running = False
+                , bpm = game.bpm - game.bpm * Config.bpmPercentDecrease
+            }
 
 
 nextBeat : Game -> ( Game, List Note )
 nextBeat game =
-    ( { game | songPosition = game.songPosition + 1 } |> nextPlayerPos
+    ( { game | songPosition = game.songPosition + 1, bpm = game.bpm + Config.bpmIncrease } |> nextPlayerPos
     , game.rows
         |> Dict.get (game.songPosition + 1)
         |> Maybe.withDefault []
@@ -235,6 +245,12 @@ new =
 
         running =
             False
+
+        bpm =
+            60
+
+        statistics =
+            { maxBpm = bpm }
     in
     { track = track
     , objects = objects
@@ -242,4 +258,6 @@ new =
     , rows = rows
     , songPosition = songPosition
     , running = running
+    , bpm = bpm
+    , statistics = statistics
     }
