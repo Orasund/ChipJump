@@ -80,13 +80,14 @@ fromGame args game =
 
 player : ( Float, Float ) -> Html msg
 player ( x, y ) =
-    Html.div
+    Html.img
         [ Html.Attributes.style "width" (String.fromFloat Config.playerSize ++ "px")
         , Html.Attributes.style "height" (String.fromFloat Config.playerSize ++ "px")
-        , Html.Attributes.style "background-color" Config.playerColor
         , Html.Attributes.style "position" "absolute"
         , Html.Attributes.style "top" (String.fromFloat y ++ "px")
         , Html.Attributes.style "left" (String.fromFloat x ++ "px")
+        , Html.Attributes.src "assets/images/frog.png"
+        , Html.Attributes.style "z-index" (String.fromInt Config.playerZIndex)
         ]
         []
 

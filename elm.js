@@ -6695,15 +6695,16 @@ var $author$project$View$Object$lilyPad = F2(
 						$elm$html$Html$Attributes$style,
 						'left',
 						$elm$core$String$fromFloat(x + offSet) + 'px'),
+						A2($elm$html$Html$Attributes$style, 'background-color', 'transparent'),
 						$elm$html$Html$Events$onClick(args.onClick)
 					]),
 				args.active ? _List_fromArray(
 					[
-						A2($elm$html$Html$Attributes$style, 'background-color', $author$project$Config$lilyPadColor),
-						A2($elm$html$Html$Attributes$style, 'border', '8px solid ' + $author$project$Config$lilyPadColor)
+						A2($elm$html$Html$Attributes$style, 'background-image', 'url(\'assets/images/lilyPad.png\')'),
+						A2($elm$html$Html$Attributes$style, 'background-size', '100%'),
+						A2($elm$html$Html$Attributes$style, 'border', '0px')
 					]) : _List_fromArray(
 					[
-						A2($elm$html$Html$Attributes$style, 'background-color', 'transparent'),
 						A2($elm$html$Html$Attributes$style, 'border', '8px dashed ' + $author$project$Config$lilyPadColor),
 						A2($elm$html$Html$Attributes$style, 'z-index', '10')
 					])),
@@ -6770,12 +6771,26 @@ var $author$project$View$Object$fromDict = F2(
 			},
 			$elm$core$Dict$toList(dict));
 	});
-var $author$project$Config$playerColor = '#ce9f39';
+var $elm$html$Html$img = _VirtualDom_node('img');
+var $author$project$Config$playerZIndex = 100;
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$src = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'src',
+		_VirtualDom_noJavaScriptOrHtmlUri(url));
+};
 var $author$project$View$player = function (_v0) {
 	var x = _v0.a;
 	var y = _v0.b;
 	return A2(
-		$elm$html$Html$div,
+		$elm$html$Html$img,
 		_List_fromArray(
 			[
 				A2(
@@ -6786,7 +6801,6 @@ var $author$project$View$player = function (_v0) {
 				$elm$html$Html$Attributes$style,
 				'height',
 				$elm$core$String$fromFloat($author$project$Config$playerSize) + 'px'),
-				A2($elm$html$Html$Attributes$style, 'background-color', $author$project$Config$playerColor),
 				A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 				A2(
 				$elm$html$Html$Attributes$style,
@@ -6795,7 +6809,12 @@ var $author$project$View$player = function (_v0) {
 				A2(
 				$elm$html$Html$Attributes$style,
 				'left',
-				$elm$core$String$fromFloat(x) + 'px')
+				$elm$core$String$fromFloat(x) + 'px'),
+				$elm$html$Html$Attributes$src('assets/images/frog.png'),
+				A2(
+				$elm$html$Html$Attributes$style,
+				'z-index',
+				$elm$core$String$fromInt($author$project$Config$playerZIndex))
 			]),
 		_List_Nil);
 };
@@ -6866,13 +6885,6 @@ var $Orasund$elm_layout$Layout$alignAtCenter = A2($elm$html$Html$Attributes$styl
 var $Orasund$elm_layout$Layout$contentCentered = A2($elm$html$Html$Attributes$style, 'justify-content', 'center');
 var $Orasund$elm_layout$Layout$centered = _List_fromArray(
 	[$Orasund$elm_layout$Layout$contentCentered, $Orasund$elm_layout$Layout$alignAtCenter]);
-var $elm$html$Html$Attributes$stringProperty = F2(
-	function (key, string) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$string(string));
-	});
 var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
 var $Orasund$elm_layout$Layout$column = function (attrs) {
 	return $elm$html$Html$div(
@@ -6913,6 +6925,7 @@ var $Orasund$elm_layout$Layout$heading1 = F2(
 			_List_fromArray(
 				[content]));
 	});
+var $author$project$Config$playerColor = '#ce9f39';
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$virtual_dom$VirtualDom$attribute = F2(

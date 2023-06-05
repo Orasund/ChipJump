@@ -63,16 +63,17 @@ lilyPad args ( x, y ) =
          , Html.Attributes.style "border-radius" "100%"
          , Html.Attributes.style "top" (String.fromFloat (y + offSet) ++ "px")
          , Html.Attributes.style "left" (String.fromFloat (x + offSet) ++ "px")
+         , Html.Attributes.style "background-color" "transparent"
          , Html.Events.onClick args.onClick
          ]
             ++ (if args.active then
-                    [ Html.Attributes.style "background-color" Config.lilyPadColor
-                    , Html.Attributes.style "border" ("8px solid " ++ Config.lilyPadColor)
+                    [ Html.Attributes.style "background-image" "url('assets/images/lilyPad.png')"
+                    , Html.Attributes.style "background-size" "100%"
+                    , Html.Attributes.style "border" "0px"
                     ]
 
                 else
-                    [ Html.Attributes.style "background-color" "transparent"
-                    , Html.Attributes.style "border" ("8px dashed " ++ Config.lilyPadColor)
+                    [ Html.Attributes.style "border" ("8px dashed " ++ Config.lilyPadColor)
                     , Html.Attributes.style "z-index" "10"
                     ]
                )

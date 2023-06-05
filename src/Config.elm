@@ -74,3 +74,8 @@ fireflyColor =
 padColor : String
 padColor =
     "#001518"
+
+
+playerZIndex : Int
+playerZIndex =
+    100
