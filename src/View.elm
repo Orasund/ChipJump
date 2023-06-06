@@ -1,23 +1,46 @@
 module View exposing (..)
 
 import Config
-import Dict exposing (Dict)
-import Game exposing (Game, Object, ObjectId, ObjectSort(..), PlayerPos(..))
+import Dict
+import Game exposing (Game, ObjectId, ObjectSort(..), PlayerPos(..))
 import Html exposing (Html)
 import Html.Attributes
-import Html.Events
 import Layout
 import Note exposing (Note(..))
 import View.Common
 import View.Object
 
 
-titleScreen : { start : msg } -> Html msg
+titleScreen : { start : msg, toggleSettings : msg } -> Html msg
 titleScreen args =
-    [ "<Game Title>"
-        |> Html.text
-        |> Layout.heading1 [ Html.Attributes.style "color" Config.playerColor ]
+    [ [ "Ode to the toad"
+            |> Html.text
+            |> Layout.heading1 [ Html.Attributes.style "color" Config.playerColor ]
+      , "By Lucas Payr & Lilithisa" |> Layout.text []
+      ]
+        |> Layout.column [ Layout.gap 8 ]
     , Layout.textButton [ Html.Attributes.class "button" ] { onPress = Just args.start, label = "Start" }
+    , settingsButton { onClick = args.toggleSettings }
+    ]
+        |> Layout.column [ Layout.gap 100 ]
+        |> Layout.el
+            (Layout.centered
+                ++ [ Html.Attributes.style "position" "relative"
+                   , Html.Attributes.style "background-color" Config.backgroundColor
+                   , Html.Attributes.style "height" (String.fromFloat Config.screenHeight ++ "px")
+                   , Html.Attributes.style "width" (String.fromFloat Config.screenWidth ++ "px")
+                   ]
+            )
+
+
+settingsScreen : { close : msg } -> Html msg
+settingsScreen args =
+    [ [ "Settings"
+            |> Html.text
+            |> Layout.heading1 [ Html.Attributes.style "color" Config.playerColor ]
+      ]
+        |> Layout.column [ Layout.gap 8 ]
+    , Layout.textButton [ Html.Attributes.class "button" ] { onPress = Just args.close, label = "Back" }
     ]
         |> Layout.column [ Layout.gap 100 ]
         |> Layout.el
@@ -33,6 +56,7 @@ titleScreen args =
 fromGame :
     { ratioToNextBeat : Float
     , onClick : ObjectId -> msg
+    , toggleSettings : msg
     , start : msg
     }
     -> Game
@@ -68,12 +92,14 @@ fromGame args game =
             , onClick = args.onClick
             , beatsPlayed = game.songPosition
             }
-    , [ playerPos |> player ]
     , if game.songPosition == game.endPosition then
         [ endgame { start = args.start } game ]
 
       else
         []
+    , [ playerPos |> player
+      , settingsButton { onClick = args.toggleSettings }
+      ]
     ]
         |> List.concat
         |> Html.div
@@ -83,6 +109,19 @@ fromGame args game =
             , Html.Attributes.style "width" (String.fromFloat Config.screenWidth ++ "px")
             , Html.Attributes.style "overflow" "hidden"
             ]
+
+
+settingsButton : { onClick : msg } -> Html msg
+settingsButton args =
+    Layout.textButton
+        [ Html.Attributes.style "position" "absolute"
+        , Html.Attributes.style "top" "8px"
+        , Html.Attributes.style "right" "8px"
+        , Html.Attributes.class "button"
+        ]
+        { label = "Settings"
+        , onPress = Just args.onClick
+        }
 
 
 endgame : { start : msg } -> Game -> Html msg

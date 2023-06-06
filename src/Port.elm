@@ -17,3 +17,17 @@ playSound instrument notes =
           , E.string instrument
           )
         ]
+
+
+toggleMute : Value
+toggleMute =
+    E.object
+        [ ( "name", E.string "toggleMute" ) ]
+
+
+setVolume : Float -> Value
+setVolume amount =
+    E.object
+        [ ( "name", E.string "setVolume" )
+        , ( "amount", E.float amount )
+        ]

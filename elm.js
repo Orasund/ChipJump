@@ -6193,7 +6193,7 @@ var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Main$init = function (_v0) {
 	return _Utils_Tuple2(
-		{game: $author$project$Game$new, msSinceLastBeat: 0, showTitle: true},
+		{game: $author$project$Game$new, msSinceLastBeat: 0, showSettings: false, showTitle: true},
 		$elm$core$Platform$Cmd$none);
 };
 var $author$project$Main$NextFrameRequested = function (a) {
@@ -6336,7 +6336,7 @@ var $elm$browser$Browser$AnimationManager$onAnimationFrameDelta = function (tagg
 };
 var $elm$browser$Browser$Events$onAnimationFrameDelta = $elm$browser$Browser$AnimationManager$onAnimationFrameDelta;
 var $author$project$Main$subscriptions = function (model) {
-	return model.showTitle ? $elm$core$Platform$Sub$none : (model.game.running ? $elm$core$Platform$Sub$batch(
+	return (model.showTitle || model.showSettings) ? $elm$core$Platform$Sub$none : (model.game.running ? $elm$core$Platform$Sub$batch(
 		_List_fromArray(
 			[
 				$elm$browser$Browser$Events$onAnimationFrameDelta($author$project$Main$NextFrameRequested)
@@ -6544,6 +6544,7 @@ var $author$project$Game$nextBeat = function (game) {
 					_List_Nil,
 					A2($elm$core$Dict$get, songPosition, game.rows)))));
 };
+var $elm$core$Basics$not = _Basics_not;
 var $elm$json$Json$Encode$list = F2(
 	function (func, entries) {
 		return _Json_wrap(
@@ -6676,6 +6677,12 @@ var $author$project$Main$update = F2(
 								A2($author$project$Game$activatePlatform, platformId, model.game))
 						}),
 					$elm$core$Platform$Cmd$none);
+			case 'ToggleSettings':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{showSettings: !model.showSettings}),
+					$elm$core$Platform$Cmd$none);
 			default:
 				return _Utils_Tuple2(
 					_Utils_update(
@@ -6688,6 +6695,7 @@ var $author$project$Main$ActivatePlatform = function (a) {
 	return {$: 'ActivatePlatform', a: a};
 };
 var $author$project$Main$StartGame = {$: 'StartGame'};
+var $author$project$Main$ToggleSettings = {$: 'ToggleSettings'};
 var $author$project$Main$calcRatioToNextBeat = F2(
 	function (args, game) {
 		return args.msSinceLastBeat / $author$project$Game$calcMaxDelta(game);
@@ -6830,7 +6838,6 @@ var $Orasund$elm_layout$Layout$heading2 = F2(
 				[content]));
 	});
 var $author$project$Config$lilyPadColor = '#6d7753';
-var $elm$core$Basics$not = _Basics_not;
 var $author$project$Config$playerColor = '#ce9f39';
 var $elm$core$Basics$round = _Basics_round;
 var $elm$core$Dict$sizeHelp = F2(
@@ -7146,6 +7153,21 @@ var $author$project$View$player = function (_v0) {
 			]),
 		_List_Nil);
 };
+var $author$project$View$settingsButton = function (args) {
+	return A2(
+		$Orasund$elm_layout$Layout$textButton,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+				A2($elm$html$Html$Attributes$style, 'top', '8px'),
+				A2($elm$html$Html$Attributes$style, 'right', '8px'),
+				$elm$html$Html$Attributes$class('button')
+			]),
+		{
+			label: 'Settings',
+			onPress: $elm$core$Maybe$Just(args.onClick)
+		});
+};
 var $author$project$View$fromGame = F2(
 	function (args, game) {
 		var getPlatformPosition = function (id) {
@@ -7204,17 +7226,19 @@ var $author$project$View$fromGame = F2(
 						$author$project$View$Object$fromDict,
 						{beatsPlayed: game.songPosition, onClick: args.onClick, ratioToNextBeat: args.ratioToNextBeat},
 						game.objects),
-						_List_fromArray(
-						[
-							$author$project$View$player(playerPos)
-						]),
 						_Utils_eq(game.songPosition, game.endPosition) ? _List_fromArray(
 						[
 							A2(
 							$author$project$View$endgame,
 							{start: args.start},
 							game)
-						]) : _List_Nil
+						]) : _List_Nil,
+						_List_fromArray(
+						[
+							$author$project$View$player(playerPos),
+							$author$project$View$settingsButton(
+							{onClick: args.toggleSettings})
+						])
 					])));
 	});
 var $Orasund$elm_layout$Layout$alignAtCenter = A2($elm$html$Html$Attributes$style, 'align-items', 'center');
@@ -7232,6 +7256,60 @@ var $Orasund$elm_layout$Layout$heading1 = F2(
 			_List_fromArray(
 				[content]));
 	});
+var $author$project$View$settingsScreen = function (args) {
+	return A2(
+		$Orasund$elm_layout$Layout$el,
+		_Utils_ap(
+			$Orasund$elm_layout$Layout$centered,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'relative'),
+					A2($elm$html$Html$Attributes$style, 'background-color', $author$project$Config$backgroundColor),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'height',
+					$elm$core$String$fromFloat($author$project$Config$screenHeight) + 'px'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'width',
+					$elm$core$String$fromFloat($author$project$Config$screenWidth) + 'px')
+				])),
+		A2(
+			$Orasund$elm_layout$Layout$column,
+			_List_fromArray(
+				[
+					$Orasund$elm_layout$Layout$gap(100)
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$Orasund$elm_layout$Layout$column,
+					_List_fromArray(
+						[
+							$Orasund$elm_layout$Layout$gap(8)
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$Orasund$elm_layout$Layout$heading1,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'color', $author$project$Config$playerColor)
+								]),
+							$elm$html$Html$text('Settings'))
+						])),
+					A2(
+					$Orasund$elm_layout$Layout$textButton,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('button')
+						]),
+					{
+						label: 'Back',
+						onPress: $elm$core$Maybe$Just(args.close)
+					})
+				])));
+};
 var $author$project$View$titleScreen = function (args) {
 	return A2(
 		$Orasund$elm_layout$Layout$el,
@@ -7259,12 +7337,22 @@ var $author$project$View$titleScreen = function (args) {
 			_List_fromArray(
 				[
 					A2(
-					$Orasund$elm_layout$Layout$heading1,
+					$Orasund$elm_layout$Layout$column,
 					_List_fromArray(
 						[
-							A2($elm$html$Html$Attributes$style, 'color', $author$project$Config$playerColor)
+							$Orasund$elm_layout$Layout$gap(8)
 						]),
-					$elm$html$Html$text('<Game Title>')),
+					_List_fromArray(
+						[
+							A2(
+							$Orasund$elm_layout$Layout$heading1,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'color', $author$project$Config$playerColor)
+								]),
+							$elm$html$Html$text('Ode to the toad')),
+							A2($Orasund$elm_layout$Layout$text, _List_Nil, 'By Lucas Payr & Lilithisa')
+						])),
 					A2(
 					$Orasund$elm_layout$Layout$textButton,
 					_List_fromArray(
@@ -7274,12 +7362,15 @@ var $author$project$View$titleScreen = function (args) {
 					{
 						label: 'Start',
 						onPress: $elm$core$Maybe$Just(args.start)
-					})
+					}),
+					$author$project$View$settingsButton(
+					{onClick: args.toggleSettings})
 				])));
 };
 var $author$project$Main$view = function (model) {
-	return model.showTitle ? $author$project$View$titleScreen(
-		{start: $author$project$Main$StartGame}) : A2(
+	return model.showSettings ? $author$project$View$settingsScreen(
+		{close: $author$project$Main$ToggleSettings}) : (model.showTitle ? $author$project$View$titleScreen(
+		{start: $author$project$Main$StartGame, toggleSettings: $author$project$Main$ToggleSettings}) : A2(
 		$author$project$View$fromGame,
 		{
 			onClick: $author$project$Main$ActivatePlatform,
@@ -7287,9 +7378,10 @@ var $author$project$Main$view = function (model) {
 				$author$project$Main$calcRatioToNextBeat,
 				{msSinceLastBeat: model.msSinceLastBeat},
 				model.game),
-			start: $author$project$Main$StartGame
+			start: $author$project$Main$StartGame,
+			toggleSettings: $author$project$Main$ToggleSettings
 		},
-		model.game);
+		model.game));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
 	{init: $author$project$Main$init, subscriptions: $author$project$Main$subscriptions, update: $author$project$Main$update, view: $author$project$Main$view});
