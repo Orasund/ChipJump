@@ -2,7 +2,6 @@ port module Main exposing (..)
 
 import Browser
 import Browser.Events
-import Config
 import Dict
 import Game exposing (Game, ObjectId, PlayerPos(..))
 import Html exposing (Html)
@@ -21,12 +20,14 @@ type alias Model =
     { game : Game
     , msSinceLastBeat : Float
     , showTitle : Bool
+    , showSettings : Bool
     }
 
 
 type Msg
     = NextFrameRequested Float
     | ActivatePlatform ObjectId
+    | ToggleSettings
     | StartGame
 
 
@@ -40,6 +41,7 @@ init () =
     ( { game = Game.new
       , msSinceLastBeat = 0
       , showTitle = True
+      , showSettings = False
       }
     , Cmd.none
     )
@@ -47,8 +49,14 @@ init () =
 
 view : Model -> Html Msg
 view model =
-    if model.showTitle then
-        View.titleScreen { start = StartGame }
+    if model.showSettings then
+        View.settingsScreen { close = ToggleSettings }
+
+    else if model.showTitle then
+        View.titleScreen
+            { start = StartGame
+            , toggleSettings = ToggleSettings
+            }
 
     else
         model.game
@@ -59,6 +67,7 @@ view model =
                         model.game
                 , onClick = ActivatePlatform
                 , start = StartGame
+                , toggleSettings = ToggleSettings
                 }
 
 
@@ -106,6 +115,11 @@ update msg model =
             , Cmd.none
             )
 
+        ToggleSettings ->
+            ( { model | showSettings = not model.showSettings }
+            , Cmd.none
+            )
+
         StartGame ->
             ( { model
                 | game = Game.new
@@ -118,7 +132,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    if model.showTitle then
+    if model.showTitle || model.showSettingsAdd then
         Sub.none
 
     else if model.game.running then
