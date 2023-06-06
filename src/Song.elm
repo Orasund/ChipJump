@@ -91,6 +91,16 @@ default =
             ++ [ c2 ++ c1 ++ c3 ]
             |> Array.fromList
       )
+
+    {--, ( waveInstrument
+      , Note.bar
+            [ a2 ++ c3 ++ f2
+            , c2 ++ e2 ++ g2
+            , a2 ++ c3 ++ f2
+            , f2 ++ a2 ++ c3
+            ]
+            |> Array.fromList
+      )--}
     ]
         |> Dict.fromList
 

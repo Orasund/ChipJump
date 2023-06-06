@@ -6503,18 +6503,37 @@ var $author$project$Game$nextBeat = function (game) {
 							});
 					}(game.statistics)
 				})),
-		A2(
-			$elm$core$List$filterMap,
+		A3(
+			$elm$core$List$foldl,
 			function (_v0) {
 				var note = _v0.note;
 				var sort = _v0.sort;
 				if (sort.$ === 'LilyPad') {
 					var active = sort.a.active;
-					return active ? $elm$core$Maybe$Just(note) : $elm$core$Maybe$Nothing;
+					return active ? A2(
+						$elm$core$Dict$update,
+						$author$project$Song$lilyPadInstrument,
+						function (maybe) {
+							return $elm$core$Maybe$Just(
+								A2(
+									$elm$core$List$cons,
+									note,
+									A2($elm$core$Maybe$withDefault, _List_Nil, maybe)));
+						}) : $elm$core$Basics$identity;
 				} else {
-					return $elm$core$Maybe$Just(note);
+					return A2(
+						$elm$core$Dict$update,
+						$author$project$Song$waveInstrument,
+						function (maybe) {
+							return $elm$core$Maybe$Just(
+								A2(
+									$elm$core$List$cons,
+									note,
+									A2($elm$core$Maybe$withDefault, _List_Nil, maybe)));
+						});
 				}
 			},
+			$elm$core$Dict$empty,
 			A2(
 				$elm$core$List$filterMap,
 				function (id) {
@@ -6582,21 +6601,25 @@ var $author$project$Note$toString = function (note) {
 			return 'C3';
 	}
 };
-var $author$project$Port$playSound = function (notes) {
-	return $elm$json$Json$Encode$object(
-		_List_fromArray(
-			[
-				_Utils_Tuple2(
-				'name',
-				$elm$json$Json$Encode$string('playSound')),
-				_Utils_Tuple2(
-				'sound',
-				A2(
-					$elm$json$Json$Encode$list,
-					$elm$json$Json$Encode$string,
-					A2($elm$core$List$map, $author$project$Note$toString, notes)))
-			]));
-};
+var $author$project$Port$playSound = F2(
+	function (instrument, notes) {
+		return $elm$json$Json$Encode$object(
+			_List_fromArray(
+				[
+					_Utils_Tuple2(
+					'name',
+					$elm$json$Json$Encode$string('playSound')),
+					_Utils_Tuple2(
+					'sound',
+					A2(
+						$elm$json$Json$Encode$list,
+						$elm$json$Json$Encode$string,
+						A2($elm$core$List$map, $author$project$Note$toString, notes))),
+					_Utils_Tuple2(
+					'instrument',
+					$elm$json$Json$Encode$string(instrument))
+				]));
+	});
 var $elm$core$Basics$neq = _Utils_notEqual;
 var $author$project$Game$recheckNextPlayerPos = function (game) {
 	var _v0 = game.player;
@@ -6622,13 +6645,21 @@ var $author$project$Main$update = F2(
 				var maxDelta = $author$project$Game$calcMaxDelta(model.game);
 				return (_Utils_cmp(msSinceLastBeat, maxDelta) > -1) ? function (_v1) {
 					var game = _v1.a;
-					var notes = _v1.b;
+					var dict = _v1.b;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
 							{game: game, msSinceLastBeat: msSinceLastBeat - maxDelta}),
-						$author$project$Main$send(
-							$author$project$Port$playSound(notes)));
+						$elm$core$Platform$Cmd$batch(
+							A2(
+								$elm$core$List$map,
+								function (_v2) {
+									var instrument = _v2.a;
+									var notes = _v2.b;
+									return $author$project$Main$send(
+										A2($author$project$Port$playSound, instrument, notes));
+								},
+								$elm$core$Dict$toList(dict))));
 				}(
 					$author$project$Game$nextBeat(model.game)) : _Utils_Tuple2(
 					_Utils_update(
@@ -6962,6 +6993,12 @@ var $author$project$View$endgame = F2(
 						})
 					])));
 	});
+var $elm$html$Html$Events$onMouseDown = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'mousedown',
+		$elm$json$Json$Decode$succeed(msg));
+};
 var $author$project$View$Object$lilyPad = F2(
 	function (args, _v0) {
 		var x = _v0.a;
@@ -6992,7 +7029,7 @@ var $author$project$View$Object$lilyPad = F2(
 						'left',
 						$elm$core$String$fromFloat(x + offSet) + 'px'),
 						A2($elm$html$Html$Attributes$style, 'background-color', 'transparent'),
-						$elm$html$Html$Events$onClick(args.onClick)
+						$elm$html$Html$Events$onMouseDown(args.onClick)
 					]),
 				args.active ? _List_fromArray(
 					[
@@ -7022,6 +7059,7 @@ var $author$project$View$Object$wave = function (_v0) {
 				$elm$html$Html$Attributes$style,
 				'height',
 				$elm$core$String$fromFloat($author$project$Config$lilyPadSize) + 'px'),
+				A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 				A2(
 				$elm$html$Html$Attributes$style,
 				'top',
@@ -7029,7 +7067,8 @@ var $author$project$View$Object$wave = function (_v0) {
 				A2(
 				$elm$html$Html$Attributes$style,
 				'left',
-				$elm$core$String$fromFloat(x) + 'px')
+				$elm$core$String$fromFloat(x) + 'px'),
+				A2($elm$html$Html$Attributes$style, 'background-color', 'black')
 			]),
 		_List_Nil);
 };

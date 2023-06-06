@@ -3,6 +3,7 @@ port module Main exposing (..)
 import Browser
 import Browser.Events
 import Config
+import Dict
 import Game exposing (Game, ObjectId, PlayerPos(..))
 import Html exposing (Html)
 import Json.Encode exposing (Value)
@@ -75,14 +76,20 @@ update msg model =
             if msSinceLastBeat >= maxDelta then
                 model.game
                     |> Game.nextBeat
-                    |> (\( game, notes ) ->
+                    |> (\( game, dict ) ->
                             ( { model
                                 | msSinceLastBeat = msSinceLastBeat - maxDelta
                                 , game = game
                               }
-                            , notes
-                                |> Port.playSound
-                                |> send
+                            , dict
+                                |> Dict.toList
+                                |> List.map
+                                    (\( instrument, notes ) ->
+                                        notes
+                                            |> Port.playSound instrument
+                                            |> send
+                                    )
+                                |> Cmd.batch
                             )
                        )
 
