@@ -6,6 +6,7 @@ import Game exposing (Object, ObjectId, ObjectSort(..))
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events
+import Json.Decode as Decode
 import View.Common
 
 
@@ -64,7 +65,7 @@ lilyPad args ( x, y ) =
          , Html.Attributes.style "top" (String.fromFloat (y + offSet) ++ "px")
          , Html.Attributes.style "left" (String.fromFloat (x + offSet) ++ "px")
          , Html.Attributes.style "background-color" "transparent"
-         , Html.Events.onClick args.onClick
+         , Html.Events.onMouseDown args.onClick
          ]
             ++ (if args.active then
                     [ Html.Attributes.style "background-image" "url('assets/images/lilyPad.png')"
@@ -86,7 +87,9 @@ wave ( x, y ) =
     Html.div
         [ Html.Attributes.style "width" (String.fromFloat Config.lilyPadSize ++ "px")
         , Html.Attributes.style "height" (String.fromFloat Config.lilyPadSize ++ "px")
+        , Html.Attributes.style "position" "absolute"
         , Html.Attributes.style "top" (String.fromFloat y ++ "px")
         , Html.Attributes.style "left" (String.fromFloat x ++ "px")
+        , Html.Attributes.style "background-color" "black"
         ]
         []

@@ -4,7 +4,7 @@ import Array
 import Config
 import Dict exposing (Dict)
 import Note exposing (Note)
-import Song exposing (Song)
+import Song exposing (Instrument, Song)
 
 
 type alias ObjectId =
@@ -157,7 +157,7 @@ nextPlayerPos game =
             }
 
 
-nextBeat : Game -> ( Game, List Note )
+nextBeat : Game -> ( Game, Dict Instrument (List Note) )
 nextBeat game =
     let
         bpm =
@@ -182,19 +182,32 @@ nextBeat game =
                 game.objects
                     |> Dict.get id
             )
-        |> List.filterMap
+        |> List.foldl
             (\{ note, sort } ->
                 case sort of
                     LilyPad { active } ->
                         if active then
-                            Just note
+                            Dict.update Song.lilyPadInstrument
+                                (\maybe ->
+                                    maybe
+                                        |> Maybe.withDefault []
+                                        |> (::) note
+                                        |> Just
+                                )
 
                         else
-                            Nothing
+                            identity
 
                     Wave ->
-                        Just note
+                        Dict.update Song.waveInstrument
+                            (\maybe ->
+                                maybe
+                                    |> Maybe.withDefault []
+                                    |> (::) note
+                                    |> Just
+                            )
             )
+            Dict.empty
     )
 
 
@@ -286,3 +299,13 @@ new =
     , bpm = bpm
     , statistics = statistics
     }
+
+
+objectToInstrument : ObjectSort -> Instrument
+objectToInstrument objectSort =
+    case objectSort of
+        LilyPad _ ->
+            Song.lilyPadInstrument
+
+        Wave ->
+            Song.waveInstrument
