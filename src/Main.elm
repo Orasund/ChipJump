@@ -21,6 +21,8 @@ type alias Model =
     , msSinceLastBeat : Float
     , showTitle : Bool
     , showSettings : Bool
+    , volume : Float
+    , isMuted : Bool
     }
 
 
@@ -28,6 +30,8 @@ type Msg
     = NextFrameRequested Float
     | ActivatePlatform ObjectId
     | ToggleSettings
+    | SetVolume Float
+    | ToggleMute
     | StartGame
 
 
@@ -42,6 +46,8 @@ init () =
       , msSinceLastBeat = 0
       , showTitle = True
       , showSettings = False
+      , volume = 0
+      , isMuted = False
       }
     , Cmd.none
     )
@@ -50,7 +56,13 @@ init () =
 view : Model -> Html Msg
 view model =
     if model.showSettings then
-        View.settingsScreen { close = ToggleSettings }
+        View.settingsScreen
+            { close = ToggleSettings
+            , setVolume = SetVolume
+            , volume = model.volume
+            , isMute = model.isMuted
+            , mute = ToggleMute
+            }
 
     else if model.showTitle then
         View.titleScreen
@@ -129,10 +141,21 @@ update msg model =
             , Cmd.none
             )
 
+        SetVolume amount ->
+            ( { model | volume = amount }
+            , Port.setVolume amount
+                |> send
+            )
+
+        ToggleMute ->
+            ( { model | isMuted = not model.isMuted }
+            , Port.toggleMute |> send
+            )
+
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    if model.showTitle || model.showSettingsAdd then
+    if model.showTitle || model.showSettings then
         Sub.none
 
     else if model.game.running then

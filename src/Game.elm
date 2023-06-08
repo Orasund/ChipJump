@@ -150,7 +150,7 @@ nextPlayerPos game =
             { game
                 | player = OnPlatform currentObjectId
                 , running = False
-                , bpm = game.bpm - game.bpm * Config.bpmPercentDecrease
+                , bpm = max (game.bpm - game.bpm * Config.bpmPercentDecrease) Config.minBpm
                 , statistics =
                     game.statistics
                         |> (\statistics -> { statistics | stops = statistics.stops + 1 })
@@ -282,7 +282,7 @@ new =
             False
 
         bpm =
-            60
+            Config.minBpm
 
         statistics =
             { maxBpm = bpm

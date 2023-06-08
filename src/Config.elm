@@ -31,6 +31,11 @@ playerSize =
     60
 
 
+minBpm : Float
+minBpm =
+    60
+
+
 bpmIncrease : Float
 bpmIncrease =
     0.25

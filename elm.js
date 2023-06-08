@@ -5455,6 +5455,7 @@ var $elm$core$List$repeat = F2(
 	function (n, value) {
 		return A3($elm$core$List$repeatHelp, _List_Nil, n, value);
 	});
+var $author$project$Song$waveInstrument = 'waveInstrument';
 var $author$project$Song$default = function () {
 	var part4 = _List_fromArray(
 		[
@@ -5603,7 +5604,26 @@ var $author$project$Song$default = function () {
 									_Utils_ap(
 									$author$project$Note$c2,
 									_Utils_ap($author$project$Note$c1, $author$project$Note$c3))
-								])))))
+								]))))),
+				_Utils_Tuple2(
+				$author$project$Song$waveInstrument,
+				$elm$core$Array$fromList(
+					$author$project$Note$bar(
+						_List_fromArray(
+							[
+								_Utils_ap(
+								$author$project$Note$a2,
+								_Utils_ap($author$project$Note$c3, $author$project$Note$f2)),
+								_Utils_ap(
+								$author$project$Note$c2,
+								_Utils_ap($author$project$Note$e2, $author$project$Note$g2)),
+								_Utils_ap(
+								$author$project$Note$a2,
+								_Utils_ap($author$project$Note$c3, $author$project$Note$f2)),
+								_Utils_ap(
+								$author$project$Note$f2,
+								_Utils_ap($author$project$Note$a2, $author$project$Note$c3))
+							]))))
 			]));
 }();
 var $elm$core$List$maybeCons = F3(
@@ -5702,6 +5722,7 @@ var $elm$core$Maybe$map = F2(
 			return $elm$core$Maybe$Nothing;
 		}
 	});
+var $author$project$Config$minBpm = 60;
 var $elm$core$Tuple$pair = F2(
 	function (a, b) {
 		return _Utils_Tuple2(a, b);
@@ -6110,7 +6131,6 @@ var $elm$core$Dict$update = F3(
 			return A2($elm$core$Dict$remove, targetKey, dictionary);
 		}
 	});
-var $author$project$Song$waveInstrument = 'waveInstrument';
 var $elm$core$Maybe$withDefault = F2(
 	function (_default, maybe) {
 		if (maybe.$ === 'Just') {
@@ -6160,7 +6180,7 @@ var $author$project$Game$new = function () {
 									array))));
 				},
 				$elm$core$Dict$toList(track))));
-	var bpm = 60;
+	var bpm = $author$project$Config$minBpm;
 	var statistics = {maxBpm: bpm, stops: 0};
 	var _v0 = A3(
 		$elm$core$Dict$foldl,
@@ -6193,7 +6213,7 @@ var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Main$init = function (_v0) {
 	return _Utils_Tuple2(
-		{game: $author$project$Game$new, msSinceLastBeat: 0, showSettings: false, showTitle: true},
+		{game: $author$project$Game$new, isMuted: false, msSinceLastBeat: 0, showSettings: false, showTitle: true, volume: 0},
 		$elm$core$Platform$Cmd$none);
 };
 var $author$project$Main$NextFrameRequested = function (a) {
@@ -6457,7 +6477,7 @@ var $author$project$Game$nextPlayerPos = function (game) {
 		_Utils_update(
 			game,
 			{
-				bpm: game.bpm - (game.bpm * $author$project$Config$bpmPercentDecrease),
+				bpm: A2($elm$core$Basics$max, game.bpm - (game.bpm * $author$project$Config$bpmPercentDecrease), $author$project$Config$minBpm),
 				player: $author$project$Game$OnPlatform(currentObjectId),
 				running: false,
 				statistics: function (statistics) {
@@ -6637,6 +6657,26 @@ var $author$project$Game$recheckNextPlayerPos = function (game) {
 	}
 };
 var $author$project$Main$send = _Platform_outgoingPort('send', $elm$core$Basics$identity);
+var $elm$json$Json$Encode$float = _Json_wrap;
+var $author$project$Port$setVolume = function (amount) {
+	return $elm$json$Json$Encode$object(
+		_List_fromArray(
+			[
+				_Utils_Tuple2(
+				'name',
+				$elm$json$Json$Encode$string('setVolume')),
+				_Utils_Tuple2(
+				'amount',
+				$elm$json$Json$Encode$float(amount))
+			]));
+};
+var $author$project$Port$toggleMute = $elm$json$Json$Encode$object(
+	_List_fromArray(
+		[
+			_Utils_Tuple2(
+			'name',
+			$elm$json$Json$Encode$string('toggleMute'))
+		]));
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -6683,18 +6723,36 @@ var $author$project$Main$update = F2(
 						model,
 						{showSettings: !model.showSettings}),
 					$elm$core$Platform$Cmd$none);
-			default:
+			case 'StartGame':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{game: $author$project$Game$new, msSinceLastBeat: 0, showTitle: false}),
 					$elm$core$Platform$Cmd$none);
+			case 'SetVolume':
+				var amount = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{volume: amount}),
+					$author$project$Main$send(
+						$author$project$Port$setVolume(amount)));
+			default:
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{isMuted: !model.isMuted}),
+					$author$project$Main$send($author$project$Port$toggleMute));
 		}
 	});
 var $author$project$Main$ActivatePlatform = function (a) {
 	return {$: 'ActivatePlatform', a: a};
 };
+var $author$project$Main$SetVolume = function (a) {
+	return {$: 'SetVolume', a: a};
+};
 var $author$project$Main$StartGame = {$: 'StartGame'};
+var $author$project$Main$ToggleMute = {$: 'ToggleMute'};
 var $author$project$Main$ToggleSettings = {$: 'ToggleSettings'};
 var $author$project$Main$calcRatioToNextBeat = F2(
 	function (args, game) {
@@ -7244,6 +7302,15 @@ var $author$project$View$fromGame = F2(
 var $Orasund$elm_layout$Layout$alignAtCenter = A2($elm$html$Html$Attributes$style, 'align-items', 'center');
 var $Orasund$elm_layout$Layout$centered = _List_fromArray(
 	[$Orasund$elm_layout$Layout$contentCentered, $Orasund$elm_layout$Layout$alignAtCenter]);
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
+var $elm$html$Html$Attributes$checked = $elm$html$Html$Attributes$boolProperty('checked');
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $Orasund$elm_layout$Layout$heading1 = F2(
 	function (attrs, content) {
@@ -7256,6 +7323,59 @@ var $Orasund$elm_layout$Layout$heading1 = F2(
 			_List_fromArray(
 				[content]));
 	});
+var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$html$Html$Attributes$max = $elm$html$Html$Attributes$stringProperty('max');
+var $elm$html$Html$Attributes$min = $elm$html$Html$Attributes$stringProperty('min');
+var $elm$html$Html$Events$alwaysStop = function (x) {
+	return _Utils_Tuple2(x, true);
+};
+var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
+	return {$: 'MayStopPropagation', a: a};
+};
+var $elm$html$Html$Events$stopPropagationOn = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
+	});
+var $elm$json$Json$Decode$field = _Json_decodeField;
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
+	});
+var $elm$json$Json$Decode$string = _Json_decodeString;
+var $elm$html$Html$Events$targetValue = A2(
+	$elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'value']),
+	$elm$json$Json$Decode$string);
+var $elm$html$Html$Events$onInput = function (tagger) {
+	return A2(
+		$elm$html$Html$Events$stopPropagationOn,
+		'input',
+		A2(
+			$elm$json$Json$Decode$map,
+			$elm$html$Html$Events$alwaysStop,
+			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
+};
+var $Orasund$elm_layout$Layout$row = function (attrs) {
+	return $elm$html$Html$div(
+		_Utils_ap(
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+					A2($elm$html$Html$Attributes$style, 'flex-direction', 'row'),
+					A2($elm$html$Html$Attributes$style, 'flex-wrap', 'wrap')
+				]),
+			attrs));
+};
+var $elm$html$Html$Attributes$step = function (n) {
+	return A2($elm$html$Html$Attributes$stringProperty, 'step', n);
+};
+var $elm$core$String$toFloat = _String_toFloat;
+var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
+var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
 var $author$project$View$settingsScreen = function (args) {
 	return A2(
 		$Orasund$elm_layout$Layout$el,
@@ -7265,6 +7385,7 @@ var $author$project$View$settingsScreen = function (args) {
 				[
 					A2($elm$html$Html$Attributes$style, 'position', 'relative'),
 					A2($elm$html$Html$Attributes$style, 'background-color', $author$project$Config$backgroundColor),
+					A2($elm$html$Html$Attributes$style, 'color', $author$project$Config$lilyPadColor),
 					A2(
 					$elm$html$Html$Attributes$style,
 					'height',
@@ -7296,7 +7417,50 @@ var $author$project$View$settingsScreen = function (args) {
 								[
 									A2($elm$html$Html$Attributes$style, 'color', $author$project$Config$playerColor)
 								]),
-							$elm$html$Html$text('Settings'))
+							$elm$html$Html$text('Settings')),
+							A2($Orasund$elm_layout$Layout$text, _List_Nil, 'Volume:'),
+							A2(
+							$elm$html$Html$input,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$type_('range'),
+									$elm$html$Html$Attributes$min('-1'),
+									$elm$html$Html$Attributes$max('1'),
+									$elm$html$Html$Attributes$step('any'),
+									$elm$html$Html$Attributes$value(
+									$elm$core$String$fromFloat(args.volume)),
+									$elm$html$Html$Events$onInput(
+									function (string) {
+										return args.setVolume(
+											A2(
+												$elm$core$Maybe$withDefault,
+												0,
+												$elm$core$String$toFloat(string)));
+									})
+								]),
+							_List_Nil),
+							A2(
+							$Orasund$elm_layout$Layout$row,
+							_List_fromArray(
+								[
+									$Orasund$elm_layout$Layout$gap(8)
+								]),
+							_List_fromArray(
+								[
+									A2($Orasund$elm_layout$Layout$text, _List_Nil, 'Mute'),
+									A2(
+									$elm$html$Html$input,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$type_('checkbox'),
+											$elm$html$Html$Attributes$checked(args.isMute),
+											$elm$html$Html$Events$onInput(
+											function (_v0) {
+												return args.mute;
+											})
+										]),
+									_List_Nil)
+								]))
 						])),
 					A2(
 					$Orasund$elm_layout$Layout$textButton,
@@ -7351,7 +7515,13 @@ var $author$project$View$titleScreen = function (args) {
 									A2($elm$html$Html$Attributes$style, 'color', $author$project$Config$playerColor)
 								]),
 							$elm$html$Html$text('Ode to the toad')),
-							A2($Orasund$elm_layout$Layout$text, _List_Nil, 'By Lucas Payr & Lilithisa')
+							A2(
+							$Orasund$elm_layout$Layout$text,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'color', $author$project$Config$lilyPadColor)
+								]),
+							'By Lucas Payr & Lilith-Isa Samer')
 						])),
 					A2(
 					$Orasund$elm_layout$Layout$textButton,
@@ -7369,7 +7539,7 @@ var $author$project$View$titleScreen = function (args) {
 };
 var $author$project$Main$view = function (model) {
 	return model.showSettings ? $author$project$View$settingsScreen(
-		{close: $author$project$Main$ToggleSettings}) : (model.showTitle ? $author$project$View$titleScreen(
+		{close: $author$project$Main$ToggleSettings, isMute: model.isMuted, mute: $author$project$Main$ToggleMute, setVolume: $author$project$Main$SetVolume, volume: model.volume}) : (model.showTitle ? $author$project$View$titleScreen(
 		{start: $author$project$Main$StartGame, toggleSettings: $author$project$Main$ToggleSettings}) : A2(
 		$author$project$View$fromGame,
 		{

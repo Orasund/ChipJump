@@ -17,8 +17,18 @@ default : Song
 default =
     let
         part1 =
-            [ Note.bar [ a2, f2, e2, c2 ++ g1 ]
-            , Note.bar [ a1, f1 ++ c2, d2, c2 ++ c1 ++ c3 ]
+            [ Note.bar
+                [ a2
+                , f2
+                , e2
+                , c2 ++ g1
+                ]
+            , Note.bar
+                [ a1
+                , f1 ++ c2
+                , d2
+                , c2 ++ c1 ++ c3
+                ]
             ]
 
         part2 =
@@ -91,8 +101,7 @@ default =
             ++ [ c2 ++ c1 ++ c3 ]
             |> Array.fromList
       )
-
-    {--, ( waveInstrument
+    , ( waveInstrument
       , Note.bar
             [ a2 ++ c3 ++ f2
             , c2 ++ e2 ++ g2
@@ -100,7 +109,7 @@ default =
             , f2 ++ a2 ++ c3
             ]
             |> Array.fromList
-      )--}
+      )
     ]
         |> Dict.fromList
 

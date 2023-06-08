@@ -1,12 +1,12 @@
 import * as Tone from 'tone'
 
-//volumne
-const vol = new Tone.Volume(-12).toDestination();
-
+const limiter = new Tone.Limiter(-20).toDestination();
 
 //create a synth and connect it to the main output (your speakers)
-const synth = new Tone.PolySynth().connect(vol).toDestination();
+const synth = new Tone.PolySynth().connect(limiter);
 synth.set({ detune: -1200 })
+
+
 
 //create a sampler and connect it to the main output (your speaker)
 const sampler = new Tone.Sampler({
@@ -17,8 +17,7 @@ const sampler = new Tone.Sampler({
     baseUrl: "assets/samples/casio/",
     onload: () => { }
 })
-    .connect(vol)
-    .toDestination();
+    .connect(limiter);
 
 export function playSound(instrument: string, notes: string[]) {
     switch (instrument) {
@@ -32,9 +31,9 @@ export function playSound(instrument: string, notes: string[]) {
 }
 
 export function toggleMute() {
-    vol.mute = !vol.mute
+    Tone.Destination.mute = !Tone.Destination.mute
 }
 
 export function setVolume(amount: number) {
-    vol.volume.value = -12 * amount
+    Tone.Destination.volume.value = 24 * amount
 }

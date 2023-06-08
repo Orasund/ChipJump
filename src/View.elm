@@ -5,6 +5,7 @@ import Dict
 import Game exposing (Game, ObjectId, ObjectSort(..), PlayerPos(..))
 import Html exposing (Html)
 import Html.Attributes
+import Html.Events
 import Layout
 import Note exposing (Note(..))
 import View.Common
@@ -16,7 +17,7 @@ titleScreen args =
     [ [ "Ode to the toad"
             |> Html.text
             |> Layout.heading1 [ Html.Attributes.style "color" Config.playerColor ]
-      , "By Lucas Payr & Lilithisa" |> Layout.text []
+      , "By Lucas Payr & Lilith-Isa Samer" |> Layout.text [ Html.Attributes.style "color" Config.lilyPadColor ]
       ]
         |> Layout.column [ Layout.gap 8 ]
     , Layout.textButton [ Html.Attributes.class "button" ] { onPress = Just args.start, label = "Start" }
@@ -33,11 +34,46 @@ titleScreen args =
             )
 
 
-settingsScreen : { close : msg } -> Html msg
+settingsScreen :
+    { close : msg
+    , setVolume : Float -> msg
+    , volume : Float
+    , isMute : Bool
+    , mute : msg
+    }
+    -> Html msg
 settingsScreen args =
     [ [ "Settings"
             |> Html.text
             |> Layout.heading1 [ Html.Attributes.style "color" Config.playerColor ]
+      , "Volume:" |> Layout.text []
+      , Html.input
+            [ Html.Attributes.type_ "range"
+            , Html.Attributes.min "-1"
+            , Html.Attributes.max "1"
+            , Html.Attributes.step "any"
+            , Html.Attributes.value (String.fromFloat args.volume)
+            , Html.Events.onInput
+                (\string ->
+                    string
+                        |> String.toFloat
+                        |> Maybe.withDefault 0
+                        |> args.setVolume
+                )
+            ]
+            []
+      , [ "Mute" |> Layout.text []
+        , Html.input
+            [ Html.Attributes.type_ "checkbox"
+            , Html.Attributes.checked args.isMute
+            , Html.Events.onInput
+                (\_ ->
+                    args.mute
+                )
+            ]
+            []
+        ]
+            |> Layout.row [ Layout.gap 8 ]
       ]
         |> Layout.column [ Layout.gap 8 ]
     , Layout.textButton [ Html.Attributes.class "button" ] { onPress = Just args.close, label = "Back" }
@@ -47,6 +83,7 @@ settingsScreen args =
             (Layout.centered
                 ++ [ Html.Attributes.style "position" "relative"
                    , Html.Attributes.style "background-color" Config.backgroundColor
+                   , Html.Attributes.style "color" Config.lilyPadColor
                    , Html.Attributes.style "height" (String.fromFloat Config.screenHeight ++ "px")
                    , Html.Attributes.style "width" (String.fromFloat Config.screenWidth ++ "px")
                    ]
