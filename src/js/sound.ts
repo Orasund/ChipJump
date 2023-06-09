@@ -1,10 +1,9 @@
 import * as Tone from 'tone'
 import { Volume } from 'tone';
 
-const limiter = new Tone.Limiter(-12).toDestination();
-const volume = new Tone.Volume().connect(limiter);
-volume.volume.value = -12
+const limiter = new Tone.Limiter(0).toDestination();
 
+const synthVolume = new Tone.Volume(-18).connect(limiter);
 //create a synth and connect it to the main output (your speakers)
 const synth = new Tone.PolySynth(Tone.Synth, {
     "portamento": 0.0,
@@ -17,9 +16,7 @@ const synth = new Tone.PolySynth(Tone.Synth, {
         "sustain": 0.2,
         "release": 8
     }
-})
-    .connect(new Tone.FeedbackDelay("4n", 0.5).connect(volume))
-    .connect(volume);
+}).fan(new Tone.FeedbackDelay("4n", 0.5).connect(synthVolume), synthVolume);
 
 
 const salamander = new Tone.Sampler({
@@ -30,8 +27,7 @@ const salamander = new Tone.Sampler({
     baseUrl: "assets/samples/salamander/",
     onload: () => { }
 })
-    .connect(new Tone.FeedbackDelay("8n", 0.5).connect(volume))
-    .connect(volume);
+    .chain(new Tone.FeedbackDelay("8n", 0.5), new Tone.Volume(-12), limiter);
 
 const casio = new Tone.Sampler({
     urls: {
@@ -41,7 +37,7 @@ const casio = new Tone.Sampler({
     baseUrl: "assets/samples/casio/",
     onload: () => { }
 })
-    .connect(limiter);
+    .chain(new Tone.Volume(-12), limiter);
 
 export function playSound(instrument: string, notes: string[]) {
     switch (instrument) {

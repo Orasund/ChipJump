@@ -6,6 +6,11 @@ lilyPadSize =
     100
 
 
+waveSize : Float
+waveSize =
+    200
+
+
 horizontalSpaceBetweenPlatforms : Float
 horizontalSpaceBetweenPlatforms =
     (screenWidth - lilyPadSize) / 6
@@ -89,3 +94,13 @@ padColor =
 playerZIndex : Int
 playerZIndex =
     100
+
+
+inactiveLilyPadZIndex : Int
+inactiveLilyPadZIndex =
+    10
+
+
+activeLilyPadZIndex : Int
+activeLilyPadZIndex =
+    1

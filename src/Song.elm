@@ -113,11 +113,18 @@ default =
       )
     , ( waveInstrument
       , [ [ pause, pause ] ]
-            ++ [ Note.bar [ a2 ++ c3 ++ f3 ]
-               , Note.bar [ c2 ++ e2 ++ g2 ]
-               , Note.bar [ a2 ++ c3 ++ f3 ]
-               , Note.bar [ f2 ++ a2 ++ c3 ]
-               ]
+            ++ ([ Note.bar
+                    [ a2 ++ c3 ++ f3
+                    , c2 ++ e2 ++ g2
+                    ]
+                , Note.bar
+                    [ e2 ++ g2 ++ c3
+                    , f2 ++ a2 ++ c3
+                    ]
+                ]
+                    |> List.repeat 8
+                    |> List.concat
+               )
             |> List.concat
             |> Array.fromList
       )

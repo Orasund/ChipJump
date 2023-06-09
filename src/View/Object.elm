@@ -71,11 +71,12 @@ lilyPad args ( x, y ) =
                     [ Html.Attributes.style "background-image" "url('assets/images/lilyPad.png')"
                     , Html.Attributes.style "background-size" "100%"
                     , Html.Attributes.style "border" "0px"
+                    , Html.Attributes.style "z-index" (String.fromInt Config.activeLilyPadZIndex)
                     ]
 
                 else
                     [ Html.Attributes.style "border" ("8px dashed " ++ Config.lilyPadColor)
-                    , Html.Attributes.style "z-index" "10"
+                    , Html.Attributes.style "z-index" (String.fromInt Config.inactiveLilyPadZIndex)
                     ]
                )
         )
@@ -84,12 +85,18 @@ lilyPad args ( x, y ) =
 
 wave : ( Float, Float ) -> Html msg
 wave ( x, y ) =
+    let
+        offSet =
+            Config.lilyPadSize / 2 - Config.waveSize / 2
+    in
     Html.div
-        [ Html.Attributes.style "width" (String.fromFloat Config.lilyPadSize ++ "px")
-        , Html.Attributes.style "height" (String.fromFloat Config.lilyPadSize ++ "px")
+        [ Html.Attributes.style "width" (String.fromFloat Config.waveSize ++ "px")
+        , Html.Attributes.style "height" (String.fromFloat Config.waveSize ++ "px")
         , Html.Attributes.style "position" "absolute"
-        , Html.Attributes.style "top" (String.fromFloat y ++ "px")
-        , Html.Attributes.style "left" (String.fromFloat x ++ "px")
-        , Html.Attributes.style "background-color" "black"
+        , Html.Attributes.style "top" (String.fromFloat (y + offSet) ++ "px")
+        , Html.Attributes.style "left" (String.fromFloat (x + offSet) ++ "px")
+        , Html.Attributes.style "background-color" "rgba(0,0,63,0.2)"
+        , Html.Attributes.style "filter" "blur(30px)"
+        , Html.Attributes.style "border-radius" "100%"
         ]
         []

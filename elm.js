@@ -5606,37 +5606,33 @@ var $author$project$Song$default = function () {
 									_List_fromArray(
 									[$author$project$Note$pause, $author$project$Note$pause])
 								]),
-							_List_fromArray(
-								[
-									$author$project$Note$bar(
+							$elm$core$List$concat(
+								A2(
+									$elm$core$List$repeat,
+									8,
 									_List_fromArray(
 										[
-											_Utils_ap(
-											$author$project$Note$a2,
-											_Utils_ap($author$project$Note$c3, $author$project$Note$f3))
-										])),
-									$author$project$Note$bar(
-									_List_fromArray(
-										[
-											_Utils_ap(
-											$author$project$Note$c2,
-											_Utils_ap($author$project$Note$e2, $author$project$Note$g2))
-										])),
-									$author$project$Note$bar(
-									_List_fromArray(
-										[
-											_Utils_ap(
-											$author$project$Note$a2,
-											_Utils_ap($author$project$Note$c3, $author$project$Note$f3))
-										])),
-									$author$project$Note$bar(
-									_List_fromArray(
-										[
-											_Utils_ap(
-											$author$project$Note$f2,
-											_Utils_ap($author$project$Note$a2, $author$project$Note$c3))
-										]))
-								])))))
+											$author$project$Note$bar(
+											_List_fromArray(
+												[
+													_Utils_ap(
+													$author$project$Note$a2,
+													_Utils_ap($author$project$Note$c3, $author$project$Note$f3)),
+													_Utils_ap(
+													$author$project$Note$c2,
+													_Utils_ap($author$project$Note$e2, $author$project$Note$g2))
+												])),
+											$author$project$Note$bar(
+											_List_fromArray(
+												[
+													_Utils_ap(
+													$author$project$Note$e2,
+													_Utils_ap($author$project$Note$g2, $author$project$Note$c3)),
+													_Utils_ap(
+													$author$project$Note$f2,
+													_Utils_ap($author$project$Note$a2, $author$project$Note$c3))
+												]))
+										])))))))
 			]));
 }();
 var $elm$core$List$maybeCons = F3(
@@ -7127,6 +7123,8 @@ var $author$project$View$endgame = F2(
 						})
 					])));
 	});
+var $author$project$Config$activeLilyPadZIndex = 1;
+var $author$project$Config$inactiveLilyPadZIndex = 10;
 var $elm$html$Html$Events$onMouseDown = function (msg) {
 	return A2(
 		$elm$html$Html$Events$on,
@@ -7169,17 +7167,26 @@ var $author$project$View$Object$lilyPad = F2(
 					[
 						A2($elm$html$Html$Attributes$style, 'background-image', 'url(\'assets/images/lilyPad.png\')'),
 						A2($elm$html$Html$Attributes$style, 'background-size', '100%'),
-						A2($elm$html$Html$Attributes$style, 'border', '0px')
+						A2($elm$html$Html$Attributes$style, 'border', '0px'),
+						A2(
+						$elm$html$Html$Attributes$style,
+						'z-index',
+						$elm$core$String$fromInt($author$project$Config$activeLilyPadZIndex))
 					]) : _List_fromArray(
 					[
 						A2($elm$html$Html$Attributes$style, 'border', '8px dashed ' + $author$project$Config$lilyPadColor),
-						A2($elm$html$Html$Attributes$style, 'z-index', '10')
+						A2(
+						$elm$html$Html$Attributes$style,
+						'z-index',
+						$elm$core$String$fromInt($author$project$Config$inactiveLilyPadZIndex))
 					])),
 			_List_Nil);
 	});
+var $author$project$Config$waveSize = 200;
 var $author$project$View$Object$wave = function (_v0) {
 	var x = _v0.a;
 	var y = _v0.b;
+	var offSet = ($author$project$Config$lilyPadSize / 2) - ($author$project$Config$waveSize / 2);
 	return A2(
 		$elm$html$Html$div,
 		_List_fromArray(
@@ -7187,21 +7194,23 @@ var $author$project$View$Object$wave = function (_v0) {
 				A2(
 				$elm$html$Html$Attributes$style,
 				'width',
-				$elm$core$String$fromFloat($author$project$Config$lilyPadSize) + 'px'),
+				$elm$core$String$fromFloat($author$project$Config$waveSize) + 'px'),
 				A2(
 				$elm$html$Html$Attributes$style,
 				'height',
-				$elm$core$String$fromFloat($author$project$Config$lilyPadSize) + 'px'),
+				$elm$core$String$fromFloat($author$project$Config$waveSize) + 'px'),
 				A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 				A2(
 				$elm$html$Html$Attributes$style,
 				'top',
-				$elm$core$String$fromFloat(y) + 'px'),
+				$elm$core$String$fromFloat(y + offSet) + 'px'),
 				A2(
 				$elm$html$Html$Attributes$style,
 				'left',
-				$elm$core$String$fromFloat(x) + 'px'),
-				A2($elm$html$Html$Attributes$style, 'background-color', 'black')
+				$elm$core$String$fromFloat(x + offSet) + 'px'),
+				A2($elm$html$Html$Attributes$style, 'background-color', 'rgba(0,0,63,0.2)'),
+				A2($elm$html$Html$Attributes$style, 'filter', 'blur(30px)'),
+				A2($elm$html$Html$Attributes$style, 'border-radius', '100%')
 			]),
 		_List_Nil);
 };
