@@ -8,12 +8,12 @@ lilyPadSize =
 
 horizontalSpaceBetweenPlatforms : Float
 horizontalSpaceBetweenPlatforms =
-    (screenWidth - lilyPadSize) / 14
+    (screenWidth - lilyPadSize) / 6
 
 
 verticalSpaceBetweenPlatforms : Float
 verticalSpaceBetweenPlatforms =
-    100
+    80
 
 
 screenHeight : Float

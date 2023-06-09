@@ -1,4 +1,4 @@
-module Note exposing (Note, a1, a2, b1, b2, bang, bar, c1, c2, c3, d1, d2, e1, e2, f1, f2, g1, g2, pause, toInt, toString)
+module Note exposing (Note, a1, a2, a3, a4, b1, b2, b3, b4, bang, bar, c1, c2, c3, c4, d1, d2, d3, d4, e1, e2, e3, e4, f1, f2, f3, f4, g1, g2, g3, g4, pause, toInt, toString)
 
 import Config
 
@@ -19,6 +19,19 @@ type Note
     | A2
     | B2
     | C3
+    | D3
+    | E3
+    | F3
+    | G3
+    | A3
+    | B3
+    | C4
+    | D4
+    | E4
+    | F4
+    | G4
+    | A4
+    | B4
 
 
 bang : Note
@@ -74,6 +87,45 @@ toInt note =
         C3 ->
             14
 
+        D3 ->
+            15
+
+        E3 ->
+            16
+
+        F3 ->
+            17
+
+        G3 ->
+            18
+
+        A3 ->
+            19
+
+        B3 ->
+            20
+
+        C4 ->
+            21
+
+        D4 ->
+            22
+
+        E4 ->
+            23
+
+        F4 ->
+            24
+
+        G4 ->
+            25
+
+        A4 ->
+            26
+
+        B4 ->
+            27
+
 
 toString : Note -> String
 toString note =
@@ -122,6 +174,45 @@ toString note =
 
         C3 ->
             "C3"
+
+        D3 ->
+            "D3"
+
+        E3 ->
+            "E3"
+
+        F3 ->
+            "F3"
+
+        G3 ->
+            "G3"
+
+        A3 ->
+            "A3"
+
+        B3 ->
+            "B3"
+
+        C4 ->
+            "C4"
+
+        D4 ->
+            "D4"
+
+        E4 ->
+            "E4"
+
+        F4 ->
+            "F4"
+
+        G4 ->
+            "G4"
+
+        A4 ->
+            "A4"
+
+        B4 ->
+            "B4"
 
 
 bar : List (List Note) -> List (List Note)
@@ -193,6 +284,58 @@ b2 =
 
 c3 =
     [ C3 ]
+
+
+d3 =
+    [ D3 ]
+
+
+e3 =
+    [ E3 ]
+
+
+f3 =
+    [ F3 ]
+
+
+g3 =
+    [ G3 ]
+
+
+a3 =
+    [ A3 ]
+
+
+b3 =
+    [ B3 ]
+
+
+c4 =
+    [ C4 ]
+
+
+d4 =
+    [ D4 ]
+
+
+e4 =
+    [ E4 ]
+
+
+f4 =
+    [ F4 ]
+
+
+g4 =
+    [ G4 ]
+
+
+a4 =
+    [ A4 ]
+
+
+b4 =
+    [ B3 ]
 
 
 pause =

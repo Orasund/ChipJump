@@ -5228,6 +5228,9 @@ var $author$project$Note$a2 = _List_fromArray(
 var $author$project$Note$B1 = {$: 'B1'};
 var $author$project$Note$b1 = _List_fromArray(
 	[$author$project$Note$B1]);
+var $author$project$Note$B3 = {$: 'B3'};
+var $author$project$Note$b3 = _List_fromArray(
+	[$author$project$Note$B3]);
 var $author$project$Config$beatsPerBar = 8;
 var $author$project$Note$bar = function (list) {
 	return (_Utils_cmp(
@@ -5250,9 +5253,6 @@ var $author$project$Note$c2 = _List_fromArray(
 var $author$project$Note$C3 = {$: 'C3'};
 var $author$project$Note$c3 = _List_fromArray(
 	[$author$project$Note$C3]);
-var $author$project$Note$D1 = {$: 'D1'};
-var $author$project$Note$d1 = _List_fromArray(
-	[$author$project$Note$D1]);
 var $author$project$Note$D2 = {$: 'D2'};
 var $author$project$Note$d2 = _List_fromArray(
 	[$author$project$Note$D2]);
@@ -5268,6 +5268,9 @@ var $author$project$Note$f1 = _List_fromArray(
 var $author$project$Note$F2 = {$: 'F2'};
 var $author$project$Note$f2 = _List_fromArray(
 	[$author$project$Note$F2]);
+var $author$project$Note$F3 = {$: 'F3'};
+var $author$project$Note$f3 = _List_fromArray(
+	[$author$project$Note$F3]);
 var $elm$core$Array$fromListHelp = F3(
 	function (list, nodeList, nodeListSize) {
 		fromListHelp:
@@ -5462,24 +5465,18 @@ var $author$project$Song$default = function () {
 			$author$project$Note$bar(
 			_List_fromArray(
 				[
-					_Utils_ap($author$project$Note$a1, $author$project$Note$a2),
-					_Utils_ap($author$project$Note$f1, $author$project$Note$f2),
-					_Utils_ap($author$project$Note$e1, $author$project$Note$e2),
-					_Utils_ap(
-					$author$project$Note$c1,
-					_Utils_ap($author$project$Note$c2, $author$project$Note$g1))
+					_Utils_ap($author$project$Note$a1, $author$project$Note$f3),
+					_Utils_ap($author$project$Note$f1, $author$project$Note$c3),
+					_Utils_ap($author$project$Note$e1, $author$project$Note$c2),
+					_Utils_ap($author$project$Note$c1, $author$project$Note$g1)
 				])),
 			$author$project$Note$bar(
 			_List_fromArray(
 				[
-					_Utils_ap($author$project$Note$a1, $author$project$Note$a2),
-					_Utils_ap(
-					$author$project$Note$f1,
-					_Utils_ap($author$project$Note$f2, $author$project$Note$c2)),
-					_Utils_ap($author$project$Note$d2, $author$project$Note$d1),
-					_Utils_ap(
-					$author$project$Note$c2,
-					_Utils_ap($author$project$Note$c1, $author$project$Note$c3))
+					_Utils_ap($author$project$Note$a1, $author$project$Note$f2),
+					_Utils_ap($author$project$Note$f1, $author$project$Note$c3),
+					_Utils_ap($author$project$Note$d2, $author$project$Note$b3),
+					_Utils_ap($author$project$Note$c2, $author$project$Note$g2)
 				]))
 		]);
 	var part3 = _List_fromArray(
@@ -5576,9 +5573,7 @@ var $author$project$Song$default = function () {
 					$author$project$Note$a1,
 					_Utils_ap($author$project$Note$f1, $author$project$Note$c2),
 					$author$project$Note$d2,
-					_Utils_ap(
-					$author$project$Note$c2,
-					_Utils_ap($author$project$Note$c1, $author$project$Note$c3))
+					$author$project$Note$c2
 				]))
 		]);
 	return $elm$core$Dict$fromList(
@@ -5600,30 +5595,48 @@ var $author$project$Song$default = function () {
 											_List_fromArray(
 												[part1, part2, part1, part3, part4, part2, part4, part3]))))),
 							_List_fromArray(
-								[
-									_Utils_ap(
-									$author$project$Note$c2,
-									_Utils_ap($author$project$Note$c1, $author$project$Note$c3))
-								]))))),
+								[$author$project$Note$c2]))))),
 				_Utils_Tuple2(
 				$author$project$Song$waveInstrument,
 				$elm$core$Array$fromList(
-					$author$project$Note$bar(
-						_List_fromArray(
-							[
-								_Utils_ap(
-								$author$project$Note$a2,
-								_Utils_ap($author$project$Note$c3, $author$project$Note$f2)),
-								_Utils_ap(
-								$author$project$Note$c2,
-								_Utils_ap($author$project$Note$e2, $author$project$Note$g2)),
-								_Utils_ap(
-								$author$project$Note$a2,
-								_Utils_ap($author$project$Note$c3, $author$project$Note$f2)),
-								_Utils_ap(
-								$author$project$Note$f2,
-								_Utils_ap($author$project$Note$a2, $author$project$Note$c3))
-							]))))
+					$elm$core$List$concat(
+						_Utils_ap(
+							_List_fromArray(
+								[
+									_List_fromArray(
+									[$author$project$Note$pause, $author$project$Note$pause])
+								]),
+							_List_fromArray(
+								[
+									$author$project$Note$bar(
+									_List_fromArray(
+										[
+											_Utils_ap(
+											$author$project$Note$a2,
+											_Utils_ap($author$project$Note$c3, $author$project$Note$f3))
+										])),
+									$author$project$Note$bar(
+									_List_fromArray(
+										[
+											_Utils_ap(
+											$author$project$Note$c2,
+											_Utils_ap($author$project$Note$e2, $author$project$Note$g2))
+										])),
+									$author$project$Note$bar(
+									_List_fromArray(
+										[
+											_Utils_ap(
+											$author$project$Note$a2,
+											_Utils_ap($author$project$Note$c3, $author$project$Note$f3))
+										])),
+									$author$project$Note$bar(
+									_List_fromArray(
+										[
+											_Utils_ap(
+											$author$project$Note$f2,
+											_Utils_ap($author$project$Note$a2, $author$project$Note$c3))
+										]))
+								])))))
 			]));
 }();
 var $elm$core$List$maybeCons = F3(
@@ -6618,8 +6631,34 @@ var $author$project$Note$toString = function (note) {
 			return 'A2';
 		case 'B2':
 			return 'B2';
-		default:
+		case 'C3':
 			return 'C3';
+		case 'D3':
+			return 'D3';
+		case 'E3':
+			return 'E3';
+		case 'F3':
+			return 'F3';
+		case 'G3':
+			return 'G3';
+		case 'A3':
+			return 'A3';
+		case 'B3':
+			return 'B3';
+		case 'C4':
+			return 'C4';
+		case 'D4':
+			return 'D4';
+		case 'E4':
+			return 'E4';
+		case 'F4':
+			return 'F4';
+		case 'G4':
+			return 'G4';
+		case 'A4':
+			return 'A4';
+		default:
+			return 'B4';
 	}
 };
 var $author$project$Port$playSound = F2(
@@ -6762,7 +6801,8 @@ var $author$project$Config$backgroundColor = '#010f16';
 var $author$project$Note$bang = $author$project$Note$C1;
 var $author$project$Config$lilyPadSize = 100;
 var $author$project$Config$screenWidth = 400;
-var $author$project$Config$horizontalSpaceBetweenPlatforms = ($author$project$Config$screenWidth - $author$project$Config$lilyPadSize) / 14;
+var $author$project$Config$horizontalSpaceBetweenPlatforms = ($author$project$Config$screenWidth - $author$project$Config$lilyPadSize) / 6;
+var $elm$core$Basics$modBy = _Basics_modBy;
 var $elm$core$Basics$negate = function (n) {
 	return -n;
 };
@@ -6797,15 +6837,44 @@ var $author$project$Note$toInt = function (note) {
 			return 12;
 		case 'B2':
 			return 13;
-		default:
+		case 'C3':
 			return 14;
+		case 'D3':
+			return 15;
+		case 'E3':
+			return 16;
+		case 'F3':
+			return 17;
+		case 'G3':
+			return 18;
+		case 'A3':
+			return 19;
+		case 'B3':
+			return 20;
+		case 'C4':
+			return 21;
+		case 'D4':
+			return 22;
+		case 'E4':
+			return 23;
+		case 'F4':
+			return 24;
+		case 'G4':
+			return 25;
+		case 'A4':
+			return 26;
+		default:
+			return 27;
 	}
 };
-var $author$project$Config$verticalSpaceBetweenPlatforms = 100;
+var $author$project$Config$verticalSpaceBetweenPlatforms = 80;
 var $author$project$View$Common$calcLilyPadPosition = function (args) {
 	var ratio = args.ratioToNextBeat;
 	return _Utils_Tuple2(
-		$author$project$Config$horizontalSpaceBetweenPlatforms * $author$project$Note$toInt(args.note),
+		$author$project$Config$horizontalSpaceBetweenPlatforms * A2(
+			$elm$core$Basics$modBy,
+			7,
+			$author$project$Note$toInt(args.note) + 5),
 		(($author$project$Config$verticalSpaceBetweenPlatforms * (((-args.start) + ratio) + args.beatsPlayed)) + $author$project$Config$screenHeight) - ($author$project$Config$lilyPadSize * 2));
 };
 var $author$project$Config$playerSize = 60;
@@ -7108,7 +7177,6 @@ var $author$project$View$Object$lilyPad = F2(
 					])),
 			_List_Nil);
 	});
-var $elm$core$Basics$modBy = _Basics_modBy;
 var $author$project$View$Object$wave = function (_v0) {
 	var x = _v0.a;
 	var y = _v0.b;

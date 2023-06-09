@@ -27,7 +27,7 @@ default =
                 [ a1
                 , f1 ++ c2
                 , d2
-                , c2 ++ c1 ++ c3
+                , c2
                 ]
             ]
 
@@ -78,8 +78,18 @@ default =
             ]
 
         part4 =
-            [ Note.bar [ a1 ++ a2, f1 ++ f2, e1 ++ e2, c1 ++ c2 ++ g1 ]
-            , Note.bar [ a1 ++ a2, f1 ++ f2 ++ c2, d2 ++ d1, c2 ++ c1 ++ c3 ]
+            [ Note.bar
+                [ a1 ++ f3
+                , f1 ++ c3
+                , e1 ++ c2
+                , c1 ++ g1
+                ]
+            , Note.bar
+                [ a1 ++ f2
+                , f1 ++ c3
+                , d2 ++ b3
+                , c2 ++ g2
+                ]
             ]
     in
     [ ( lilyPadInstrument
@@ -98,16 +108,17 @@ default =
                     |> List.repeat 1
                     |> List.concat
                )
-            ++ [ c2 ++ c1 ++ c3 ]
+            ++ [ c2 ]
             |> Array.fromList
       )
     , ( waveInstrument
-      , Note.bar
-            [ a2 ++ c3 ++ f2
-            , c2 ++ e2 ++ g2
-            , a2 ++ c3 ++ f2
-            , f2 ++ a2 ++ c3
-            ]
+      , [ [ pause, pause ] ]
+            ++ [ Note.bar [ a2 ++ c3 ++ f3 ]
+               , Note.bar [ c2 ++ e2 ++ g2 ]
+               , Note.bar [ a2 ++ c3 ++ f3 ]
+               , Note.bar [ f2 ++ a2 ++ c3 ]
+               ]
+            |> List.concat
             |> Array.fromList
       )
     ]

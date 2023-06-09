@@ -11,7 +11,7 @@ calcLilyPadPosition args =
             args.ratioToNextBeat
     in
     ( Config.horizontalSpaceBetweenPlatforms
-        * toFloat (Note.toInt args.note)
+        * toFloat (Note.toInt args.note + 5 |> modBy 7)
     , Config.verticalSpaceBetweenPlatforms
         * (toFloat -args.start + ratio + toFloat args.beatsPlayed)
         + Config.screenHeight
