@@ -131,14 +131,26 @@ default =
     , ( kickInstrument
       , [ pause, pause ]
             :: (Note.bar [ pause ] |> List.repeat 8)
-            ++ (Note.bar [ c1, c1 ] |> List.repeat 8)
+            ++ (Note.bar [ c1, c1 ] |> List.repeat 4)
+            ++ (Note.bar [ c1, c1, c1, c1 ] |> List.repeat 4)
             |> List.concat
             |> Array.fromList
       )
     , ( hihatInstrument
       , [ pause, pause ]
             :: (Note.bar [ pause ] |> List.repeat 12)
-            ++ (Note.bar [ c1, c1, c1, c1 ] |> List.repeat 4)
+            ++ (Note.bar
+                    [ pause
+                    , c1
+                    , pause
+                    , c1
+                    , pause
+                    , c1
+                    , pause
+                    , c1
+                    ]
+                    |> List.repeat 4
+               )
             |> List.concat
             |> Array.fromList
       )

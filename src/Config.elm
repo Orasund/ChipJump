@@ -13,17 +13,17 @@ waveSize =
 
 bigStoneSize : Float
 bigStoneSize =
-    80
+    100
 
 
 smallStoneSize : Float
 smallStoneSize =
-    60
+    100
 
 
 horizontalSpaceBetweenPlatforms : Float
 horizontalSpaceBetweenPlatforms =
-    (screenWidth - lilyPadSize) / 6
+    (screenWidth - sidePaddings * 2 - lilyPadSize) / 6
 
 
 verticalSpaceBetweenPlatforms : Float
@@ -34,6 +34,11 @@ verticalSpaceBetweenPlatforms =
 screenHeight : Float
 screenHeight =
     600
+
+
+sidePaddings : Float
+sidePaddings =
+    50
 
 
 screenWidth : Float

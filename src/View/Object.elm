@@ -119,7 +119,14 @@ bigStone ( x, y ) =
         , Html.Attributes.style "height" (String.fromFloat Config.bigStoneSize ++ "px")
         , Html.Attributes.style "position" "absolute"
         , Html.Attributes.style "top" (String.fromFloat (y + offSet) ++ "px")
-        , Html.Attributes.style "left" (String.fromFloat (x + offSet) ++ "px")
+        , Html.Attributes.style "left"
+            (String.fromFloat
+                (Config.screenWidth
+                    - Config.sidePaddings
+                    + offSet
+                )
+                ++ "px"
+            )
         , Html.Attributes.style "background-image" "url('assets/images/Stone2.png')"
         , Html.Attributes.style "background-size" "100%"
         , Html.Attributes.style "border-radius" "100%"
@@ -138,7 +145,7 @@ smallStone ( x, y ) =
         , Html.Attributes.style "height" (String.fromFloat Config.smallStoneSize ++ "px")
         , Html.Attributes.style "position" "absolute"
         , Html.Attributes.style "top" (String.fromFloat (y + offSet) ++ "px")
-        , Html.Attributes.style "left" (String.fromFloat (x + offSet) ++ "px")
+        , Html.Attributes.style "left" (String.fromFloat (0 + offSet) ++ "px")
         , Html.Attributes.style "background-image" "url('assets/images/Stone1.png')"
         , Html.Attributes.style "background-size" "100%"
         , Html.Attributes.style "border-radius" "100%"

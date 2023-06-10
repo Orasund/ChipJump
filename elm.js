@@ -5682,12 +5682,19 @@ var $author$project$Song$default = function () {
 									$author$project$Note$bar(
 										_List_fromArray(
 											[$author$project$Note$pause]))),
-								A2(
-									$elm$core$List$repeat,
-									8,
-									$author$project$Note$bar(
-										_List_fromArray(
-											[$author$project$Note$c1, $author$project$Note$c1])))))))),
+								_Utils_ap(
+									A2(
+										$elm$core$List$repeat,
+										4,
+										$author$project$Note$bar(
+											_List_fromArray(
+												[$author$project$Note$c1, $author$project$Note$c1]))),
+									A2(
+										$elm$core$List$repeat,
+										4,
+										$author$project$Note$bar(
+											_List_fromArray(
+												[$author$project$Note$c1, $author$project$Note$c1, $author$project$Note$c1, $author$project$Note$c1]))))))))),
 				_Utils_Tuple2(
 				$author$project$Song$hihatInstrument,
 				$elm$core$Array$fromList(
@@ -5708,7 +5715,7 @@ var $author$project$Song$default = function () {
 									4,
 									$author$project$Note$bar(
 										_List_fromArray(
-											[$author$project$Note$c1, $author$project$Note$c1, $author$project$Note$c1, $author$project$Note$c1]))))))))
+											[$author$project$Note$pause, $author$project$Note$c1, $author$project$Note$pause, $author$project$Note$c1, $author$project$Note$pause, $author$project$Note$c1, $author$project$Note$pause, $author$project$Note$c1]))))))))
 			]));
 }();
 var $elm$core$List$maybeCons = F3(
@@ -6880,7 +6887,8 @@ var $author$project$Config$backgroundColor = '#010f16';
 var $author$project$Note$bang = $author$project$Note$C1;
 var $author$project$Config$lilyPadSize = 100;
 var $author$project$Config$screenWidth = 400;
-var $author$project$Config$horizontalSpaceBetweenPlatforms = ($author$project$Config$screenWidth - $author$project$Config$lilyPadSize) / 6;
+var $author$project$Config$sidePaddings = 50;
+var $author$project$Config$horizontalSpaceBetweenPlatforms = (($author$project$Config$screenWidth - ($author$project$Config$sidePaddings * 2)) - $author$project$Config$lilyPadSize) / 6;
 var $elm$core$Basics$modBy = _Basics_modBy;
 var $elm$core$Basics$negate = function (n) {
 	return -n;
@@ -6950,10 +6958,10 @@ var $author$project$Config$verticalSpaceBetweenPlatforms = 80;
 var $author$project$View$Common$calcLilyPadPosition = function (args) {
 	var ratio = args.ratioToNextBeat;
 	return _Utils_Tuple2(
-		$author$project$Config$horizontalSpaceBetweenPlatforms * A2(
+		$author$project$Config$sidePaddings + ($author$project$Config$horizontalSpaceBetweenPlatforms * A2(
 			$elm$core$Basics$modBy,
 			7,
-			$author$project$Note$toInt(args.note) + 5),
+			$author$project$Note$toInt(args.note) + 5)),
 		(($author$project$Config$verticalSpaceBetweenPlatforms * (((-args.start) + ratio) + args.beatsPlayed)) + $author$project$Config$screenHeight) - ($author$project$Config$lilyPadSize * 2));
 };
 var $author$project$Config$playerSize = 60;
@@ -7206,7 +7214,7 @@ var $author$project$View$endgame = F2(
 						})
 					])));
 	});
-var $author$project$Config$bigStoneSize = 80;
+var $author$project$Config$bigStoneSize = 100;
 var $author$project$View$Object$bigStone = function (_v0) {
 	var x = _v0.a;
 	var y = _v0.b;
@@ -7231,7 +7239,7 @@ var $author$project$View$Object$bigStone = function (_v0) {
 				A2(
 				$elm$html$Html$Attributes$style,
 				'left',
-				$elm$core$String$fromFloat(x + offSet) + 'px'),
+				$elm$core$String$fromFloat(($author$project$Config$screenWidth - $author$project$Config$sidePaddings) + offSet) + 'px'),
 				A2($elm$html$Html$Attributes$style, 'background-image', 'url(\'assets/images/Stone2.png\')'),
 				A2($elm$html$Html$Attributes$style, 'background-size', '100%'),
 				A2($elm$html$Html$Attributes$style, 'border-radius', '100%')
@@ -7297,7 +7305,7 @@ var $author$project$View$Object$lilyPad = F2(
 					])),
 			_List_Nil);
 	});
-var $author$project$Config$smallStoneSize = 60;
+var $author$project$Config$smallStoneSize = 100;
 var $author$project$View$Object$smallStone = function (_v0) {
 	var x = _v0.a;
 	var y = _v0.b;
@@ -7322,7 +7330,7 @@ var $author$project$View$Object$smallStone = function (_v0) {
 				A2(
 				$elm$html$Html$Attributes$style,
 				'left',
-				$elm$core$String$fromFloat(x + offSet) + 'px'),
+				$elm$core$String$fromFloat(0 + offSet) + 'px'),
 				A2($elm$html$Html$Attributes$style, 'background-image', 'url(\'assets/images/Stone1.png\')'),
 				A2($elm$html$Html$Attributes$style, 'background-size', '100%'),
 				A2($elm$html$Html$Attributes$style, 'border-radius', '100%')

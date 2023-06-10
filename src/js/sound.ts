@@ -1,7 +1,7 @@
 import * as Tone from 'tone'
 import { Volume } from 'tone';
 
-const limiter = new Tone.Limiter(-6).chain(new Tone.Volume(0), Tone.Destination);
+const limiter = new Tone.Limiter(-6).chain(new Tone.Volume(6), Tone.Destination);
 
 const synthVolume = new Tone.Volume(-36).connect(limiter);
 //create a synth and connect it to the main output (your speakers)
