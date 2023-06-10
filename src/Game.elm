@@ -23,6 +23,8 @@ type alias Object =
 type ObjectSort
     = LilyPad { active : Bool }
     | Wave
+    | BigStone
+    | SmallStone
 
 
 type alias Statistics =
@@ -60,7 +62,7 @@ activatePlatform id game =
                                 LilyPad lilyPad ->
                                     { platform | sort = LilyPad { lilyPad | active = True } }
 
-                                Wave ->
+                                _ ->
                                     platform
                         )
                     )
@@ -97,7 +99,7 @@ getNextPossibleLilyPads game from =
                                     else
                                         Nothing
 
-                                Wave ->
+                                _ ->
                                     Nothing
                         )
             )
@@ -165,6 +167,13 @@ nextBeat game =
 
         songPosition =
             game.songPosition + 1
+
+        updateFun note =
+            \maybe ->
+                maybe
+                    |> Maybe.withDefault []
+                    |> (::) note
+                    |> Just
     in
     ( { game
         | songPosition = songPosition
@@ -187,25 +196,13 @@ nextBeat game =
                 case sort of
                     LilyPad { active } ->
                         if active then
-                            Dict.update Song.lilyPadInstrument
-                                (\maybe ->
-                                    maybe
-                                        |> Maybe.withDefault []
-                                        |> (::) note
-                                        |> Just
-                                )
+                            Dict.update Song.lilyPadInstrument (updateFun note)
 
                         else
                             identity
 
-                    Wave ->
-                        Dict.update Song.waveInstrument
-                            (\maybe ->
-                                maybe
-                                    |> Maybe.withDefault []
-                                    |> (::) note
-                                    |> Just
-                            )
+                    _ ->
+                        Dict.update (objectToInstrument sort) (updateFun note)
             )
             Dict.empty
     )
@@ -232,6 +229,12 @@ new =
 
                                      else if instrument == Song.waveInstrument then
                                         Wave |> Just
+
+                                     else if instrument == Song.kickInstrument then
+                                        BigStone |> Just
+
+                                     else if instrument == Song.hihatInstrument then
+                                        SmallStone |> Just
 
                                      else
                                         Nothing
@@ -272,11 +275,15 @@ new =
                     )
                     ( Dict.empty, 0 )
 
-        player =
-            OnPlatform 0
-
         songPosition =
             0
+
+        player =
+            rows
+                |> Dict.get songPosition
+                |> Maybe.andThen List.head
+                |> Maybe.withDefault 0
+                |> OnPlatform
 
         running =
             False
@@ -309,3 +316,9 @@ objectToInstrument objectSort =
 
         Wave ->
             Song.waveInstrument
+
+        BigStone ->
+            Song.kickInstrument
+
+        SmallStone ->
+            Song.hihatInstrument

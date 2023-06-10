@@ -11,6 +11,16 @@ waveSize =
     200
 
 
+bigStoneSize : Float
+bigStoneSize =
+    80
+
+
+smallStoneSize : Float
+smallStoneSize =
+    60
+
+
 horizontalSpaceBetweenPlatforms : Float
 horizontalSpaceBetweenPlatforms =
     (screenWidth - lilyPadSize) / 6

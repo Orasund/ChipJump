@@ -5196,13 +5196,24 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
+var $author$project$Game$BigStone = {$: 'BigStone'};
 var $author$project$Game$LilyPad = function (a) {
 	return {$: 'LilyPad', a: a};
 };
 var $author$project$Game$OnPlatform = function (a) {
 	return {$: 'OnPlatform', a: a};
 };
+var $author$project$Game$SmallStone = {$: 'SmallStone'};
 var $author$project$Game$Wave = {$: 'Wave'};
+var $elm$core$Maybe$andThen = F2(
+	function (callback, maybeValue) {
+		if (maybeValue.$ === 'Just') {
+			var value = maybeValue.a;
+			return callback(value);
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
 var $elm$core$List$append = F2(
 	function (xs, ys) {
 		if (!ys.b) {
@@ -5225,6 +5236,9 @@ var $author$project$Note$a1 = _List_fromArray(
 var $author$project$Note$A2 = {$: 'A2'};
 var $author$project$Note$a2 = _List_fromArray(
 	[$author$project$Note$A2]);
+var $author$project$Note$A3 = {$: 'A3'};
+var $author$project$Note$a3 = _List_fromArray(
+	[$author$project$Note$A3]);
 var $author$project$Note$B1 = {$: 'B1'};
 var $author$project$Note$b1 = _List_fromArray(
 	[$author$project$Note$B1]);
@@ -5253,6 +5267,9 @@ var $author$project$Note$c2 = _List_fromArray(
 var $author$project$Note$C3 = {$: 'C3'};
 var $author$project$Note$c3 = _List_fromArray(
 	[$author$project$Note$C3]);
+var $author$project$Note$C4 = {$: 'C4'};
+var $author$project$Note$c4 = _List_fromArray(
+	[$author$project$Note$C4]);
 var $author$project$Note$D2 = {$: 'D2'};
 var $author$project$Note$d2 = _List_fromArray(
 	[$author$project$Note$D2]);
@@ -5262,6 +5279,9 @@ var $author$project$Note$e1 = _List_fromArray(
 var $author$project$Note$E2 = {$: 'E2'};
 var $author$project$Note$e2 = _List_fromArray(
 	[$author$project$Note$E2]);
+var $author$project$Note$E3 = {$: 'E3'};
+var $author$project$Note$e3 = _List_fromArray(
+	[$author$project$Note$E3]);
 var $author$project$Note$F1 = {$: 'F1'};
 var $author$project$Note$f1 = _List_fromArray(
 	[$author$project$Note$F1]);
@@ -5271,6 +5291,9 @@ var $author$project$Note$f2 = _List_fromArray(
 var $author$project$Note$F3 = {$: 'F3'};
 var $author$project$Note$f3 = _List_fromArray(
 	[$author$project$Note$F3]);
+var $author$project$Note$F4 = {$: 'F4'};
+var $author$project$Note$f4 = _List_fromArray(
+	[$author$project$Note$F4]);
 var $elm$core$Array$fromListHelp = F3(
 	function (list, nodeList, nodeListSize) {
 		fromListHelp:
@@ -5435,6 +5458,11 @@ var $author$project$Note$g1 = _List_fromArray(
 var $author$project$Note$G2 = {$: 'G2'};
 var $author$project$Note$g2 = _List_fromArray(
 	[$author$project$Note$G2]);
+var $author$project$Note$G3 = {$: 'G3'};
+var $author$project$Note$g3 = _List_fromArray(
+	[$author$project$Note$G3]);
+var $author$project$Song$hihatInstrument = 'hihatInstrument';
+var $author$project$Song$kickInstrument = 'kickInstrument';
 var $author$project$Song$lilyPadInstrument = 'lilyPadInstrument';
 var $author$project$Note$pause = _List_Nil;
 var $elm$core$List$repeatHelp = F3(
@@ -5600,12 +5628,10 @@ var $author$project$Song$default = function () {
 				$author$project$Song$waveInstrument,
 				$elm$core$Array$fromList(
 					$elm$core$List$concat(
-						_Utils_ap(
+						A2(
+							$elm$core$List$cons,
 							_List_fromArray(
-								[
-									_List_fromArray(
-									[$author$project$Note$pause, $author$project$Note$pause])
-								]),
+								[$author$project$Note$pause, $author$project$Note$pause]),
 							$elm$core$List$concat(
 								A2(
 									$elm$core$List$repeat,
@@ -5616,23 +5642,73 @@ var $author$project$Song$default = function () {
 											_List_fromArray(
 												[
 													_Utils_ap(
-													$author$project$Note$a2,
-													_Utils_ap($author$project$Note$c3, $author$project$Note$f3)),
+													$author$project$Note$a3,
 													_Utils_ap(
-													$author$project$Note$c2,
-													_Utils_ap($author$project$Note$e2, $author$project$Note$g2))
+														$author$project$Note$c4,
+														_Utils_ap($author$project$Note$f4, $author$project$Note$a2))),
+													_Utils_ap(
+													$author$project$Note$c3,
+													_Utils_ap(
+														$author$project$Note$e3,
+														_Utils_ap($author$project$Note$g3, $author$project$Note$c2)))
 												])),
 											$author$project$Note$bar(
 											_List_fromArray(
 												[
 													_Utils_ap(
-													$author$project$Note$e2,
-													_Utils_ap($author$project$Note$g2, $author$project$Note$c3)),
+													$author$project$Note$f3,
 													_Utils_ap(
-													$author$project$Note$f2,
-													_Utils_ap($author$project$Note$a2, $author$project$Note$c3))
+														$author$project$Note$a3,
+														_Utils_ap($author$project$Note$c4, $author$project$Note$f2))),
+													_Utils_ap(
+													$author$project$Note$e3,
+													_Utils_ap(
+														$author$project$Note$g3,
+														_Utils_ap($author$project$Note$c4, $author$project$Note$e2)))
 												]))
-										])))))))
+										]))))))),
+				_Utils_Tuple2(
+				$author$project$Song$kickInstrument,
+				$elm$core$Array$fromList(
+					$elm$core$List$concat(
+						A2(
+							$elm$core$List$cons,
+							_List_fromArray(
+								[$author$project$Note$pause, $author$project$Note$pause]),
+							_Utils_ap(
+								A2(
+									$elm$core$List$repeat,
+									8,
+									$author$project$Note$bar(
+										_List_fromArray(
+											[$author$project$Note$pause]))),
+								A2(
+									$elm$core$List$repeat,
+									8,
+									$author$project$Note$bar(
+										_List_fromArray(
+											[$author$project$Note$c1, $author$project$Note$c1])))))))),
+				_Utils_Tuple2(
+				$author$project$Song$hihatInstrument,
+				$elm$core$Array$fromList(
+					$elm$core$List$concat(
+						A2(
+							$elm$core$List$cons,
+							_List_fromArray(
+								[$author$project$Note$pause, $author$project$Note$pause]),
+							_Utils_ap(
+								A2(
+									$elm$core$List$repeat,
+									12,
+									$author$project$Note$bar(
+										_List_fromArray(
+											[$author$project$Note$pause]))),
+								A2(
+									$elm$core$List$repeat,
+									4,
+									$author$project$Note$bar(
+										_List_fromArray(
+											[$author$project$Note$c1, $author$project$Note$c1, $author$project$Note$c1, $author$project$Note$c1]))))))))
 			]));
 }();
 var $elm$core$List$maybeCons = F3(
@@ -5678,6 +5754,46 @@ var $elm$core$Dict$foldl = F3(
 			}
 		}
 	});
+var $elm$core$Dict$get = F2(
+	function (targetKey, dict) {
+		get:
+		while (true) {
+			if (dict.$ === 'RBEmpty_elm_builtin') {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var key = dict.b;
+				var value = dict.c;
+				var left = dict.d;
+				var right = dict.e;
+				var _v1 = A2($elm$core$Basics$compare, targetKey, key);
+				switch (_v1.$) {
+					case 'LT':
+						var $temp$targetKey = targetKey,
+							$temp$dict = left;
+						targetKey = $temp$targetKey;
+						dict = $temp$dict;
+						continue get;
+					case 'EQ':
+						return $elm$core$Maybe$Just(value);
+					default:
+						var $temp$targetKey = targetKey,
+							$temp$dict = right;
+						targetKey = $temp$targetKey;
+						dict = $temp$dict;
+						continue get;
+				}
+			}
+		}
+	});
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
 var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
 var $elm$core$Elm$JsArray$indexedMap = _JsArray_indexedMap;
 var $elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
@@ -5735,37 +5851,6 @@ var $author$project$Config$minBpm = 60;
 var $elm$core$Tuple$pair = F2(
 	function (a, b) {
 		return _Utils_Tuple2(a, b);
-	});
-var $elm$core$Dict$get = F2(
-	function (targetKey, dict) {
-		get:
-		while (true) {
-			if (dict.$ === 'RBEmpty_elm_builtin') {
-				return $elm$core$Maybe$Nothing;
-			} else {
-				var key = dict.b;
-				var value = dict.c;
-				var left = dict.d;
-				var right = dict.e;
-				var _v1 = A2($elm$core$Basics$compare, targetKey, key);
-				switch (_v1.$) {
-					case 'LT':
-						var $temp$targetKey = targetKey,
-							$temp$dict = left;
-						targetKey = $temp$targetKey;
-						dict = $temp$dict;
-						continue get;
-					case 'EQ':
-						return $elm$core$Maybe$Just(value);
-					default:
-						var $temp$targetKey = targetKey,
-							$temp$dict = right;
-						targetKey = $temp$targetKey;
-						dict = $temp$dict;
-						continue get;
-				}
-			}
-		}
 	});
 var $elm$core$Dict$getMin = function (dict) {
 	getMin:
@@ -6153,7 +6238,6 @@ var $author$project$Game$new = function () {
 	var track = $author$project$Song$default;
 	var songPosition = 0;
 	var running = false;
-	var player = $author$project$Game$OnPlatform(0);
 	var objects = $elm$core$Dict$fromList(
 		A2(
 			$elm$core$List$indexedMap,
@@ -6184,7 +6268,7 @@ var $author$project$Game$new = function () {
 												},
 												_Utils_eq(instrument, $author$project$Song$lilyPadInstrument) ? $elm$core$Maybe$Just(
 													$author$project$Game$LilyPad(
-														{active: !j})) : (_Utils_eq(instrument, $author$project$Song$waveInstrument) ? $elm$core$Maybe$Just($author$project$Game$Wave) : $elm$core$Maybe$Nothing));
+														{active: !j})) : (_Utils_eq(instrument, $author$project$Song$waveInstrument) ? $elm$core$Maybe$Just($author$project$Game$Wave) : (_Utils_eq(instrument, $author$project$Song$kickInstrument) ? $elm$core$Maybe$Just($author$project$Game$BigStone) : (_Utils_eq(instrument, $author$project$Song$hihatInstrument) ? $elm$core$Maybe$Just($author$project$Game$SmallStone) : $elm$core$Maybe$Nothing))));
 										}),
 									array))));
 				},
@@ -6216,6 +6300,14 @@ var $author$project$Game$new = function () {
 		objects);
 	var rows = _v0.a;
 	var endPosition = _v0.b;
+	var player = $author$project$Game$OnPlatform(
+		A2(
+			$elm$core$Maybe$withDefault,
+			0,
+			A2(
+				$elm$core$Maybe$andThen,
+				$elm$core$List$head,
+				A2($elm$core$Dict$get, songPosition, rows))));
 	return {bpm: bpm, endPosition: endPosition, objects: objects, player: player, rows: rows, running: running, songPosition: songPosition, statistics: statistics, track: track};
 }();
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
@@ -6409,15 +6501,6 @@ var $author$project$Game$Jumping = function (a) {
 	return {$: 'Jumping', a: a};
 };
 var $author$project$Config$bpmPercentDecrease = 0.07;
-var $elm$core$Maybe$andThen = F2(
-	function (callback, maybeValue) {
-		if (maybeValue.$ === 'Just') {
-			var value = maybeValue.a;
-			return callback(value);
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
 var $author$project$Game$getNextPossibleLilyPads = F2(
 	function (game, from) {
 		return A2(
@@ -6460,15 +6543,6 @@ var $author$project$Game$getNextPossibleLilyPads = F2(
 						},
 						A2($elm$core$Dict$get, from, game.objects)))));
 	});
-var $elm$core$List$head = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return $elm$core$Maybe$Just(x);
-	} else {
-		return $elm$core$Maybe$Nothing;
-	}
-};
 var $author$project$Game$objectIdOfPlayer = function (game) {
 	var _v0 = game.player;
 	if (_v0.$ === 'OnPlatform') {
@@ -6514,7 +6588,28 @@ var $author$project$Game$nextPlayerPos = function (game) {
 			$elm$core$List$head(
 				A2($author$project$Game$getNextPossibleLilyPads, game, currentObjectId))));
 };
+var $author$project$Game$objectToInstrument = function (objectSort) {
+	switch (objectSort.$) {
+		case 'LilyPad':
+			return $author$project$Song$lilyPadInstrument;
+		case 'Wave':
+			return $author$project$Song$waveInstrument;
+		case 'BigStone':
+			return $author$project$Song$kickInstrument;
+		default:
+			return $author$project$Song$hihatInstrument;
+	}
+};
 var $author$project$Game$nextBeat = function (game) {
+	var updateFun = function (note) {
+		return function (maybe) {
+			return $elm$core$Maybe$Just(
+				A2(
+					$elm$core$List$cons,
+					note,
+					A2($elm$core$Maybe$withDefault, _List_Nil, maybe)));
+		};
+	};
 	var songPosition = game.songPosition + 1;
 	var bpm = game.bpm + $author$project$Config$bpmIncrease;
 	return _Utils_Tuple2(
@@ -6542,24 +6637,12 @@ var $author$project$Game$nextBeat = function (game) {
 					return active ? A2(
 						$elm$core$Dict$update,
 						$author$project$Song$lilyPadInstrument,
-						function (maybe) {
-							return $elm$core$Maybe$Just(
-								A2(
-									$elm$core$List$cons,
-									note,
-									A2($elm$core$Maybe$withDefault, _List_Nil, maybe)));
-						}) : $elm$core$Basics$identity;
+						updateFun(note)) : $elm$core$Basics$identity;
 				} else {
 					return A2(
 						$elm$core$Dict$update,
-						$author$project$Song$waveInstrument,
-						function (maybe) {
-							return $elm$core$Maybe$Just(
-								A2(
-									$elm$core$List$cons,
-									note,
-									A2($elm$core$Maybe$withDefault, _List_Nil, maybe)));
-						});
+						$author$project$Game$objectToInstrument(sort),
+						updateFun(note));
 				}
 			},
 			$elm$core$Dict$empty,
@@ -7123,6 +7206,38 @@ var $author$project$View$endgame = F2(
 						})
 					])));
 	});
+var $author$project$Config$bigStoneSize = 80;
+var $author$project$View$Object$bigStone = function (_v0) {
+	var x = _v0.a;
+	var y = _v0.b;
+	var offSet = ($author$project$Config$lilyPadSize / 2) - ($author$project$Config$bigStoneSize / 2);
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$Attributes$style,
+				'width',
+				$elm$core$String$fromFloat($author$project$Config$bigStoneSize) + 'px'),
+				A2(
+				$elm$html$Html$Attributes$style,
+				'height',
+				$elm$core$String$fromFloat($author$project$Config$bigStoneSize) + 'px'),
+				A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+				A2(
+				$elm$html$Html$Attributes$style,
+				'top',
+				$elm$core$String$fromFloat(y + offSet) + 'px'),
+				A2(
+				$elm$html$Html$Attributes$style,
+				'left',
+				$elm$core$String$fromFloat(x + offSet) + 'px'),
+				A2($elm$html$Html$Attributes$style, 'background-image', 'url(\'assets/images/Stone2.png\')'),
+				A2($elm$html$Html$Attributes$style, 'background-size', '100%'),
+				A2($elm$html$Html$Attributes$style, 'border-radius', '100%')
+			]),
+		_List_Nil);
+};
 var $author$project$Config$activeLilyPadZIndex = 1;
 var $author$project$Config$inactiveLilyPadZIndex = 10;
 var $elm$html$Html$Events$onMouseDown = function (msg) {
@@ -7182,6 +7297,38 @@ var $author$project$View$Object$lilyPad = F2(
 					])),
 			_List_Nil);
 	});
+var $author$project$Config$smallStoneSize = 60;
+var $author$project$View$Object$smallStone = function (_v0) {
+	var x = _v0.a;
+	var y = _v0.b;
+	var offSet = ($author$project$Config$lilyPadSize / 2) - ($author$project$Config$smallStoneSize / 2);
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$Attributes$style,
+				'width',
+				$elm$core$String$fromFloat($author$project$Config$smallStoneSize) + 'px'),
+				A2(
+				$elm$html$Html$Attributes$style,
+				'height',
+				$elm$core$String$fromFloat($author$project$Config$smallStoneSize) + 'px'),
+				A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+				A2(
+				$elm$html$Html$Attributes$style,
+				'top',
+				$elm$core$String$fromFloat(y + offSet) + 'px'),
+				A2(
+				$elm$html$Html$Attributes$style,
+				'left',
+				$elm$core$String$fromFloat(x + offSet) + 'px'),
+				A2($elm$html$Html$Attributes$style, 'background-image', 'url(\'assets/images/Stone1.png\')'),
+				A2($elm$html$Html$Attributes$style, 'background-size', '100%'),
+				A2($elm$html$Html$Attributes$style, 'border-radius', '100%')
+			]),
+		_List_Nil);
+};
 var $author$project$Config$waveSize = 200;
 var $author$project$View$Object$wave = function (_v0) {
 	var x = _v0.a;
@@ -7224,23 +7371,28 @@ var $author$project$View$Object$fromDict = F2(
 				var note = _v0.b.note;
 				var sort = _v0.b.sort;
 				return function () {
-					if (sort.$ === 'LilyPad') {
-						var active = sort.a.active;
-						return $author$project$View$Object$lilyPad(
-							{
-								active: active,
-								onClick: args.onClick(platformId),
-								size: function () {
-									var _v2 = A2($elm$core$Basics$modBy, $author$project$Config$maxJumpSize, start);
-									if (_v2 === 1) {
-										return 0.75;
-									} else {
-										return 1;
-									}
-								}()
-							});
-					} else {
-						return $author$project$View$Object$wave;
+					switch (sort.$) {
+						case 'LilyPad':
+							var active = sort.a.active;
+							return $author$project$View$Object$lilyPad(
+								{
+									active: active,
+									onClick: args.onClick(platformId),
+									size: function () {
+										var _v2 = A2($elm$core$Basics$modBy, $author$project$Config$maxJumpSize, start);
+										if (_v2 === 1) {
+											return 0.75;
+										} else {
+											return 1;
+										}
+									}()
+								});
+						case 'Wave':
+							return $author$project$View$Object$wave;
+						case 'BigStone':
+							return $author$project$View$Object$bigStone;
+						default:
+							return $author$project$View$Object$smallStone;
 					}
 				}()(
 					$author$project$View$Common$calcLilyPadPosition(

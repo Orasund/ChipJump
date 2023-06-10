@@ -112,19 +112,33 @@ default =
             |> Array.fromList
       )
     , ( waveInstrument
-      , [ [ pause, pause ] ]
-            ++ ([ Note.bar
-                    [ a2 ++ c3 ++ f3
-                    , c2 ++ e2 ++ g2
+      , [ pause, pause ]
+            :: ([ Note.bar
+                    [ a3 ++ c4 ++ f4 ++ a2
+                    , c3 ++ e3 ++ g3 ++ c2
                     ]
                 , Note.bar
-                    [ e2 ++ g2 ++ c3
-                    , f2 ++ a2 ++ c3
+                    [ f3 ++ a3 ++ c4 ++ f2
+                    , e3 ++ g3 ++ c4 ++ e2
                     ]
                 ]
                     |> List.repeat 8
                     |> List.concat
                )
+            |> List.concat
+            |> Array.fromList
+      )
+    , ( kickInstrument
+      , [ pause, pause ]
+            :: (Note.bar [ pause ] |> List.repeat 8)
+            ++ (Note.bar [ c1, c1 ] |> List.repeat 8)
+            |> List.concat
+            |> Array.fromList
+      )
+    , ( hihatInstrument
+      , [ pause, pause ]
+            :: (Note.bar [ pause ] |> List.repeat 12)
+            ++ (Note.bar [ c1, c1, c1, c1 ] |> List.repeat 4)
             |> List.concat
             |> Array.fromList
       )
@@ -147,3 +161,13 @@ lilyPadInstrument =
 waveInstrument : Instrument
 waveInstrument =
     "waveInstrument"
+
+
+kickInstrument : Instrument
+kickInstrument =
+    "kickInstrument"
+
+
+hihatInstrument : Instrument
+hihatInstrument =
+    "hihatInstrument"
