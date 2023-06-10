@@ -21,7 +21,7 @@ type alias Object =
 
 
 type ObjectSort
-    = LilyPad { active : Bool }
+    = LilyPad { active : Bool, variant : Int }
     | Wave
     | BigStone
     | SmallStone
@@ -224,17 +224,22 @@ new =
                             |> Array.indexedMap
                                 (\j list ->
                                     (if instrument == Song.lilyPadInstrument then
-                                        LilyPad { active = j == 0 }
+                                        (\notes ->
+                                            LilyPad
+                                                { active = j == 0
+                                                , variant = j + Note.toInt notes |> modBy Config.lilyPadVariants
+                                                }
+                                        )
                                             |> Just
 
                                      else if instrument == Song.waveInstrument then
-                                        Wave |> Just
+                                        always Wave |> Just
 
                                      else if instrument == Song.kickInstrument then
-                                        BigStone |> Just
+                                        always BigStone |> Just
 
                                      else if instrument == Song.hihatInstrument then
-                                        SmallStone |> Just
+                                        always SmallStone |> Just
 
                                      else
                                         Nothing
@@ -245,7 +250,7 @@ new =
                                                     |> List.map
                                                         (\note ->
                                                             { start = j
-                                                            , sort = sort
+                                                            , sort = sort note
                                                             , note = note
                                                             }
                                                         )

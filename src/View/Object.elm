@@ -6,7 +6,6 @@ import Game exposing (Object, ObjectId, ObjectSort(..))
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events
-import Json.Decode as Decode
 import View.Common
 
 
@@ -29,7 +28,7 @@ fromDict args dict =
                     , note = note
                     }
                     |> (case sort of
-                            LilyPad { active } ->
+                            LilyPad { active, variant } ->
                                 lilyPad
                                     { active = active
                                     , onClick = args.onClick platformId
@@ -40,6 +39,7 @@ fromDict args dict =
 
                                             _ ->
                                                 1
+                                    , variant = variant
                                     }
 
                             Wave ->
@@ -54,7 +54,7 @@ fromDict args dict =
             )
 
 
-lilyPad : { active : Bool, onClick : msg, size : Float } -> ( Float, Float ) -> Html msg
+lilyPad : { active : Bool, onClick : msg, size : Float, variant : Int } -> ( Float, Float ) -> Html msg
 lilyPad args ( x, y ) =
     let
         lilyPadSize =
@@ -74,8 +74,10 @@ lilyPad args ( x, y ) =
          , Html.Events.onMouseDown args.onClick
          ]
             ++ (if args.active then
-                    [ Html.Attributes.style "background-image" "url('assets/images/lilyPad.png')"
+                    [ Html.Attributes.style "background-image"
+                        ("url('assets/images/lilypad/" ++ String.fromInt args.variant ++ ".png')")
                     , Html.Attributes.style "background-size" "100%"
+                    , Html.Attributes.style "background-repeat" "no-repeat"
                     , Html.Attributes.style "border" "0px"
                     , Html.Attributes.style "z-index" (String.fromInt Config.activeLilyPadZIndex)
                     ]

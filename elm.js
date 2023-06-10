@@ -5205,6 +5205,10 @@ var $author$project$Game$OnPlatform = function (a) {
 };
 var $author$project$Game$SmallStone = {$: 'SmallStone'};
 var $author$project$Game$Wave = {$: 'Wave'};
+var $elm$core$Basics$always = F2(
+	function (a, _v0) {
+		return a;
+	});
 var $elm$core$Maybe$andThen = F2(
 	function (callback, maybeValue) {
 		if (maybeValue.$ === 'Just') {
@@ -5844,6 +5848,7 @@ var $elm$core$Array$indexedMap = F2(
 			true,
 			A3($elm$core$Elm$JsArray$foldl, helper, initialBuilder, tree));
 	});
+var $author$project$Config$lilyPadVariants = 5;
 var $elm$core$Maybe$map = F2(
 	function (f, maybe) {
 		if (maybe.$ === 'Just') {
@@ -5855,10 +5860,71 @@ var $elm$core$Maybe$map = F2(
 		}
 	});
 var $author$project$Config$minBpm = 60;
+var $elm$core$Basics$modBy = _Basics_modBy;
 var $elm$core$Tuple$pair = F2(
 	function (a, b) {
 		return _Utils_Tuple2(a, b);
 	});
+var $author$project$Note$toInt = function (note) {
+	switch (note.$) {
+		case 'C1':
+			return 0;
+		case 'D1':
+			return 1;
+		case 'E1':
+			return 2;
+		case 'F1':
+			return 3;
+		case 'G1':
+			return 4;
+		case 'A1':
+			return 5;
+		case 'B1':
+			return 6;
+		case 'C2':
+			return 7;
+		case 'D2':
+			return 8;
+		case 'E2':
+			return 9;
+		case 'F2':
+			return 10;
+		case 'G2':
+			return 11;
+		case 'A2':
+			return 12;
+		case 'B2':
+			return 13;
+		case 'C3':
+			return 14;
+		case 'D3':
+			return 15;
+		case 'E3':
+			return 16;
+		case 'F3':
+			return 17;
+		case 'G3':
+			return 18;
+		case 'A3':
+			return 19;
+		case 'B3':
+			return 20;
+		case 'C4':
+			return 21;
+		case 'D4':
+			return 22;
+		case 'E4':
+			return 23;
+		case 'F4':
+			return 24;
+		case 'G4':
+			return 25;
+		case 'A4':
+			return 26;
+		default:
+			return 27;
+	}
+};
 var $elm$core$Dict$getMin = function (dict) {
 	getMin:
 	while (true) {
@@ -6269,13 +6335,28 @@ var $author$project$Game$new = function () {
 													return A2(
 														$elm$core$List$map,
 														function (note) {
-															return {note: note, sort: sort, start: j};
+															return {
+																note: note,
+																sort: sort(note),
+																start: j
+															};
 														},
 														list);
 												},
 												_Utils_eq(instrument, $author$project$Song$lilyPadInstrument) ? $elm$core$Maybe$Just(
-													$author$project$Game$LilyPad(
-														{active: !j})) : (_Utils_eq(instrument, $author$project$Song$waveInstrument) ? $elm$core$Maybe$Just($author$project$Game$Wave) : (_Utils_eq(instrument, $author$project$Song$kickInstrument) ? $elm$core$Maybe$Just($author$project$Game$BigStone) : (_Utils_eq(instrument, $author$project$Song$hihatInstrument) ? $elm$core$Maybe$Just($author$project$Game$SmallStone) : $elm$core$Maybe$Nothing))));
+													function (notes) {
+														return $author$project$Game$LilyPad(
+															{
+																active: !j,
+																variant: A2(
+																	$elm$core$Basics$modBy,
+																	$author$project$Config$lilyPadVariants,
+																	j + $author$project$Note$toInt(notes))
+															});
+													}) : (_Utils_eq(instrument, $author$project$Song$waveInstrument) ? $elm$core$Maybe$Just(
+													$elm$core$Basics$always($author$project$Game$Wave)) : (_Utils_eq(instrument, $author$project$Song$kickInstrument) ? $elm$core$Maybe$Just(
+													$elm$core$Basics$always($author$project$Game$BigStone)) : (_Utils_eq(instrument, $author$project$Song$hihatInstrument) ? $elm$core$Maybe$Just(
+													$elm$core$Basics$always($author$project$Game$SmallStone)) : $elm$core$Maybe$Nothing))));
 										}),
 									array))));
 				},
@@ -6889,71 +6970,10 @@ var $author$project$Config$lilyPadSize = 100;
 var $author$project$Config$screenWidth = 400;
 var $author$project$Config$sidePaddings = 50;
 var $author$project$Config$horizontalSpaceBetweenPlatforms = (($author$project$Config$screenWidth - ($author$project$Config$sidePaddings * 2)) - $author$project$Config$lilyPadSize) / 6;
-var $elm$core$Basics$modBy = _Basics_modBy;
 var $elm$core$Basics$negate = function (n) {
 	return -n;
 };
 var $author$project$Config$screenHeight = 600;
-var $author$project$Note$toInt = function (note) {
-	switch (note.$) {
-		case 'C1':
-			return 0;
-		case 'D1':
-			return 1;
-		case 'E1':
-			return 2;
-		case 'F1':
-			return 3;
-		case 'G1':
-			return 4;
-		case 'A1':
-			return 5;
-		case 'B1':
-			return 6;
-		case 'C2':
-			return 7;
-		case 'D2':
-			return 8;
-		case 'E2':
-			return 9;
-		case 'F2':
-			return 10;
-		case 'G2':
-			return 11;
-		case 'A2':
-			return 12;
-		case 'B2':
-			return 13;
-		case 'C3':
-			return 14;
-		case 'D3':
-			return 15;
-		case 'E3':
-			return 16;
-		case 'F3':
-			return 17;
-		case 'G3':
-			return 18;
-		case 'A3':
-			return 19;
-		case 'B3':
-			return 20;
-		case 'C4':
-			return 21;
-		case 'D4':
-			return 22;
-		case 'E4':
-			return 23;
-		case 'F4':
-			return 24;
-		case 'G4':
-			return 25;
-		case 'A4':
-			return 26;
-		default:
-			return 27;
-	}
-};
 var $author$project$Config$verticalSpaceBetweenPlatforms = 80;
 var $author$project$View$Common$calcLilyPadPosition = function (args) {
 	var ratio = args.ratioToNextBeat;
@@ -7288,8 +7308,12 @@ var $author$project$View$Object$lilyPad = F2(
 					]),
 				args.active ? _List_fromArray(
 					[
-						A2($elm$html$Html$Attributes$style, 'background-image', 'url(\'assets/images/lilyPad.png\')'),
+						A2(
+						$elm$html$Html$Attributes$style,
+						'background-image',
+						'url(\'assets/images/lilypad/' + ($elm$core$String$fromInt(args.variant) + '.png\')')),
 						A2($elm$html$Html$Attributes$style, 'background-size', '100%'),
+						A2($elm$html$Html$Attributes$style, 'background-repeat', 'no-repeat'),
 						A2($elm$html$Html$Attributes$style, 'border', '0px'),
 						A2(
 						$elm$html$Html$Attributes$style,
@@ -7382,6 +7406,7 @@ var $author$project$View$Object$fromDict = F2(
 					switch (sort.$) {
 						case 'LilyPad':
 							var active = sort.a.active;
+							var variant = sort.a.variant;
 							return $author$project$View$Object$lilyPad(
 								{
 									active: active,
@@ -7393,7 +7418,8 @@ var $author$project$View$Object$fromDict = F2(
 										} else {
 											return 1;
 										}
-									}()
+									}(),
+									variant: variant
 								});
 						case 'Wave':
 							return $author$project$View$Object$wave;

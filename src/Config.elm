@@ -119,3 +119,8 @@ inactiveLilyPadZIndex =
 activeLilyPadZIndex : Int
 activeLilyPadZIndex =
     1
+
+
+lilyPadVariants : Int
+lilyPadVariants =
+    5
