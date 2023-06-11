@@ -137,6 +137,7 @@ fromGame args game =
     , [ playerPos |> player
       , settingsButton { onClick = args.toggleSettings }
       ]
+    , overlay
     ]
         |> List.concat
         |> Html.div
@@ -263,3 +264,32 @@ calcPlayerPositionOnPlatform args ( note, start ) =
     ( x + Config.lilyPadSize / 2 - Config.playerSize / 2
     , y + Config.lilyPadSize / 2 - Config.playerSize / 2
     )
+
+
+overlay =
+    List.range 0 (Config.grassDensity - 1)
+        |> List.map
+            (\i ->
+                Config.screenHeight * toFloat i / toFloat Config.grassDensity
+            )
+        |> List.concatMap (\y -> [ gras False ( 0, y ), gras True ( Config.screenWidth - Config.sidePaddings, y ) ])
+
+
+gras : Bool -> ( Float, Float ) -> Html msg
+gras flip ( x, y ) =
+    Html.img
+        ([ Html.Attributes.style "width" (String.fromFloat Config.sidePaddings ++ "px")
+         , Html.Attributes.style "position" "absolute"
+         , Html.Attributes.style "top" (String.fromFloat y ++ "px")
+         , Html.Attributes.style "left" (String.fromFloat x ++ "px")
+         , Html.Attributes.src "assets/images/margin.png"
+         , Html.Attributes.style "background-size" "100%"
+         ]
+            ++ (if flip then
+                    [ Html.Attributes.style "transform" "scaleX(-1)" ]
+
+                else
+                    []
+               )
+        )
+        []

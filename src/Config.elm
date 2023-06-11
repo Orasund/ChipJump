@@ -3,7 +3,7 @@ module Config exposing (..)
 
 lilyPadSize : Float
 lilyPadSize =
-    100
+    90
 
 
 waveSize : Float
@@ -124,3 +124,8 @@ activeLilyPadZIndex =
 lilyPadVariants : Int
 lilyPadVariants =
     5
+
+
+grassDensity : Int
+grassDensity =
+    10

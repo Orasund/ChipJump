@@ -6966,7 +6966,7 @@ var $author$project$Main$calcRatioToNextBeat = F2(
 	});
 var $author$project$Config$backgroundColor = '#010f16';
 var $author$project$Note$bang = $author$project$Note$C1;
-var $author$project$Config$lilyPadSize = 100;
+var $author$project$Config$lilyPadSize = 90;
 var $author$project$Config$screenWidth = 400;
 var $author$project$Config$sidePaddings = 50;
 var $author$project$Config$horizontalSpaceBetweenPlatforms = (($author$project$Config$screenWidth - ($author$project$Config$sidePaddings * 2)) - $author$project$Config$lilyPadSize) / 6;
@@ -7435,13 +7435,66 @@ var $author$project$View$Object$fromDict = F2(
 			$elm$core$Dict$toList(dict));
 	});
 var $elm$html$Html$img = _VirtualDom_node('img');
-var $author$project$Config$playerZIndex = 100;
 var $elm$html$Html$Attributes$src = function (url) {
 	return A2(
 		$elm$html$Html$Attributes$stringProperty,
 		'src',
 		_VirtualDom_noJavaScriptOrHtmlUri(url));
 };
+var $author$project$View$gras = F2(
+	function (flip, _v0) {
+		var x = _v0.a;
+		var y = _v0.b;
+		return A2(
+			$elm$html$Html$img,
+			_Utils_ap(
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$Attributes$style,
+						'width',
+						$elm$core$String$fromFloat($author$project$Config$sidePaddings) + 'px'),
+						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+						A2(
+						$elm$html$Html$Attributes$style,
+						'top',
+						$elm$core$String$fromFloat(y) + 'px'),
+						A2(
+						$elm$html$Html$Attributes$style,
+						'left',
+						$elm$core$String$fromFloat(x) + 'px'),
+						$elm$html$Html$Attributes$src('assets/images/margin.png'),
+						A2($elm$html$Html$Attributes$style, 'background-size', '100%')
+					]),
+				flip ? _List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'transform', 'scaleX(-1)')
+					]) : _List_Nil),
+			_List_Nil);
+	});
+var $author$project$Config$grassDensity = 10;
+var $author$project$View$overlay = A2(
+	$elm$core$List$concatMap,
+	function (y) {
+		return _List_fromArray(
+			[
+				A2(
+				$author$project$View$gras,
+				false,
+				_Utils_Tuple2(0, y)),
+				A2(
+				$author$project$View$gras,
+				true,
+				_Utils_Tuple2($author$project$Config$screenWidth - $author$project$Config$sidePaddings, y))
+			]);
+	},
+	A2(
+		$elm$core$List$map,
+		function (i) {
+			return ($author$project$Config$screenHeight * i) / $author$project$Config$grassDensity;
+		},
+		A2($elm$core$List$range, 0, $author$project$Config$grassDensity - 1)));
+var $author$project$Config$playerZIndex = 100;
 var $author$project$View$player = function (_v0) {
 	var x = _v0.a;
 	var y = _v0.b;
@@ -7559,7 +7612,8 @@ var $author$project$View$fromGame = F2(
 							$author$project$View$player(playerPos),
 							$author$project$View$settingsButton(
 							{onClick: args.toggleSettings})
-						])
+						]),
+						$author$project$View$overlay
 					])));
 	});
 var $Orasund$elm_layout$Layout$alignAtCenter = A2($elm$html$Html$Attributes$style, 'align-items', 'center');
