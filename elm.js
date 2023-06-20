@@ -7837,7 +7837,26 @@ var $author$project$View$titleScreen = function (args) {
 						})
 					])),
 				$author$project$View$settingsButton(
-				{onClick: args.toggleSettings})
+				{onClick: args.toggleSettings}),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'display', 'none')
+					]),
+				A2(
+					$elm$core$List$map,
+					function (url) {
+						return A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src(url)
+								]),
+							_List_Nil);
+					},
+					_List_fromArray(
+						['assets/images/lilypad/0.png', 'assets/images/lilypad/1.png', 'assets/images/lilypad/2.png', 'assets/images/lilypad/3.png', 'assets/images/lilypad/4.png', 'assets/images/frog.png', 'assets/images/margin.png', 'assets/images/Stone1.png', 'assets/images/Stone2.png'])))
 			]));
 };
 var $author$project$Main$view = function (model) {

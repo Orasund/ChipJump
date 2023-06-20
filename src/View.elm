@@ -29,6 +29,21 @@ titleScreen args =
                    ]
             )
     , settingsButton { onClick = args.toggleSettings }
+    , [ "assets/images/lilypad/0.png"
+      , "assets/images/lilypad/1.png"
+      , "assets/images/lilypad/2.png"
+      , "assets/images/lilypad/3.png"
+      , "assets/images/lilypad/4.png"
+      , "assets/images/frog.png"
+      , "assets/images/margin.png"
+      , "assets/images/Stone1.png"
+      , "assets/images/Stone2.png"
+      ]
+        |> List.map
+            (\url ->
+                Html.img [ Html.Attributes.src url ] []
+            )
+        |> Html.div [ Html.Attributes.style "display" "none" ]
     ]
         |> Html.div
             [ Html.Attributes.style "position" "relative"
