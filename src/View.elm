@@ -14,24 +14,30 @@ import View.Object
 
 titleScreen : { start : msg, toggleSettings : msg } -> Html msg
 titleScreen args =
-    [ [ "Ode to the toad"
-            |> Html.text
-            |> Layout.heading1 [ Html.Attributes.style "color" Config.playerColor ]
-      , "By Lucas Payr & Lilith-Isa Samer" |> Layout.text [ Html.Attributes.style "color" Config.lilyPadColor ]
+    [ [ Layout.textButton
+            [ Html.Attributes.class "button"
+            , Html.Attributes.style "width" "100px"
+            ]
+            { onPress = Just args.start, label = "Start" }
       ]
-        |> Layout.column [ Layout.gap 8 ]
-    , Layout.textButton [ Html.Attributes.class "button" ] { onPress = Just args.start, label = "Start" }
-    , settingsButton { onClick = args.toggleSettings }
-    ]
-        |> Layout.column [ Layout.gap 100 ]
-        |> Layout.el
+        |> Layout.column
             (Layout.centered
-                ++ [ Html.Attributes.style "position" "relative"
-                   , Html.Attributes.style "background-color" Config.backgroundColor
-                   , Html.Attributes.style "height" (String.fromFloat Config.screenHeight ++ "px")
-                   , Html.Attributes.style "width" (String.fromFloat Config.screenWidth ++ "px")
+                ++ [ Html.Attributes.style "position" "absolute"
+                   , Html.Attributes.style "top" "350px"
+                   , Html.Attributes.style "width" "100%"
+                   , Layout.gap 8
                    ]
             )
+    , settingsButton { onClick = args.toggleSettings }
+    ]
+        |> Html.div
+            [ Html.Attributes.style "position" "relative"
+            , Html.Attributes.style "background-image" "url('assets/images/title.png')"
+            , Html.Attributes.style "background-position" "center"
+            , Html.Attributes.style "background-color" Config.backgroundColor
+            , Html.Attributes.style "height" (String.fromFloat Config.screenHeight ++ "px")
+            , Html.Attributes.style "width" (String.fromFloat Config.screenWidth ++ "px")
+            ]
 
 
 settingsScreen :

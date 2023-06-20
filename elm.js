@@ -7793,66 +7793,52 @@ var $author$project$View$settingsScreen = function (args) {
 };
 var $author$project$View$titleScreen = function (args) {
 	return A2(
-		$Orasund$elm_layout$Layout$el,
-		_Utils_ap(
-			$Orasund$elm_layout$Layout$centered,
-			_List_fromArray(
-				[
-					A2($elm$html$Html$Attributes$style, 'position', 'relative'),
-					A2($elm$html$Html$Attributes$style, 'background-color', $author$project$Config$backgroundColor),
-					A2(
-					$elm$html$Html$Attributes$style,
-					'height',
-					$elm$core$String$fromFloat($author$project$Config$screenHeight) + 'px'),
-					A2(
-					$elm$html$Html$Attributes$style,
-					'width',
-					$elm$core$String$fromFloat($author$project$Config$screenWidth) + 'px')
-				])),
-		A2(
-			$Orasund$elm_layout$Layout$column,
-			_List_fromArray(
-				[
-					$Orasund$elm_layout$Layout$gap(100)
-				]),
-			_List_fromArray(
-				[
-					A2(
-					$Orasund$elm_layout$Layout$column,
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'position', 'relative'),
+				A2($elm$html$Html$Attributes$style, 'background-image', 'url(\'assets/images/title.png\')'),
+				A2($elm$html$Html$Attributes$style, 'background-position', 'center'),
+				A2($elm$html$Html$Attributes$style, 'background-color', $author$project$Config$backgroundColor),
+				A2(
+				$elm$html$Html$Attributes$style,
+				'height',
+				$elm$core$String$fromFloat($author$project$Config$screenHeight) + 'px'),
+				A2(
+				$elm$html$Html$Attributes$style,
+				'width',
+				$elm$core$String$fromFloat($author$project$Config$screenWidth) + 'px')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$Orasund$elm_layout$Layout$column,
+				_Utils_ap(
+					$Orasund$elm_layout$Layout$centered,
 					_List_fromArray(
 						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'top', '350px'),
+							A2($elm$html$Html$Attributes$style, 'width', '100%'),
 							$Orasund$elm_layout$Layout$gap(8)
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$Orasund$elm_layout$Layout$heading1,
-							_List_fromArray(
-								[
-									A2($elm$html$Html$Attributes$style, 'color', $author$project$Config$playerColor)
-								]),
-							$elm$html$Html$text('Ode to the toad')),
-							A2(
-							$Orasund$elm_layout$Layout$text,
-							_List_fromArray(
-								[
-									A2($elm$html$Html$Attributes$style, 'color', $author$project$Config$lilyPadColor)
-								]),
-							'By Lucas Payr & Lilith-Isa Samer')
 						])),
-					A2(
-					$Orasund$elm_layout$Layout$textButton,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('button')
-						]),
-					{
-						label: 'Start',
-						onPress: $elm$core$Maybe$Just(args.start)
-					}),
-					$author$project$View$settingsButton(
-					{onClick: args.toggleSettings})
-				])));
+				_List_fromArray(
+					[
+						A2(
+						$Orasund$elm_layout$Layout$textButton,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('button'),
+								A2($elm$html$Html$Attributes$style, 'width', '100px')
+							]),
+						{
+							label: 'Start',
+							onPress: $elm$core$Maybe$Just(args.start)
+						})
+					])),
+				$author$project$View$settingsButton(
+				{onClick: args.toggleSettings})
+			]));
 };
 var $author$project$Main$view = function (model) {
 	return model.showSettings ? $author$project$View$settingsScreen(
